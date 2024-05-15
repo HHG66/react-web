@@ -175,260 +175,257 @@ const Summary = () => {
       ),
     },
   ];
-  return (
-    <>
-      {/* Summary */}
-      <Form
-        form={form}
-        name="advanced_search"
-        className="ant-advanced-search-form"
-        onFinish={onFinish}
-      >
-        <Row gutter={24}>
-          <Col span={6} >
-            <Form.Item
-              name='billname'
-              label='账单名称'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={6} >
-            <Form.Item
-              name='tradingtime'
-              label='交易时间'
-            >
-              <DatePicker style={{ width: '100%' }} />
-            </Form.Item>
-          </Col>
-          <Col span={6} >
-            <Form.Item
-              name='amount'
-              label='金额'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={6} >
-            <Form.Item
-              name='counterparty'
-              label='交易方'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          {
-            expand ? (<>
-              <Col span={6} >
-                <Form.Item
-                  name='associationtype'
-                  label='关联收支类型'
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </>) : (<> </>)
-          }
-        </Row>
-        <Row>
-          <Col
-            span={24}
-            style={{
-              textAlign: 'right',
-            }}
-          >
-            <Button type="primary" onClick={()=>seeBillSummary()} style={{marginRight:'10px'}}>
-              统计详细
-            </Button>
-            <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
-            <Button
-              style={{
-                margin: '0 8px',
-              }}
-              onClick={() => {
-                form.resetFields();
-              }}
-            >
-              重置
-            </Button>
-            <a
-              style={{
-                fontSize: 12,
-              }}
-              onClick={() => {
-                setExpand(!expand);
-              }}
-            >
-              {expand ? (<><UpOutlined />收回</>) : (<><DownOutlined />展开</>)}
-            </a>
-          </Col>
-        </Row>
-      </Form>
-      <Table columns={columns} dataSource={tabData} />
-      <Modal title="编辑账单" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-
-        <Form
-          name="basic"
-          labelCol={{
-            span: 6,
-          }}
-          wrapperCol={{
-            span: 18,
-          }}
-          // initialValues={{editModel}}
-          form={editModelForm}
-          // onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+  return (<>
+    {/* Summary */}
+    <Form
+      form={form}
+      name="advanced_search"
+      className="ant-advanced-search-form"
+      onFinish={onFinish}
+    >
+      <Row gutter={24}>
+        <Col span={6} >
           <Form.Item
-            label="名称"
-            name="billname"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your username!',
-              },
-            ]}
+            name='billname'
+            label='账单名称'
           >
             <Input />
           </Form.Item>
+        </Col>
+        <Col span={6} >
           <Form.Item
-            label="交易时间"
-            name="tradingtime"
-            rules={[
-              {
-                required: true,
-                message: '请选择交易时间',
-              },
-            ]}
+            name='tradingtime'
+            label='交易时间'
           >
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
+        </Col>
+        <Col span={6} >
           <Form.Item
-            label="收/支"
-            name="incomeexpenditure"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
-          >
-            <Select
-              onChange={incomeExpenditureChange}
-              options={[
-                {
-                  value: '收入',
-                  label: '收入',
-                },
-                {
-                  value: '支出',
-                  label: '支出',
-                }
-              ]}
-            />
-          </Form.Item>
-          <Form.Item
-            label="金额"
-            name="amount"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
+            name='amount'
+            label='金额'
           >
             <Input />
           </Form.Item>
+        </Col>
+        <Col span={6} >
           <Form.Item
-            label="交易方"
-            name="counterparty"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
+            name='counterparty'
+            label='交易方'
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="关联收支类型"
-            name="associationtype"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
-          >
-            {/* <Input /> */}
-            <Select
-              // onChange={}
-              options={incomeExpenditureState === '收入' ? incomeOption : spendingOption}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Drawer width={640} placement="right" closable={false} onClose={onClose} open={open}>
-        <p
-          className="site-description-item-profile-p"
+        </Col>
+        {
+          expand ? (<>
+            <Col span={6} >
+              <Form.Item
+                name='associationtype'
+                label='关联收支类型'
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </>) : (<> </>)
+        }
+      </Row>
+      <Row>
+        <Col
+          span={24}
           style={{
-            marginBottom: 24,
+            textAlign: 'right',
           }}
         >
-        <b>统计详细</b>
-        </p>
-        <p className="site-description-item-profile-p">收入</p>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="总金额" content="1000" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="收入" content="30000" />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="支出" content="4000" />
-          </Col>
-          <Col span={12}>
-          <DescriptionItem title="做多次交易方" content="食堂" />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="单笔最大消费名称" content="February" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="单笔最大消费金额" content="2000" />
-          </Col>
-        </Row>
-        {/* <Row>
-          <Col span={12}>
-            <DescriptionItem title="单笔最大消费名称" content="February 2,1900" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="Website" content="-" />
-          </Col>
-        </Row> */}
-        <Row>
-          <Col span={24}>
-            <DescriptionItem
-              title="Message"
-              content="Make things as simple as possible but no simpler."
-            />
-          </Col>
-        </Row>
-        <Divider />
-        {/* <p className="site-description-item-profile-p">Company</p> */}
-        
-      </Drawer>
-    </>
-  )
+          <Button type="primary" onClick={()=>seeBillSummary()} style={{marginRight:'10px'}}>
+            统计详细
+          </Button>
+          <Button type="primary" htmlType="submit">
+            搜索
+          </Button>
+          <Button
+            style={{
+              margin: '0 8px',
+            }}
+            onClick={() => {
+              form.resetFields();
+            }}
+          >
+            重置
+          </Button>
+          <a
+            style={{
+              fontSize: 12,
+            }}
+            onClick={() => {
+              setExpand(!expand);
+            }}
+          >
+            {expand ? (<><UpOutlined />收回</>) : (<><DownOutlined />展开</>)}
+          </a>
+        </Col>
+      </Row>
+    </Form>
+    <Table columns={columns} dataSource={tabData} />
+    <Modal title="编辑账单" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+
+      <Form
+        name="basic"
+        labelCol={{
+          span: 6,
+        }}
+        wrapperCol={{
+          span: 18,
+        }}
+        // initialValues={{editModel}}
+        form={editModelForm}
+        // onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item
+          label="名称"
+          name="billname"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your username!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="交易时间"
+          name="tradingtime"
+          rules={[
+            {
+              required: true,
+              message: '请选择交易时间',
+            },
+          ]}
+        >
+          <DatePicker style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item
+          label="收/支"
+          name="incomeexpenditure"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Select
+            onChange={incomeExpenditureChange}
+            options={[
+              {
+                value: '收入',
+                label: '收入',
+              },
+              {
+                value: '支出',
+                label: '支出',
+              }
+            ]}
+          />
+        </Form.Item>
+        <Form.Item
+          label="金额"
+          name="amount"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="交易方"
+          name="counterparty"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="关联收支类型"
+          name="associationtype"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          {/* <Input /> */}
+          <Select
+            // onChange={}
+            options={incomeExpenditureState === '收入' ? incomeOption : spendingOption}
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
+    <Drawer width={640} placement="right" closable={false} onClose={onClose} open={open}>
+      <p
+        rootClassName="site-description-item-profile-p"
+        rootStyle={{
+          marginBottom: 24,
+        }}
+      >
+      <b>统计详细</b>
+      </p>
+      <p rootClassName="site-description-item-profile-p">收入</p>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="总金额" content="1000" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="收入" content="30000" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="支出" content="4000" />
+        </Col>
+        <Col span={12}>
+        <DescriptionItem title="做多次交易方" content="食堂" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="单笔最大消费名称" content="February" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="单笔最大消费金额" content="2000" />
+        </Col>
+      </Row>
+      {/* <Row>
+        <Col span={12}>
+          <DescriptionItem title="单笔最大消费名称" content="February 2,1900" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="Website" content="-" />
+        </Col>
+      </Row> */}
+      <Row>
+        <Col span={24}>
+          <DescriptionItem
+            title="Message"
+            content="Make things as simple as possible but no simpler."
+          />
+        </Col>
+      </Row>
+      <Divider />
+      {/* <p className="site-description-item-profile-p">Company</p> */}
+      
+    </Drawer>
+  </>);
 }
 
 export default Summary

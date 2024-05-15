@@ -280,68 +280,85 @@ const BalancepaymentsImportBill = () => {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
-  return (
-    <>
-      {/* <div>导入账单</div> */}
-      <Form
-        name="basic"
-        form={form}
-        // initialValues={}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Row gutter={{
-          xs: 8,
-          sm: 10,
-          md: 24,
-          lg: 20,
-        }}>
-          <Col>
-            <Form.Item
-              label="交易时间"
-              name="tradinghours"
-              auto-complete='new-password'
-            >
-              {/* <Input /> */}
-              <DatePicker />
+  return (<>
+    {/* <div>导入账单</div> */}
+    <Form
+      name="basic"
+      form={form}
+      // initialValues={}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+    >
+      <Row gutter={{
+        xs: 8,
+        sm: 10,
+        md: 24,
+        lg: 20,
+      }}>
+        <Col>
+          <Form.Item
+            label="交易时间"
+            name="tradinghours"
+            auto-complete='new-password'
+          >
+            {/* <Input /> */}
+            <DatePicker />
 
-            </Form.Item>
-          </Col>
-          <Col>
-            <Form.Item
-              label="交易类型"
-              name="transactiontype"
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col>
-            <Form.Item
-              label="收入/支出"
-              name="balancepayments"
-              auto-complete='new-password'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col>
-            <Form.Item
-              label="金额"
-              name="amount"
-              auto-complete='new-password'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col>
-            <Form.Item
-              label="交易单号"
-              name="id"
-              auto-complete='new-password'
-            >
-              <Input />
-            </Form.Item>
-          </Col>
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            label="交易类型"
+            name="transactiontype"
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            label="收入/支出"
+            name="balancepayments"
+            auto-complete='new-password'
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            label="金额"
+            name="amount"
+            auto-complete='new-password'
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            label="交易单号"
+            name="id"
+            auto-complete='new-password'
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            label="导入时间"
+            name="inporttime"
+            auto-complete='new-password'
+          >
+            <DatePicker picker="month"></DatePicker>
+          </Form.Item>
+        </Col>
+        <Col>
+          <Space>
+            <Button type='primary' htmlType='submit'>提交</Button>
+            <Button type='primary' htmlType='reset'>重置</Button>
+          </Space>
+        </Col>
+      </Row>
+      {/* <Row>
+        <Space>
           <Col>
             <Form.Item
               label="导入时间"
@@ -357,107 +374,86 @@ const BalancepaymentsImportBill = () => {
               <Button type='primary' htmlType='reset'>重置</Button>
             </Space>
           </Col>
-        </Row>
-        {/* <Row>
-          <Space>
-            <Col>
-              <Form.Item
-                label="导入时间"
-                name="inporttime"
-                auto-complete='new-password'
-              >
-                <DatePicker picker="month"></DatePicker>
-              </Form.Item>
-            </Col>
-            <Col>
-              <Space>
-                <Button type='primary' htmlType='submit'>提交</Button>
-                <Button type='primary' htmlType='reset'>重置</Button>
-              </Space>
-            </Col>
-          </Space>
-        </Row> */}
-      </Form>
+        </Space>
+      </Row> */}
+    </Form>
+    <Row>
+      <Col offset={20}>
+        <Button type="primary" style={{ marginBottom: "10px" }} onClick={exportRecord}>导入记录</Button>
+      </Col>
+      <Col >
+        <Upload beforeUpload={beforeUpload} showUploadList={false}>
+          <Button type="primary" style={{ marginBottom: "10px", marginLeft: "10px" }}>导入账单</Button>
+        </Upload>
+      </Col>
+    </Row>
+    {/* <Button onClick={addField}>Click </Button> */}
+    <Table columns={columns} dataSource={pres} pagination={tableParams} scroll={{ y: 300 }} className='tab-box' />
+    {/* <table dangerouslySetInnerHTML={{__html: content}}></table> */}
+    <Drawer width={400} closable={false} placement="right" onClose={onClose} open={open}>
+      <p
+        rootClassName="site-description-item-profile-p"
+        rootStyle={{
+          marginBottom: 24,
+        }}
+      >
+        导入记录
+      </p>
 
-      <Row>
-        <Col offset={20}>
-          <Button type="primary" style={{ marginBottom: "10px" }} onClick={exportRecord}>导入记录</Button>
-        </Col>
-        <Col >
-          <Upload beforeUpload={beforeUpload} showUploadList={false}>
-            <Button type="primary" style={{ marginBottom: "10px", marginLeft: "10px" }}>导入账单</Button>
-          </Upload>
-        </Col>
-      </Row>
-      {/* <Button onClick={addField}>Click </Button> */}
-      <Table columns={columns} dataSource={pres} pagination={tableParams} scroll={{ y: 300 }} className='tab-box' />
-      {/* <table dangerouslySetInnerHTML={{__html: content}}></table> */}
+      <Timeline mode={"left"}>
+        {
+          record.map(ele => {
+            return <Timeline.Item key={ele.importtime} label={<a onClick={getdisposebill}>{ele.importtime}</a>} onClick={showChildrenDrawer}>{ele.batchname}</Timeline.Item>
+          })
+        }
+        {/* <Timeline.Item label="2015-09-01 09:12:11">Solve initial network problems</Timeline.Item>
+        <Timeline.Item>Technical testing</Timeline.Item>*/}
+        {/* <Timeline.Item label="2015-09-01 09:12:11">Network problems being solved</Timeline.Item>  */}
+      </Timeline>
 
-      <Drawer width={400} closable={false} placement="right" onClose={onClose} open={open}>
+      {/* <Divider />
+      <p>Some contents...</p> */}
+      <Drawer
+        // title="账单详细"
+        width={500}
+        closable={false}
+        onClose={onChildrenDrawerClose}
+        open={childrenDrawer}
+      >
         <p
-          className="site-description-item-profile-p"
-          style={{
+          rootClassName="site-description-item-profile-p"
+          rootStyle={{
             marginBottom: 24,
           }}
         >
-          导入记录
+          账单详细
         </p>
-
-        <Timeline mode={"left"}>
-          {
-            record.map(ele => {
-              return <Timeline.Item key={ele.importtime} label={<a onClick={getdisposebill}>{ele.importtime}</a>} onClick={showChildrenDrawer}>{ele.batchname}</Timeline.Item>
-            })
-          }
-          {/* <Timeline.Item label="2015-09-01 09:12:11">Solve initial network problems</Timeline.Item>
-          <Timeline.Item>Technical testing</Timeline.Item>*/}
-          {/* <Timeline.Item label="2015-09-01 09:12:11">Network problems being solved</Timeline.Item>  */}
-        </Timeline>
-
-        {/* <Divider />
-        <p>Some contents...</p> */}
-        <Drawer
-          // title="账单详细"
-          width={500}
-          closable={false}
-          onClose={onChildrenDrawerClose}
-          open={childrenDrawer}
-        >
-          <p
-            className="site-description-item-profile-p"
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            账单详细
-          </p>
-          <p className="site-description-item-profile-p">Personal</p>
-          <Row>
-            <Col span={12}>
-              <div title={batchInfo.businesstotal} className="site-description-item-profile-wrapper">
-                <p className="site-description-item-profile-p-label">总业务数:</p>
-                {batchInfo.businesstotal}
-              </div>
-            </Col>
-            <Col span={12}>
-              <div title={batchInfo.totalrevenue} className="site-description-item-profile-wrapper">
-                <p className="site-description-item-profile-p-label">总收入:</p>
-                {batchInfo.totalrevenue}
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <div title={batchInfo.totalconsumption} className="site-description-item-profile-wrapper">
-                <p className="site-description-item-profile-p-label">总消费:</p>
-                {batchInfo.totalconsumption}
-              </div>
-            </Col>
-          </Row>
-        </Drawer>
+        <p rootClassName="site-description-item-profile-p">Personal</p>
+        <Row>
+          <Col span={12}>
+            <div title={batchInfo.businesstotal} rootClassName="site-description-item-profile-wrapper">
+              <p rootClassName="site-description-item-profile-p-label">总业务数:</p>
+              {batchInfo.businesstotal}
+            </div>
+          </Col>
+          <Col span={12}>
+            <div title={batchInfo.totalrevenue} rootClassName="site-description-item-profile-wrapper">
+              <p rootClassName="site-description-item-profile-p-label">总收入:</p>
+              {batchInfo.totalrevenue}
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <div title={batchInfo.totalconsumption} rootClassName="site-description-item-profile-wrapper">
+              <p rootClassName="site-description-item-profile-p-label">总消费:</p>
+              {batchInfo.totalconsumption}
+            </div>
+          </Col>
+        </Row>
       </Drawer>
-    </>
-  )
+    </Drawer>
+  </>);
 }
 
 export default BalancepaymentsImportBill
