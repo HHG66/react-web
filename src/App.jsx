@@ -1,4 +1,3 @@
-import 'antd/dist/antd.min.css'
 // import 'antd/dist/antd.css'
 import { BrowserRouter,HashRouter } from 'react-router-dom'
 // import AppRouter from '@/router'
