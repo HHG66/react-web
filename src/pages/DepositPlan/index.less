@@ -1,0 +1,45 @@
+.love {
+  /* 爱心 */
+  position: relative;
+  margin-left: 100px;
+}
+.love:before {
+  content: "";
+  width: 70px;
+  height: 110px;
+  background: #f00;
+  // border: 1px solid red;
+  position: absolute;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  transform: rotate(45deg);
+}
+.love:after {
+  content: "";
+  width: 70px;
+  height: 110px;
+  background: #f00;
+  // border: 1px solid red;
+  position: absolute;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  transform: rotate(-45deg);
+  left: -30px;
+}
+.graph-box{
+  display: flex;
+  flex-wrap: wrap;
+  div{
+    margin: 2px;
+    width: 3%;
+    height: 5.5vh;
+    line-height: 5.5vh;
+    text-align: center;
+  }
+  div:hover{
+    background: gainsboro;
+  }
+  .iscomplete{
+    background: green;
+  }
+}

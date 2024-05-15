@@ -1,0 +1,91 @@
+ .logo {
+   height: 32px;
+   margin: 16px;
+   background: rgb(200, 200, 200) // background: url("../../assets/images/logo.png");
+     // background: url("../../assets/images/微信图片_20220907084824_163x82.jpg");
+     // background: url("../../assets/images/透明底反黑图.svg");
+     // background-image:url("../../assets/images/logo.png");
+ }
+
+ .site-layout {
+   height: 100%;
+ }
+
+ .site-layout .site-layout-background {
+   background: #fff;
+ }
+
+ .userInfo {
+   height: 100%;
+   width: 20%;
+   text-align: end;
+
+   span {
+     height: 20px;
+     margin-right: 10px;
+   }
+
+   .notice {
+     vertical-align: sub;
+   }
+
+   .head-portrait {
+     width: 23%;
+     height: 65%;
+     margin-left: 8px;
+
+     .head-portrait-img {
+       width: 20%;
+       height: 20%;
+     }
+
+     img {
+       object-fit: contain;
+     }
+
+     .ant-image-mask {
+       width: 20%;
+       height: 20%;
+
+       svg {
+         margin-left: 10px;
+       }
+     }
+   }
+ }
+
+ header {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+
+   .ant-breadcrumb {
+     margin: 20px 0;
+     margin-left: 15px;
+   }
+ }
+
+ main {
+   margin: 0 16px;
+   margin-top: 10px;
+   height: 6%;
+
+   .site-layout-background {
+     height: 100%;
+     overflow: scroll;
+   }
+ }
+
+ .aside-icon {
+
+   // align-items: baseline;
+   svg {
+     vertical-align: sub;
+   }
+ }
+
+ .ant-menu {
+   //  position: -webkit-sticky;
+   position: sticky;
+   top: 10px;
+ }
