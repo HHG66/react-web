@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2022-12-10 21:22:02
+ * @LastEditTime: 2024-05-16 18:14:51
  * @LastEditors: 韩宏广
- * @FilePath: /个人财务/web/src/components/Aside.js
+ * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明: 
  */
 import { Layout, Menu } from 'antd';
@@ -12,8 +12,10 @@ import { Link, useLocation } from 'react-router-dom'
 import Routers from '@/routers';
 // import { setLocalStorage, getLocalStorage } from '@/utils'
 import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 const { Sider } = Layout;
 const rootSubmenuKeys = ['/consumptiontype', '/incometype', '/balancepayments', '/investmentmanagement', '/checkInformation'];
+import SvgIcon from './SvgIcon'
 
 const Aside = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -21,6 +23,8 @@ const Aside = () => {
   const [openKeys, setOpenKeys] = useState([]);
   const [selectedKeys, setselectedKeys] = useState(['']);
   const { pathname } = useLocation()
+  const navigate = useNavigate();
+
   const store = useSelector((store) => {
     // if (Object.keys(store.userInfo).length === 0) {
     //   // console.log(getLocalStorage("asideInfo"));
@@ -32,117 +36,36 @@ const Aside = () => {
     return store.Store.UserReducer.userInfo
 
   })
-  // console.log(store);
-  const [asyncRouter, setasyncRouter] = useState([])
-  //注意不要使用openKeys这个api，因为为了解决导航菜单收回的时候无法同时收回二级菜单。
-  // const defaultProps = collapsed ? {} : { openKeys: openKeys };
-  //将路由表转化成要使用的格式，组Aside
+
   useEffect(() => {
-    // console.log(Routers);
-    const Router = []
-    asyncRouter.map((item) => {
-      // Routers.map((item) => {
-      if (item.subs) {
-        const childrens = []
-        item.subs.map((children) => {
-          childrens.push({
-            label: <Link to={children.key}>{children.title}</Link>,
-            key: children.key,
-            icon: children.icon,
-          })
-          return childrens
-        })
-        Router.push({
-          label: item.title,
-          key: item.key,
-          icon: item.icon,
-          children: childrens,
-          className: "aside-icon"
-        })
-      } else {
-        Router.push({
-          label: <Link to={item.key}>{item.title}</Link>,
-          key: item.key,
-          icon: item.icon,
-          className: "aside-icon"
-        })
+    setRouterItem(recursionRouter(Routers))
+  }, [])
+  //递归处理路由表
+  function recursionRouter(routers, menuList2) {
+    var menuList = []
+    routers.forEach(element => {
+      console.log(element);
+      if (menuList2) {
+        menuList2[menuList2.length - 1]["children"].push(
+          { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
+        )
       }
-      return Router
-    })
-    setRouterItem(Router)
-    //默认导航到home
-    // navigate('/home')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asyncRouter])
+      menuList.push(
+        // { key: '1', icon: element.icon?<element.icon.name />:'', label: element.title }
+        { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
+      )
+      if (element.subs) {
+        menuList[menuList.length - 1].children = []
+        recursionRouter(element.subs, menuList)
+      }
+    });
+    return menuList
+  }
 
   //根据当前路由设置选中导航菜单
   useEffect(() => {
     setselectedKeys([pathname])
   }, [pathname])
-
-  //异步路由。登录接口返回的权限
-  useEffect(() => {
-    const asyncRole = (Routers) => {
-      var asyncRou = []
-      //作用将有下级节点菜单，组成线性结构
-      var linearAsyncRou = []
-      Routers.forEach(element => {
-        if (element.subs) {
-          if (store.role && store.role.indexOf(element.role) !== -1) {
-            var routerInfo = {
-              key: element.key,
-              title: element.title,
-              icon: element.icon,
-              role: element.role,
-            }
-            var subs = []
-            element.subs.forEach((children) => {
-              if (store.role && store.role.indexOf(children.role) !== -1) {
-                subs.push(children)
-                linearAsyncRou.push(children)
-              }
-            })
-            routerInfo.subs = subs
-            asyncRou.push(routerInfo)
-            // linearAsyncRou.push(routerInfo)
-          } else {
-            element.subs.forEach((children) => {
-              if (store.role && store.role.indexOf(children.role) !== -1) {
-                asyncRou.push(children)
-                linearAsyncRou.push(children)
-              }
-            })
-          }
-        } else {
-          if (store.role && store.role.indexOf(element.role) !== -1) {
-            asyncRou.push(element)
-            linearAsyncRou.push(element)
-          }
-        }
-      });
-      setasyncRouter(asyncRou)
-      // setLocalStorage("asideRouter", asyncRou)
-      // setLocalStorage("linearAsyncRou", linearAsyncRou)
-      // console.log(asyncRouter);
-      // console.log(asyncRou);
-    }
-    asyncRole(Routers)
-  }, [store.role])
-
-  useEffect(() => {
-    // if (Object.keys(openKeys).length === 0) {
-    //   if (getLocalStorage('OpenKeys')) {
-    //     setOpenKeys(getLocalStorage('OpenKeys'))
-    //   }
-    // }
-  }, [openKeys])
-
-  useEffect(() => {
-    // if (collapsed === true) {
-    //   setOpenKeys([]);
-    //   setLocalStorage("OpenKeys", [])
-    // }
-  }, [collapsed])
 
   //这个地方是只展开一个父级菜单，onOpenChange只在打开有子级导航的时候,以及收回侧边栏会触发。
   const onOpenChange = (keys) => {
@@ -162,34 +85,15 @@ const Aside = () => {
       // setLocalStorage("OpenKeys", latestOpenKey ? [latestOpenKey] : [])
     }
   };
-
-  const onClick = (e) => {
-    //这里是为了，点击没有子菜单的导航可以将已经展开的导航关闭
-    // if (e.keyPath.length === 1) {
-    //   setOpenKeys([])
-    // }
-  }
   const onSelect = ({ item, key, keyPath, selectedKeys, domEvent }) => {
-    // console.log({ item, key, keyPath, selectedKeys, domEvent });
-    // console.log(selectedKeys);
-    // console.log(openKeys);
-    // setOpenKeys([])
-    // setLocalStorage("OpenKeys", [keyPath[1]])
-    // setselectedKeys([key])
-    // debugger
-    // if(collapsed==true){
-    //   setselectedKeys([])
-    // setLocalStorage("OpenKeys", [ ])
-    // }
+    console.log({ item, key, keyPath, selectedKeys, domEvent }); 
+    navigate(key)
   }
   return (
     <>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }} style={{ display: 'block' }}>
         {/* <div className="logo" > </div> */}
-        <Menu theme="dark" defaultSelectedKeys={'/home'} mode="inline" items={routerItem} onClick={onClick} onOpenChange={onOpenChange}
-          // openKeys={openKeys}
-          selectedKeys={selectedKeys}
-          onSelect={({ item, key, keyPath, selectedKeys, domEvent }) => { onSelect({ item, key, keyPath, selectedKeys, domEvent }) }}
+        <Menu theme="dark" defaultSelectedKeys={'/home'} mode="inline" items={routerItem} onSelect={onSelect}
         // 为了解决二级菜单展开无法展开的问题
         // {...defaultProps}
         />
