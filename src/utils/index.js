@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 14:37:41
- * @LastEditTime: 2024-05-15 09:18:57
+ * @LastEditTime: 2024-05-21 08:50:06
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\utils\index.js
  * @文件说明: 
@@ -10,7 +10,7 @@
 //取localstorage
 export function getLocalStorage(key) {
   // return window.localStorage.getItem(key)
-  return JSON.parse(window.localStorage.getItem(key))  
+  return JSON.parse(window.localStorage.getItem(key))
 }
 //存localstorage
 export function setLocalStorage(key, value) {
@@ -78,6 +78,31 @@ export function formatSinaStock(string) {
  * @return {*}
  * @author: 韩宏广
  */
-export function  debounce(func){
-  
+export function debounce(func, delay) {
+  let timeout
+  return function () {
+    const _this = this
+    const args = [...arguments]
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+    timeout = setTimeout(() => {
+      func.apply(_this, args)
+    }, delay)
+  }
+}
+
+export  function throttle(func, wait) {
+  let timeout;
+  return function() {
+      let context = this;
+      let args = arguments;
+      if (!timeout) {
+          timeout = setTimeout(() => {
+              timeout = null;
+              func.apply(context, args)
+          }, wait)
+      }
+
+  }
 }

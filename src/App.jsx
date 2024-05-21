@@ -3,14 +3,10 @@ import AppRouter from '@/components/Router'
 import './styles/index.less'
 function App() {
   return (
-    <BrowserRouter style={{ height: "100%", width: "100%" }}>
-      {/* <AppRouter /> */}
-      <AppRouter />
-      {/* <Routes>
-          <Route path='/' element={
-             <Layouts/>
-       </Routes> */}
-    </BrowserRouter>
+    <AppRouter />
+    // <BrowserRouter style={{ height: "100%", width: "100%" }}>
+    // <AppRouter />
+    // </BrowserRouter>
   );
 }
 

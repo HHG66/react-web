@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-05-16 18:14:51
+ * @LastEditTime: 2024-05-20 16:22:49
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明: 
@@ -44,7 +44,7 @@ const Aside = () => {
   function recursionRouter(routers, menuList2) {
     var menuList = []
     routers.forEach(element => {
-      console.log(element);
+      // console.log(element);
       if (menuList2) {
         menuList2[menuList2.length - 1]["children"].push(
           { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-05-15 09:20:18
+ * @LastEditTime: 2024-05-21 08:50:24
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明: 
@@ -10,7 +10,7 @@
 import axios from "axios";
 import { notification, message } from 'antd';
 import { getLocalStorage } from '@/utils/index'
-
+import { throttle } from '@/utils/index.js'
 let request = axios.create({
   baseURL: "http://127.0.0.1:4523/m1/1605761-0-default/",
   // baseURL: "/proxy",
@@ -79,14 +79,7 @@ request.interceptors.response.use(function (response) {
     }
   } else if (error.request) {
     let { processingMessage, processingDesc } = handleAnException(error.code)
-    notification.open({
-      message: processingMessage,
-      type: "error",
-      description: processingDesc,
-      onClick: () => {
-        console.log('Notification Clicked!');
-      },
-    });
+    showMessage(processingMessage, processingDesc )
   } else {
     // 发送请求时出了点问题
     console.log('Error', error.message);
@@ -113,4 +106,16 @@ function handleAnException(errorCode) {
       }
   }
 }
+
+function openMessage(processingMessage, processingDesc){
+  notification.open({
+    message: processingMessage,
+    type: "error",
+    description: processingDesc,
+    onClick: () => {
+      console.log('Notification Clicked!');
+    },
+  });
+}
+let showMessage=throttle(openMessage,500)
 export default request

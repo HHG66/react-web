@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-09 11:31:33
- * @LastEditTime: 2023-02-14 09:33:35
+ * @LastEditTime: 2024-05-21 09:02:07
  * @LastEditors: 韩宏广
- * @FilePath: \financial\web\src\components\Heade.js
+ * @FilePath: \financial-web\src\components\Heade.jsx
  * @文件说明: 
  */
 import { Breadcrumb, Avatar, Layout, Drawer,Popover,Button} from 'antd'
@@ -54,9 +54,13 @@ const Heade = () => {
 
   useEffect(() => {
     //这里写法不太好，暂时先这样做，以后熟悉了react再优化,而且如果涉及三级路由一定报错    
+    console.log(pathname);
     if (pathname.split('/').length === 2) {
-      setBreadcrumb([dataRef.current[pathname]])
+      setBreadcrumb([{
+        title:[dataRef.current[pathname]]
+      }])
     } else {
+      // setBreadcrumb([dataRef.current["/" + pathname.split('/')[1]], dataRef.current[pathname]])
       setBreadcrumb([dataRef.current["/" + pathname.split('/')[1]], dataRef.current[pathname]])
     }
   }, [pathname])
@@ -81,13 +85,13 @@ const Heade = () => {
           padding: 0,
         }}
       >
-        <Breadcrumb>
+        {/* <Breadcrumb >
           {
             breadcrumb.map((Item) => {
               return <Breadcrumb.Item key={Item}>{Item}</Breadcrumb.Item>
             })
           }
-        </Breadcrumb>
+        </Breadcrumb> */}
         <div className='userInfo'>
           <span className='notice' onClick={showDrawer}>
             <div style={{ display: 'inline-block' }}>
