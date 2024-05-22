@@ -1,70 +1,67 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-09 11:31:33
- * @LastEditTime: 2024-05-21 09:02:07
+ * @LastEditTime: 2024-05-22 20:17:05
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Heade.jsx
  * @文件说明: 
  */
-import { Breadcrumb, Avatar, Layout, Drawer,Popover,Button} from 'antd'
+import { Breadcrumb, Avatar, Layout, Drawer, Popover, Button } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import SvgIcon from '@/components/Icon'
 import Routers from '@/routers'
-import { useSelector,useDispatch  } from 'react-redux'
-import {  deleteInfo } from '@/store/reducers/User.js'
+import { useSelector, useDispatch } from 'react-redux'
+import { deleteInfo } from '@/store/reducers/User.js'
 // import { actions } from '@/store/export.js'
 import { useNavigate } from 'react-router-dom'
-import {setLocalStorage} from '@/utils/index'
+import { setLocalStorage } from '@/utils/index'
 const { Header } = Layout
 const Heade = () => {
-  const [breadcrumb, setBreadcrumb] = useState([])
+  // const [breadcrumb, setBreadcrumb] = useState([])
   //key 路由，value 路由名称，利用这个对象匹配面包屑， 这种做法非常不正规。
-  const [breadcrumbNameMap, setbreadcrumbNameMap] = useState({})
+  // const [breadcrumbNameMap, setbreadcrumbNameMap] = useState({})
+  const [currentRoutingInfo, setCurrentRoutingInfo] = useState({})
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const dataRef = useRef()
   const store = useSelector(store => store.Store.UserReducer.userInfo)
-  // const store1 = useSelector(store => store )
-  // console.log(store1);
   const dispatch = useDispatch()
-  
-  // const { deleteInfo } = bindActionCreators(actions, dispatch)
   const navigate = useNavigate()
 
   useEffect(() => {
-    function callbreadcrumbNameMap() {
-      Routers.map((rou) => {
-        if (rou.subs) {
-          rou.subs.map((rouch) => {
-            setbreadcrumbNameMap({ ...breadcrumbNameMap }, breadcrumbNameMap[rouch.key] = rouch.title)
-            return breadcrumbNameMap
-          })
-          setbreadcrumbNameMap({ ...breadcrumbNameMap }, breadcrumbNameMap[rou.key] = rou.title)
-        } else {
-          setbreadcrumbNameMap({ ...breadcrumbNameMap }, breadcrumbNameMap[rou.key] = rou.title)
-        }
-        return breadcrumbNameMap
-      })
-    }
-    callbreadcrumbNameMap()
-    dataRef.current = breadcrumbNameMap
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // getRouterInfo(Routers)
+
   }, [])
 
   useEffect(() => {
-    //这里写法不太好，暂时先这样做，以后熟悉了react再优化,而且如果涉及三级路由一定报错    
-    console.log(pathname);
-    if (pathname.split('/').length === 2) {
-      setBreadcrumb([{
-        title:[dataRef.current[pathname]]
-      }])
-    } else {
-      // setBreadcrumb([dataRef.current["/" + pathname.split('/')[1]], dataRef.current[pathname]])
-      setBreadcrumb([dataRef.current["/" + pathname.split('/')[1]], dataRef.current[pathname]])
-    }
+    console.log(getRouterInfo(Routers[0].subs, pathname));
+    // debugger
   }, [pathname])
+  //根据当前路由获取路由表详细信息
+  const getRouterInfo = (routers, pathname, currentRoutingInfo = [], currentParentId = null) => {
+    // let currentRoutingInfo = []
+    if (routers.length == 0) return
 
+    for (let index = 0; index < routers.length; index++) {
+      const element = routers[index];
+      // console.log(element);
+      if (pathname.slice(1) == element.key) {
+        currentRoutingInfo.push({title:element.title,currentParentId})
+        return currentRoutingInfo
+      }
+      if (element.subs) {
+        let result = getRouterInfo(element.subs, pathname, currentRoutingInfo, element.key)
+        if (result) {
+          currentRoutingInfo.push(element.title )
+          return result
+        }
+      }
+    }
+
+    return null
+  }
   const onClose = () => {
     setOpen(false);
   };
@@ -74,7 +71,7 @@ const Heade = () => {
   const personalInfo = () => {
     // deleteInfo()
     dispatch(deleteInfo())
-    setLocalStorage('Token','')
+    setLocalStorage('Token', '')
     navigate('/login')
   }
   return (
@@ -85,13 +82,9 @@ const Heade = () => {
           padding: 0,
         }}
       >
-        {/* <Breadcrumb >
-          {
-            breadcrumb.map((Item) => {
-              return <Breadcrumb.Item key={Item}>{Item}</Breadcrumb.Item>
-            })
-          }
-        </Breadcrumb> */}
+        <Breadcrumb items={currentRoutingInfo}>
+
+        </Breadcrumb>
         <div className='userInfo'>
           <span className='notice' onClick={showDrawer}>
             <div style={{ display: 'inline-block' }}>
@@ -99,8 +92,8 @@ const Heade = () => {
             </div>
           </span>
           <span>用户名：</span>
-          <Popover placement="bottom" title={" "} content={ <Button type="link" onClick={personalInfo}>退出</Button>} trigger="click">
-          <span>{store.name}</span>
+          <Popover placement="bottom" title={" "} content={<Button type="link" onClick={personalInfo}>退出</Button>} trigger="click">
+            <span>{store.name}</span>
           </Popover>
           <Avatar className='head-portrait' src=""
           >123</Avatar>

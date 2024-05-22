@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-05-20 16:22:49
+ * @LastEditTime: 2024-05-22 16:33:17
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明: 
@@ -38,25 +38,43 @@ const Aside = () => {
   })
 
   useEffect(() => {
-    setRouterItem(recursionRouter(Routers))
+    // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
+    setRouterItem(recursionRouter([...Routers[0]['subs'],Routers[1]]))
   }, [])
   //递归处理路由表
   function recursionRouter(routers, menuList2) {
     var menuList = []
     routers.forEach(element => {
       // console.log(element);
+      // if (element.key !== '/') {
+        
+      // }
       if (menuList2) {
+        if (!menuList2[menuList2.length - 1].children) {
+          menuList2[menuList2.length - 1].children = []
+        }
         menuList2[menuList2.length - 1]["children"].push(
           { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
         )
+      } else {
+        menuList.push(
+          // { key: '1', icon: element.icon?<element.icon.name />:'', label: element.title }
+          { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
+        )
       }
-      menuList.push(
-        // { key: '1', icon: element.icon?<element.icon.name />:'', label: element.title }
-        { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
-      )
       if (element.subs) {
-        menuList[menuList.length - 1].children = []
-        recursionRouter(element.subs, menuList)
+        // if (!menuList[menuList.length - 1].children) {
+        //   menuList[menuList.length - 1].children = []
+        // }
+        // let nextList = []
+        // if (element.key == '/') {
+        //   nextList = [{
+        //     children:[]
+        //   }]
+        // } else {
+        //   nextList = 
+        // }
+        recursionRouter(element.subs, menuList2 ? menuList2[0].children : menuList)
       }
     });
     return menuList
@@ -86,7 +104,7 @@ const Aside = () => {
     }
   };
   const onSelect = ({ item, key, keyPath, selectedKeys, domEvent }) => {
-    console.log({ item, key, keyPath, selectedKeys, domEvent }); 
+    console.log({ item, key, keyPath, selectedKeys, domEvent });
     navigate(key)
   }
   return (

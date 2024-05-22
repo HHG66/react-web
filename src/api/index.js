@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-05-21 08:50:24
+ * @LastEditTime: 2024-05-22 15:07:50
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明: 
@@ -57,9 +57,6 @@ request.interceptors.response.use(function (response) {
           type: "error",
           description:
             '请检查网络后重试，错误码（502）',
-          onClick: () => {
-            console.log('Notification Clicked!');
-          },
         });
         break;
       case 0:
@@ -68,9 +65,6 @@ request.interceptors.response.use(function (response) {
             message: '网络错误！',
             type: "error",
             description: "请检查网络连接",
-            onClick: () => {
-              console.log('Notification Clicked!');
-            },
           });
         }
         break;
@@ -112,9 +106,6 @@ function openMessage(processingMessage, processingDesc){
     message: processingMessage,
     type: "error",
     description: processingDesc,
-    onClick: () => {
-      console.log('Notification Clicked!');
-    },
   });
 }
 let showMessage=throttle(openMessage,500)

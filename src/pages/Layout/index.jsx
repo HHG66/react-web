@@ -1,11 +1,20 @@
 import { Outlet } from 'react-router-dom'
+import { lazy,Suspense } from 'react'
+import Loaddig from '@/components/Loaddig'
+
 // import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined,UserOutlined,} from '@ant-design/icons';
 import { Layout, theme } from 'antd';
-import Aside from '@/components/Aside'
-import Heade from '@/components/Heade';
+// import Aside from '@/components/Aside'
+// import Heade from '@/components/Heade';
+const Aside = lazy(() => import("@/components/Aside"));
+const Heade = lazy(() => import("@/components/Heade"));
 import './index.less'
 const { Content, Footer } = Layout;
-
+const lazyCompent=(element)=>{
+  return <Suspense fallback={<Loaddig></Loaddig>}>
+    {element}
+  </Suspense>
+}
 
 const Layouts = () => {
   return (
@@ -15,9 +24,9 @@ const Layouts = () => {
         height: '100%'
       }}
     >
-      <Aside />
+      {lazyCompent(<Aside />)}
       <Layout className="site-layout">
-        <Heade  />
+        {lazyCompent(<Heade  />)}
         <Content>
           <div
             className="site-layout-background"
