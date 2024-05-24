@@ -144,7 +144,7 @@ const IncometypeManagement = () => {
       <Modal
         title={open.title}
         className='lili'
-        bodyStyle={{ display: 'block' }}
+        styles={{ display: 'block' }}
         open={open.open}
         onOk={handleOk}
         cancelText="取消"

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-09 11:31:33
- * @LastEditTime: 2024-05-22 20:17:05
+ * @LastEditTime: 2024-05-23 14:39:09
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Heade.jsx
  * @文件说明: 
@@ -30,31 +30,22 @@ const Heade = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // getRouterInfo(Routers)
-
-  }, [])
-
-  useEffect(() => {
-    console.log(getRouterInfo(Routers[0].subs, pathname));
-    // debugger
+    setCurrentRoutingInfo(getRouterInfo(Routers[0].subs, pathname))
   }, [pathname])
+
   //根据当前路由获取路由表详细信息
   const getRouterInfo = (routers, pathname, currentRoutingInfo = [], currentParentId = null) => {
-    // let currentRoutingInfo = []
     if (routers.length == 0) return
-
     for (let index = 0; index < routers.length; index++) {
       const element = routers[index];
-      // console.log(element);
-      if (pathname.slice(1) == element.key) {
-        currentRoutingInfo.push({title:element.title,currentParentId})
+      if (pathname == element.key) {
+        currentRoutingInfo.unshift({ title: element.title })
         return currentRoutingInfo
       }
       if (element.subs) {
         let result = getRouterInfo(element.subs, pathname, currentRoutingInfo, element.key)
         if (result) {
-          currentRoutingInfo.push(element.title )
+          currentRoutingInfo.unshift({ title: element.title })
           return result
         }
       }
@@ -69,7 +60,6 @@ const Heade = () => {
     setOpen(true);
   }
   const personalInfo = () => {
-    // deleteInfo()
     dispatch(deleteInfo())
     setLocalStorage('Token', '')
     navigate('/login')

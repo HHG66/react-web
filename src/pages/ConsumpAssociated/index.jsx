@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:12
- * @LastEditTime: 2023-03-08 21:05:13
+ * @LastEditTime: 2024-05-23 15:40:19
  * @LastEditors: 韩宏广
- * @FilePath: /web/src/pages/ConsumpAssociated/index.js
+ * @FilePath: \financial-web\src\pages\ConsumpAssociated\index.jsx
  * @文件说明: 
  */
 import { Space, Table, Row, Col, Button, Form, Input, Modal, Select, message, Popconfirm } from 'antd';
@@ -219,17 +219,17 @@ const ConsumpAssociated = () => {
 
           </Form>
         </Col>
-        <Col span={3} lg={3} offset={22}>
-          {/* <Space> */}
-          <Button type="primary" onClick={() => showAssociatedBillnameModel()}>+ 新建</Button>
-          {/* <Button>设置</Button> */}
-          {/* </Space> */}
+        <Col span={3} lg={3} offset={21}>
+          <Space style={{ width: "100%", justifyContent: "end" }}>
+            <Button type="primary" onClick={() => showAssociatedBillnameModel()}>+ 新建</Button>
+            {/* <Button>设置</Button> */}
+          </Space>
         </Col>
       </Row>
       <Table columns={columns} dataSource={data} />
       <Modal
         title={title}
-        bodyStyle={{ display: 'block' }}
+        styles={{ display: 'block' }}
         open={showModal}
         onOk={handleOk}
         confirmLoading={confirmLoading}

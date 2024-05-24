@@ -184,7 +184,7 @@ const IncometypeAssociated = () => {
       <Modal
         title={model.title}
         className='lili'
-        bodyStyle={{ display: 'block' }}
+        styles={{ display: 'block' }}
         open={model.state}
         onOk={handleOk}
         cancelText="取消"

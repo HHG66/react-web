@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-05-22 16:33:17
+ * @LastEditTime: 2024-05-23 10:59:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明: 
@@ -39,43 +39,38 @@ const Aside = () => {
 
   useEffect(() => {
     // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
-    setRouterItem(recursionRouter([...Routers[0]['subs'],Routers[1]]))
+    setRouterItem(recursionRouter([...Routers[0]['subs'], Routers[1]]))
+
+    console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
   }, [])
   //递归处理路由表
-  function recursionRouter(routers, menuList2) {
+  function recursionRouter(routers) {
     var menuList = []
     routers.forEach(element => {
-      // console.log(element);
-      // if (element.key !== '/') {
-        
+      let newMenuList = {}
+      newMenuList['key'] = element.key
+      newMenuList['icon'] = element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : ''
+      newMenuList['label'] = element.title
+      newMenuList['children'] = element.subs
+      // if (menuList2) {
+      //   if (!menuList2[menuList2.length - 1].children) {
+      //     menuList2[menuList2.length - 1].children = []
+      //   }
+      //   menuList2[menuList2.length - 1]["children"].push(
+      //     { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
+      //   )
+      // } else {
+      //   menuList.push(
+      //     // { key: '1', icon: element.icon?<element.icon.name />:'', label: element.title }
+      //     { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
+      //   )
       // }
-      if (menuList2) {
-        if (!menuList2[menuList2.length - 1].children) {
-          menuList2[menuList2.length - 1].children = []
-        }
-        menuList2[menuList2.length - 1]["children"].push(
-          { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
-        )
-      } else {
-        menuList.push(
-          // { key: '1', icon: element.icon?<element.icon.name />:'', label: element.title }
-          { key: element.key, icon: element.icon ? <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon> : '', label: element.title }
-        )
+      if (newMenuList.children && Array.isArray(newMenuList.children)) {
+        newMenuList.children = recursionRouter(element.subs)
+      }else{
+        newMenuList.children = null
       }
-      if (element.subs) {
-        // if (!menuList[menuList.length - 1].children) {
-        //   menuList[menuList.length - 1].children = []
-        // }
-        // let nextList = []
-        // if (element.key == '/') {
-        //   nextList = [{
-        //     children:[]
-        //   }]
-        // } else {
-        //   nextList = 
-        // }
-        recursionRouter(element.subs, menuList2 ? menuList2[0].children : menuList)
-      }
+      menuList.push(newMenuList)
     });
     return menuList
   }

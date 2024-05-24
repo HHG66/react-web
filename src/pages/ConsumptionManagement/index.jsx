@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2023-02-16 09:10:25
+ * @LastEditTime: 2024-05-23 17:35:10
  * @LastEditors: 韩宏广
- * @FilePath: \financial\web\src\pages\ConsumptionManagement\index.js
+ * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明: 
  */
 import { Table, Form, Input, Row, Col, Button, Space, Modal, message, Popconfirm } from 'antd'
@@ -173,7 +173,6 @@ const ConsumptionManagement = () => {
 
   return (
     <>
-
       <Form name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -223,13 +222,13 @@ const ConsumptionManagement = () => {
           {/* </Space> */}
         </Col>
       </Row>
-
+      {/* <Outlet></Outlet> */}
       <Table dataSource={dataSource} columns={columns} />
-
+      {/* <Outlet></Outlet> */}
       <Modal
         title={open.title}
         className='lili'
-        bodyStyle={{ display: 'block' }}
+        styles={{ display: 'block' }}
         open={open.state}
         onOk={handleOk}
         confirmLoading={confirmLoading}
