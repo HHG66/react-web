@@ -11,7 +11,7 @@ const UserSlice = createSlice({
     addInfo: (state, action) => {
       // console.log(action);
       // console.log(action.payload.userinfo);
-      state.userInfo = action.payload.userinfo
+      state.userInfo = action.payload.userInfo
       state.Token = action.payload.token
     },
     getToken: (state, action) => {

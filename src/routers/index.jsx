@@ -4,7 +4,7 @@ import AssetStatistics from '@/pages/AssetStatistics'
 import SvgIcon from '@/components/Icon'
 import { lazy, Suspense } from 'react'
 import Loaddig from '@/components/Loaddig'
-import {  Outlet } from 'react-router-dom';  
+import { Outlet } from 'react-router-dom';
 //为什么这种方式报错
 // 在Suspense下不能存在同步加载组件
 import Layouts from '@/pages/Layout'
@@ -25,7 +25,7 @@ const Summary = lazy(() => import("@/pages/Summary"));
 const Liabilities = lazy(() => import("@/pages/Liabilities"));
 const DepositPlan = lazy(() => import("@/pages/DepositPlan"));
 const Login = lazy(() => import("@/pages/Login"));
-
+const FormTestPage = lazy(() => import('@/pages/FormTestPage'))
 const lazyCompent = (element) => {
   return <Suspense fallback={<Loaddig></Loaddig>}>
     {element}
@@ -65,7 +65,7 @@ const Routers = [
       },
       subs: [
         {
-          key: '/consumptiontype/management', title: '消费类型管理', component: lazyCompent(<ConsumptionManagement></ConsumptionManagement>), 
+          key: '/consumptiontype/management', title: '消费类型管理', component: lazyCompent(<ConsumptionManagement></ConsumptionManagement>),
         },
         { key: '/consumptiontype/management/associated', title: '关联账单消费名称', component: lazyCompent(<ConsumpAssociated></ConsumpAssociated>), },
       ],
@@ -170,36 +170,36 @@ const Routers = [
       component: lazyCompent(<AssetStatistics></AssetStatistics>),
       role: "8"
     },
-    //多层嵌套示例
-    // {
-    //   key: '/consumptiontype',
-    //   title: "消费类型",
-    //   icon: {
-    //     name: 'consumptiontype',
-    //     style: {
-    //       width: '20px',
-    //       height: "20px",
-    //       color: "white"
-    //     }
-    //   },
-    //   subs: [
-    //     {
-    //       //如果是多级嵌套，想要展示上一级，需要在上级添加路由出口组件<Outlet></Outlet>
-    //       key: '/consumptiontype/management', title: '消费类型管理', component: lazyCompent(<ConsumptionManagement></ConsumptionManagement>), 
-    //       subs: [
-    //         //对应得组件只会在父级最近存在Outlet入口得组件中展示本级
-    //         // key: 'management', title: '消费类型管理', 
-    //         // subs: [
-    //         {
-    //           key: '/consumptiontype/management/home1',
-    //           title: '首页11',
-    //           component: <div>123123</div>,
-    //         }
-    //       ]
-    //     },
-    //     { key: '/consumptiontype/management/associated', title: '关联账单消费名称', component: lazyCompent(<ConsumpAssociated></ConsumpAssociated>), },
-    //   ],
-    // },
+      //多层嵌套示例
+      // {
+      //   key: '/consumptiontype',
+      //   title: "消费类型",
+      //   icon: {
+      //     name: 'consumptiontype',
+      //     style: {
+      //       width: '20px',
+      //       height: "20px",
+      //       color: "white"
+      //     }
+      //   },
+      //   subs: [
+      //     {
+      //       //如果是多级嵌套，想要展示上一级，需要在上级添加路由出口组件<Outlet></Outlet>
+      //       key: '/consumptiontype/management', title: '消费类型管理', component: lazyCompent(<ConsumptionManagement></ConsumptionManagement>), 
+      //       subs: [
+      //         //对应得组件只会在父级最近存在Outlet入口得组件中展示本级
+      //         // key: 'management', title: '消费类型管理', 
+      //         // subs: [
+      //         {
+      //           key: '/consumptiontype/management/home1',
+      //           title: '首页11',
+      //           component: <div>123123</div>,
+      //         }
+      //       ]
+      //     },
+      //     { key: '/consumptiontype/management/associated', title: '关联账单消费名称', component: lazyCompent(<ConsumpAssociated></ConsumpAssociated>), },
+      //   ],
+      // },
     ]
   }, {
     key: "*",
@@ -209,6 +209,12 @@ const Routers = [
     key: "/login",
     title: '登录',
     component: lazyCompent(<Login></Login>),
+  },
+  //临时用于封装表单用
+  {
+    key: "/formtest",
+    title: '表单测试',
+    component: lazyCompent(<FormTestPage></FormTestPage>),
   },
 ]
 export default Routers

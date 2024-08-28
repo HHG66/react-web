@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-08-26 20:54:34
+ * @LastEditTime: 2024-08-28 16:54:36
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明: 
@@ -24,50 +24,58 @@ const HForm = (config) => {
 
 
   const components = {
-    input: (props) => (<Input placeholder="Basic usage" />),
-    select: (props) => (<Select
-      defaultValue="lucy"
-      // options={props.options}
-      options={
-        [{
-          value: 'jack',
-          label: 'Jack',
-        },
-        {
-          value: 'lucy',
-          label: 'Lucy',
-        }]
-      }
-    />)
+    input: (props) => {
+      console.log(props);
+      // return < Input placeholder={props.placeholder} prefix={ props.prefix ? props.prefix.icon : {}} />
+      return < Input   {...props} />
+    },
+    password: (props) => {
+      return <Input.Password {...props} />
+    },
+    button: (props) => {
+      let type = props.styletype || 'primary'
+      return <Button  {...props} type={type}>{props.text}</Button>
+    },
+    select: (props) => {
+      return (<Select
+        defaultValue=""
+        options={props.options}
+      />)
+    }
 
   }
 
   config.fields.map((field) => {
-    console.log(field);
-    console.log(components[field.type]);
     registerConfig.resister(field.type, components[field.type])
   })
   // createFormConfig()
   console.log("resister", registerConfig);
 
-
-  const formComponent = (field) => {
-    let Compontent = components[field.type] || (() => ("111"))
-    return <Compontent {...field}></Compontent>
-  }
+  // const formComponent = (field) => {
+  //   let Compontent = components[field.type] || (() => ("111"))
+  //   return <Compontent {...field}></Compontent>
+  // }
+  // const onFinish = (values) => {
+  //   console.log('Success:', values);
+  // };
   return (
     <>
       <Form style={{
         padding: 8,
-      }}>
+      }}
+      onFinish={config.onFinish}
+      // onFinish={onFinish}
+      >
         {
           config.fields.map((field) => {
-            return <FormItem key={field.name} label={field.label}>
+            return (
+              <FormItem key={field.name+field.type} label={field.label} name={field.name} {...field.item} >
               {/* <field.type ></field.type> */}
               {/* {formComponent(field)} */}
               {/* 注册表中获取 */}
-              {registerConfig.componentMap[field.type]()}
+              {registerConfig.componentMap[field.type](field)}
             </FormItem>
+            )
           })
         }
       </Form>

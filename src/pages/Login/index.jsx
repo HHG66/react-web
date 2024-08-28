@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { reqLogin } from '@/api/login'
+import { useLogin } from '@/api/login'
 import { setLocalStorage } from "@/utils"
 import {
   DownCircleOutlined
@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 // import { bindActionCreators } from 'redux'
 // import { actions } from '@/store/export.js'
 import { addInfo } from '@/store/reducers/User';
+import HForm from '../../components/hForm';
 const Login = () => {
   const navigate = useNavigate()
   const [loading, setloading] = useState(false)
@@ -21,22 +22,30 @@ const Login = () => {
   const dispatch = useDispatch()
   //redux原生方式，改成toolkit的方式了
   // const { addInfo } = bindActionCreators(actions, dispatch)
-  const onSubmit = values => {
+  const onSubmit1 = values => {
     setloading(true)
     // 请求登录
     const { username, password } = values
-    reqLogin(username, password).then((res) => {
-      setloading(false)
-      if (res.data.token) {
-        setLocalStorage("Token", res.data.token)
-        navigate('/home')
-        // addInfo(res.data) 
-        // dispatch('addInfo')
-        dispatch(addInfo(res.data))
-      }
-    }).catch(res=>{
-      setloading(false)
-    })
+    // let test=  reqLogin(username, password).then((res) => {
+    //     setloading(false)
+    //     if (res.data.token) {
+    //       setLocalStorage("Token", res.data.token)
+    //       navigate('/home')
+    //       // addInfo(res.data) 
+    //       // dispatch('addInfo')
+    //       debugger
+    //       dispatch(addInfo(res.data))
+    //     }
+    //   }).catch(res => {
+    //     setloading(false)
+    //   })
+    let data= useLogin(username, password)
+    if (data.data.token) {
+      setLocalStorage("Token", res.data.token)
+      navigate('/home')
+      dispatch(addInfo(res.data))
+      debugger
+    }
   }
   // 自定义验证密码
   const validatorPwd = async (_, value) => {
@@ -46,12 +55,61 @@ const Login = () => {
       return Promise.reject(new Error('密码长度不能小于4位!'))
     } else if (value.length > 16) {
       return Promise.reject(new Error('密码长度不能大于16位!'))
-    } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-      return Promise.reject(new Error('密码必须是英文、数字、下划线组成!'))
+    } else if (!/^[a-zA-Z0-9_.]+$/.test(value)) {
+      return Promise.reject(new Error('密码必须是英文或数字、下划线、符号.组成!'))
     } else {
       return Promise.resolve()
     }
   }
+  const onFinish = (values) => {
+    onSubmit1(values)
+  };
+
+  const [formConfig, SetFormConfig] = useState({
+    fields: [{
+      name: "username",
+      type: "input",
+      placeholder: "请输入用户名",
+      prefix: <UserOutlined style={{
+        color: 'rgba(0,0,0,.25)',
+      }}></UserOutlined>,
+      //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+      item: {
+        rules: [
+          { required: true, message: '请输入用户名' },
+        ]
+      }
+    }, {
+      name: "password",
+      type: "password",
+      placeholder: "请输入密码",
+      prefix: <LockOutlined
+        className="site-form-item-icon"
+        style={{ color: 'rgba(0,0,0,0.25)' }}
+      />,
+      item: {
+        rules: [
+          // { required: true, message: '请输入密码' },
+          {
+            validator: validatorPwd
+          }
+        ]
+      }
+    }, {
+      // name: "submit",
+      type: "button",
+      styletype: "dashed",
+      text: "提交",
+      className: "login-form-button login-btn",
+      htmlType: "submit",
+      item: {
+        labelAlign: "right",
+        className: 'login-button-item'
+      }
+    }
+    ]
+  })
+
   return (
     <>
       <div className="login">
@@ -64,7 +122,8 @@ const Login = () => {
             </header>
             <section className="login_content">
               {/* <h2>用户登录</h2> */}
-              <Form
+              <HForm  {...formConfig} onFinish={onFinish}></HForm>
+              {/* <Form
                 name="normal_login"
                 className="login-form"
                 onFinish={onSubmit}
@@ -72,12 +131,12 @@ const Login = () => {
                 <Form.Item
                   name="username"
                   validateTrigger="onChange"
-                  initialValue="admin"
+                  // initialValue="admin"
                   rules={[
                     { required: true, message: '请输入用户名!' },
                     { min: 4, message: '用户名最少4位!' },
                     { max: 12, message: '用户名最多12位!' },
-                    { pattern: /^[0-9a-zA-Z_]{1,}$/, message: '用户名必须是英文、数字、下划线组成!' }
+                    { pattern: /^[0-9a-zA-Z_]{1,}$/, message: '用户名必须是英文、数字、下划线、组成!' }
                   ]}
                 >
                   <Input
@@ -116,7 +175,7 @@ const Login = () => {
                     登录
                   </Button>
                 </Form.Item>
-              </Form>
+              </Form> */}
             </section>
             <div className="footer">
               {/* <svg aria-hidden="true" className="svg-icon">

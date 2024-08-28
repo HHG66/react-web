@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-05-23 17:35:10
+ * @LastEditTime: 2024-08-28 19:03:26
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明: 
@@ -198,7 +198,7 @@ const ConsumptionManagement = () => {
                 <Button type="primary" htmlType="submit">查询</Button>
                 <Button onClick={onReset}>重置</Button>
                 {/* 链接纯粹为了一个样式 */}
-                <div onClick={showHideSearch}>
+                {/* <div onClick={showHideSearch}>
                   <div>
                     <a href='##'>
                       <Space>
@@ -207,7 +207,7 @@ const ConsumptionManagement = () => {
                       </Space>
                     </a>
                   </div>
-                </div>
+                </div> */}
               </Space>
             </Form.Item>
           </Col>

@@ -1,21 +1,34 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 16:06:24
- * @LastEditTime: 2022-09-16 14:54:17
+ * @LastEditTime: 2024-08-28 20:48:45
  * @LastEditors: 韩宏广
- * @FilePath: \my-financial\web\src\api\login.js
+ * @FilePath: \financial-web\src\api\login.js
  * @文件说明: 
  */
-import request from "./index";
+import useFetch from "./index";
 
 
-export function reqLogin(username,password){
-   return  request({
-      url:'/login',
-      method:'POST',
-      data:{
-        username:username,
-        password:password
-      }
-    }) 
+// export async function reqLogin(username, password) {
+//   let data = await request({
+//     url: '/login',
+//     method: 'POST',
+//     data: {
+//       username: username,
+//       password: password
+//     }
+//   })
+//   return {
+//     data
+//   }
+
+// }
+
+export function useLogin(username, password) {
+  const [loginData, loginError, loginLoading] = useFetch('/login', {
+    method: 'POST',
+    data: { username, password },
+  });
+
+  return { loginData, loginError, loginLoading };
 }
