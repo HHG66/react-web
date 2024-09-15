@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-08-28 20:49:23
+ * @LastEditTime: 2024-09-14 12:02:37
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明: 
@@ -113,24 +113,27 @@ import { throttle } from '@/utils/index.js'
 
 import { useState, useEffect } from 'react';
 
-export default function useFetch(url, options = {}) {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    axios(url, options)
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [url, JSON.stringify(options)]);
-
-  return { data, error, loading };
+// import { useState, useEffect } from 'react';  
+// import axios from 'axios';  
+  
+export default function useFetch(url, options = {}) {  
+  const [data, setData] = useState(null);  
+  const [error, setError] = useState(null);  
+  const [loading, setLoading] = useState(false);  
+  
+  useEffect(() => {  
+    setLoading(true);  
+    axios(url, options)  
+      .then(response => {  
+        setData(response.data);  
+      })  
+      .catch(error => {  
+        setError(error);  
+      })  
+      .finally(() => {  
+        setLoading(false);  
+      });  
+  }, [url, options]); // 直接使用 options 对象作为依赖项  
+  
+  return { data, error, loading };  
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-08-28 16:54:36
+ * @LastEditTime: 2024-09-14 15:08:11
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明: 
@@ -9,6 +9,7 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import registerConfig from './register.jsx'
+import { useEffect } from 'react'
 const HForm = (config) => {
   console.log(config);
   // console.log('HForm');
@@ -44,13 +45,20 @@ const HForm = (config) => {
     }
 
   }
+  // useEffect(() => {
+  //   config.fields.map((field) => {
+  //     registerConfig.resister(field.type, components[field.type])
+  //   })
+  //   // createFormConfig()
+  //   console.log("resister", registerConfig);
+
+  // }, [config])
 
   config.fields.map((field) => {
     registerConfig.resister(field.type, components[field.type])
   })
   // createFormConfig()
   console.log("resister", registerConfig);
-
   // const formComponent = (field) => {
   //   let Compontent = components[field.type] || (() => ("111"))
   //   return <Compontent {...field}></Compontent>
@@ -63,18 +71,18 @@ const HForm = (config) => {
       <Form style={{
         padding: 8,
       }}
-      onFinish={config.onFinish}
+        onFinish={config.onFinish}
       // onFinish={onFinish}
       >
         {
           config.fields.map((field) => {
             return (
-              <FormItem key={field.name+field.type} label={field.label} name={field.name} {...field.item} >
-              {/* <field.type ></field.type> */}
-              {/* {formComponent(field)} */}
-              {/* 注册表中获取 */}
-              {registerConfig.componentMap[field.type](field)}
-            </FormItem>
+              <FormItem key={field.name + field.type} label={field.label} name={field.name} {...field.item} >
+                {/* <field.type ></field.type> */}
+                {/* {formComponent(field)} */}
+                {/* 注册表中获取 */}
+                {registerConfig.componentMap[field.type](field)}
+              </FormItem>
             )
           })
         }

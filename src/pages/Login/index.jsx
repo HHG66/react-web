@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useLogin } from '@/api/login'
 import { setLocalStorage } from "@/utils"
+import useFetch from "@/api/index.js";
+
 import {
   DownCircleOutlined
 } from '@ant-design/icons';
@@ -18,7 +20,21 @@ const Login = () => {
   const navigate = useNavigate()
   const [loading, setloading] = useState(false)
   // const state = useSelector((state => state))
-  // const [states,setState]=useState(state)
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  })
+
+  useEffect(() => {
+    console.log(formData);
+
+  }, [formData])
+  // let { data } = useFetch('/login', {
+  //   method: 'POST',
+  //   data: { username: "formData.username", password: "formData.password" },
+  // });
+  // console.log(data);
+
   const dispatch = useDispatch()
   //redux原生方式，改成toolkit的方式了
   // const { addInfo } = bindActionCreators(actions, dispatch)
@@ -26,27 +42,10 @@ const Login = () => {
     setloading(true)
     // 请求登录
     const { username, password } = values
-    // let test=  reqLogin(username, password).then((res) => {
-    //     setloading(false)
-    //     if (res.data.token) {
-    //       setLocalStorage("Token", res.data.token)
-    //       navigate('/home')
-    //       // addInfo(res.data) 
-    //       // dispatch('addInfo')
-    //       debugger
-    //       dispatch(addInfo(res.data))
-    //     }
-    //   }).catch(res => {
-    //     setloading(false)
-    //   })
-    let data= useLogin(username, password)
-    if (data.data.token) {
-      setLocalStorage("Token", res.data.token)
-      navigate('/home')
-      dispatch(addInfo(res.data))
-      debugger
-    }
   }
+
+
+
   // 自定义验证密码
   const validatorPwd = async (_, value) => {
     if (!value) {
@@ -61,8 +60,8 @@ const Login = () => {
       return Promise.resolve()
     }
   }
-  const onFinish = (values) => {
-    onSubmit1(values)
+  const onFinishs = (values) => {
+    setFormData(values)
   };
 
   const [formConfig, SetFormConfig] = useState({
@@ -122,7 +121,7 @@ const Login = () => {
             </header>
             <section className="login_content">
               {/* <h2>用户登录</h2> */}
-              <HForm  {...formConfig} onFinish={onFinish}></HForm>
+              <HForm  {...formConfig} onFinish={onFinishs}></HForm>
               {/* <Form
                 name="normal_login"
                 className="login-form"
