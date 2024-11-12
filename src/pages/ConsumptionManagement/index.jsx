@@ -7,7 +7,7 @@
  * @文件说明: 
  */
 import { Table, Form, Input, Row, Col, Button, Space, Modal, message, Popconfirm } from 'antd'
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+// import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { getConsumptionTypeListApi, newConsumptionType, editConsumptionTypeApi, deleteConsumptiontypeApi } from '@/api/consumptiontype'
 import { useEffect, useState } from 'react';
 import './index.less'
@@ -91,13 +91,13 @@ const ConsumptionManagement = () => {
     });
   };
 
-  const showHideSearch = () => {
-    if (formSearch === true) {
-      setFormSearch(false)
-    } else {
-      setFormSearch(true)
-    }
-  }
+  // const showHideSearch = () => {
+  //   if (formSearch === true) {
+  //     setFormSearch(false)
+  //   } else {
+  //     setFormSearch(true)
+  //   }
+  // }
 
   //对话框
   const showModal = () => {

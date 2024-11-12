@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-10-14 15:09:34
+ * @LastEditTime: 2024-11-12 19:59:25
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明: 
@@ -36,8 +36,8 @@ request.interceptors.response.use(function (response) {
     return response.data
   } else if (response.data.code === "1") {
     //当结果不正确的时候 ，或者其他情况下，返回结果需要提示就将desc返回成error，这个提示是固定的
-    message.error(response.data.error);
-    return response.data
+    message.error(response.data.error);  
+    return response.data          
   }
 }, function (error) {
   console.log(error);

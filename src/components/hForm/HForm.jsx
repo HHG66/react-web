@@ -1,15 +1,15 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-09-14 15:08:11
+ * @LastEditTime: 2024-11-12 20:10:39
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明: 
  */
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
-import registerConfig from './register.jsx'
-import { useEffect } from 'react'
+import registerConfig from './register.jsx' 
+import { useEffect } from 'react'  
 const HForm = (config) => {
   console.log(config);
   // console.log('HForm');

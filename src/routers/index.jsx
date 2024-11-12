@@ -2,7 +2,7 @@
 
 import AssetStatistics from '@/pages/AssetStatistics'
 import SvgIcon from '@/components/Icon'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'  
 import Loaddig from '@/components/Loaddig'
 import { Outlet } from 'react-router-dom';
 //为什么这种方式报错
