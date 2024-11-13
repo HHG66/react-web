@@ -1,33 +1,33 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-11-12 20:34:42
+ * @LastEditTime: 2024-11-13 10:56:33
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明:
  */
-import { Layout, Menu } from "antd";
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import Routers from "@/routers";
+import { Layout, Menu } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import Routers from '@/routers';
 // import { setLocalStorage, getLocalStorage } from '@/utils'
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
 const rootSubmenuKeys = [
-  "/consumptiontype",
-  "/incometype",
-  "/balancepayments",
-  "/investmentmanagement",
-  "/checkInformation",
+  '/consumptiontype',
+  '/incometype',
+  '/balancepayments',
+  '/investmentmanagement',
+  '/checkInformation',
 ];
-import SvgIcon from "./SvgIcon";
+import SvgIcon from './SvgIcon';
 
 const Aside = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [routerItem, setRouterItem] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
-  const [selectedKeys, setselectedKeys] = useState([""]);
+  const [selectedKeys, setselectedKeys] = useState(['']);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -44,23 +44,23 @@ const Aside = () => {
 
   useEffect(() => {
     // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
-    setRouterItem(recursionRouter([...Routers[0]["subs"], Routers[1]]));
+    setRouterItem(recursionRouter([...Routers[0]['subs'], Routers[1]]));
 
-    console.log(recursionRouter([...Routers[0]["subs"], Routers[1]]));
+    console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
   }, []);
   //递归处理路由表
   function recursionRouter(routers) {
     var menuList = [];
     routers.forEach((element) => {
       let newMenuList = {};
-      newMenuList["key"] = element.key;
-      newMenuList["icon"] = element.icon ? (
+      newMenuList['key'] = element.key;
+      newMenuList['icon'] = element.icon ? (
         <SvgIcon name={element.icon.name} style={element.icon.style}></SvgIcon>
       ) : (
-        ""
+        ''
       );
-      newMenuList["label"] = element.title;
-      newMenuList["children"] = element.subs;
+      newMenuList['label'] = element.title;
+      newMenuList['children'] = element.subs;
       // if (menuList2) {
       //   if (!menuList2[menuList2.length - 1].children) {
       //     menuList2[menuList2.length - 1].children = []
@@ -91,7 +91,7 @@ const Aside = () => {
 
   //这个地方是只展开一个父级菜单，onOpenChange只在打开有子级导航的时候,以及收回侧边栏会触发。
   const onOpenChange = (keys) => {
-    console.log("执行了子菜单收回");
+    console.log('执行了子菜单收回');
     // console.log(keys);
     // console.log(openKeys);
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -119,12 +119,12 @@ const Aside = () => {
         onCollapse={(value) => {
           setCollapsed(value);
         }}
-        style={{ display: "block" }}
+        style={{ display: 'block' }}
       >
         {/* <div className="logo" > </div> */}
         <Menu
           theme="dark"
-          defaultSelectedKeys={"/home"}
+          defaultSelectedKeys={'/home'}
           mode="inline"
           items={routerItem}
           onSelect={onSelect}

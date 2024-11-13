@@ -1,10 +1,36 @@
-import React, { useState } from 'react';
-import HForm from '@/components/hForm/index.jsx';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+# HForm表单
 
-const Home = () => {
+封装Ant Design of React表单组件，原来表单所有的api支持
+
+API
+
+基本使用引入，在jsx中：
+
+```jsx
+<HForm formConfig={formConfig}></HForm>
+```
+
+Form
+
+| 参数    | 说明                 | 类型  | 默认值 | 备注                  |
+| ------- | -------------------- | ----- | ------ | --------------------- |
+| columns | 表单项，配置formItem | array | []     | 具体参考prop中columns |
+|         |                      |       |        |                       |
+|         |                      |       |        |                       |
+
+Form.Item
+
+| 参数        | 说明         | 类型                    | 默认值 | 备注                     |
+| ----------- | ------------ | ----------------------- | ------ | ------------------------ |
+| name        | 字段名       | string                  | -      | 必填                     |
+| type        | 表单类型     | input、button、password | -      | 必填，对应antd表单组件   |
+| placeholder | 提示占位信息 | string                  | -      | 非必填，可用的组件中有效 |
+
+
+
+```react
   const [formConfig, SetFormConfig] = useState({
-    columns: [
+    fields: [
       {
         name: 'username',
         type: 'input',
@@ -31,25 +57,17 @@ const Home = () => {
             style={{ color: 'rgba(0,0,0,0.25)' }}
           />
         ),
-        validateTrigger: 'onBlur',
         item: {
           rules: [
             // { required: true, message: '请输入密码' },
             {
-              validator: (rule, value) => {
-                if (
-                  typeof Number(value) === 'number' &&
-                  !isNaN(Number(value))
-                ) {
-                  return Promise.reject(new Error('请输入复杂密码'));
-                }
-              },
+              validator: validatorPwd,
             },
           ],
         },
       },
       {
-        name: 'submit',
+        // name: "submit",
         type: 'button',
         styletype: 'dashed',
         text: '提交',
@@ -62,14 +80,5 @@ const Home = () => {
       },
     ],
   });
-  let onFinish = (forData) => {
-    console.log(forData);
-  };
-  return (
-    <>
-      <h2>系统帮助自己处理复杂繁琐的账单</h2>
-      <HForm {...formConfig} onFinish={onFinish}></HForm>
-    </>
-  );
-};
-export default Home;
+```
+
