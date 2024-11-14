@@ -21,5 +21,6 @@ module.exports = {
     'no-trailing-spaces': ['error', { 'ignoreComments': true }],
     'eqeqeq': ["error", 'always'], // 要求使用 === 和 !==
     "no-unused-vars": "warn",
+    "no-debugger":'off'
   },
 }

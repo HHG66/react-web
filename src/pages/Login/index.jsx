@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useLogin } from '@/api/login';
+import { login } from '@/api/login';
 import { setLocalStorage } from '@/utils';
 import useFetch from '@/api/index.js';
 
@@ -12,7 +12,7 @@ import './index2.less';
 import { useDispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux'
 // import { actions } from '@/store/export.js'
-import { addInfo } from '@/store/reducers/User';
+import { addInfo, getToken } from '@/store/reducers/User';
 import HForm from '../../components/hForm';
 const Login = () => {
   const navigate = useNavigate();
@@ -35,11 +35,6 @@ const Login = () => {
   const dispatch = useDispatch();
   //redux原生方式，改成toolkit的方式了
   // const { addInfo } = bindActionCreators(actions, dispatch)
-  const onSubmit1 = (values) => {
-    setloading(true);
-    // 请求登录
-    const { username, password } = values;
-  };
 
   // 自定义验证密码
   const validatorPwd = async (_, value) => {
@@ -57,8 +52,13 @@ const Login = () => {
       return Promise.resolve();
     }
   };
-  const onFinishs = (values) => {
-    setFormData(values);
+
+  const onFinish = async (values) => {
+    let res = await login(values);
+    console.log(addInfo);
+    dispatch(addInfo(res)); // 派发 addInfo action
+
+    // console.log(dispatch(getToken()));
   };
 
   const [formConfig, SetFormConfig] = useState({
@@ -125,7 +125,7 @@ const Login = () => {
             </header>
             <section className="login_content">
               {/* <h2>用户登录</h2> */}
-              <HForm {...formConfig} onFinish={onFinishs}></HForm>
+              <HForm {...formConfig} onFinish={onFinish}></HForm>
               {/* <Form
                 name="normal_login"
                 className="login-form"

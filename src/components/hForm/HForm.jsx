@@ -57,7 +57,7 @@ const HForm = ({ columns, onFinish }) => {
     return (
       <FormItem key={props.name + props.type}>
         <Button {...props} type={styletype} htmlType={props.htmlType}>
-          Submit
+          {props.text}
         </Button>
       </FormItem>
     );

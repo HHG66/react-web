@@ -1,24 +1,24 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-19 22:50:31
- * @LastEditTime: 2022-12-19 09:57:49
+ * @LastEditTime: 2024-11-14 20:32:59
  * @LastEditors: 韩宏广
- * @FilePath: \my-financial\web\src\store\index.js
- * @文件说明: 
+ * @FilePath: \financial-web\src\store\index.js
+ * @文件说明:
  */
-import { combineReducers } from "redux"
-import { persistStore, persistReducer } from 'redux-persist'
+import { combineReducers } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
 // import storage from 'redux-persist/lib/storage'
 // import redecers from "./reducers/index"
 // import thunk from "redux-thunk"
 //toolkit
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore } from '@reduxjs/toolkit';
 
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
-import UserReducer from "./reducers/User"
-import TestReducer from "./reducers/Test"
+import UserReducer from './reducers/User';
+import TestReducer from './reducers/Test';
 
 // const persistConfig = {
 //   key: 'root',
@@ -44,25 +44,25 @@ import TestReducer from "./reducers/Test"
 const persistConfig = {
   key: 'redux',
   storage: storage,
-  stateReconciler: autoMergeLevel2
-}
+  stateReconciler: autoMergeLevel2,
+};
 
 const rootReducer = combineReducers({
   UserReducer,
-  TestReducer
+  TestReducer,
 });
-const PersistedReducer = persistReducer(persistConfig, rootReducer)
+const PersistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: {
     Store: PersistedReducer,
-   //如果不需要缓冲，就把reducer放到这里
+    //如果不需要缓冲，就把reducer放到这里
   },
-  middleware: getDefaultMiddleware => {
+  middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
-      serializableCheck: false
+      serializableCheck: false,
     });
   },
-})
+});
 
 // export const store = createStore(
 //   persistedReducer,
@@ -70,7 +70,4 @@ export const store = configureStore({
 //   ),//插件调试，未安装会报错
 // )
 
-export const persistor = persistStore(store)
-
-
-
+export const persistor = persistStore(store);

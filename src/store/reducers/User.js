@@ -1,28 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const UserSlice = createSlice({
-  name: "userinfo",
+  name: 'userinfo',
   //初始状态
   initialState: {
     userInfo: {},
-    Token: ''
+    Token: '',
   },
   reducers: {
     addInfo: (state, action) => {
-      // console.log(action);
-      // console.log(action.payload.userinfo);
-      state.userInfo = action.payload.userInfo
-      state.Token = action.payload.token
+      console.log(action);
+      console.log(action.payload.userInfo);
+      state.userInfo = action.payload.userInfo;
+      state.Token = action.payload.token;
+      debugger;
     },
     getToken: (state, action) => {
-      return state.Token
+      return state.Token;
     },
     deleteInfo: (state, action) => {
-      state.userInfo = ''
-      state.Token = ''
-    }
-  }
-})
+      state.userInfo = '';
+      state.Token = '';
+    },
+  },
+});
 
-export const { addInfo,getToken,deleteInfo} = UserSlice.actions
-export default UserSlice.reducer
+export const { addInfo, getToken, deleteInfo } = UserSlice.actions;
+export default UserSlice.reducer;
