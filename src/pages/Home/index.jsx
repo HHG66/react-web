@@ -43,6 +43,7 @@ const Home = () => {
                 ) {
                   return Promise.reject(new Error('请输入复杂密码'));
                 }
+                return Promise.resolve();
               },
             },
           ],
@@ -54,10 +55,13 @@ const Home = () => {
         styletype: 'dashed',
         text: '提交',
         className: 'login-form-button login-btn',
-        htmlType: 'submit',
+        // htmlType: 'submit',
         item: {
           labelAlign: 'right',
           className: 'login-button-item',
+        },
+        onClick: () => {
+          console.log('111');
         },
       },
     ],

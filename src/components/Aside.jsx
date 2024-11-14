@@ -46,7 +46,7 @@ const Aside = () => {
     // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
     setRouterItem(recursionRouter([...Routers[0]['subs'], Routers[1]]));
 
-    console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
+    // console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
   }, []);
   //递归处理路由表
   function recursionRouter(routers) {
