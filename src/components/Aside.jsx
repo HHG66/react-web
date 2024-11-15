@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-11-13 10:56:33
+ * @LastEditTime: 2024-11-15 11:01:07
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明:
@@ -39,7 +39,7 @@ const Aside = () => {
     //   setLocalStorage("asideInfo", store.userInfo)
     //   return store.userInfo
     // }
-    return store.Store.UserReducer.userInfo;
+    return store.UserReducer.userInfo;
   });
 
   useEffect(() => {

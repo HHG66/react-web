@@ -1,13 +1,13 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-19 22:50:31
- * @LastEditTime: 2024-11-14 20:32:59
+ * @LastEditTime: 2024-11-15 11:10:53
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\store\index.js
  * @文件说明:
  */
 import { combineReducers } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, createTransform } from 'redux-persist';
 // import storage from 'redux-persist/lib/storage'
 // import redecers from "./reducers/index"
 // import thunk from "redux-thunk"
@@ -39,7 +39,6 @@ import TestReducer from './reducers/Test';
 //   ),//插件调试，未安装会报错
 // )
 // export const persistor = persistStore(store)
-
 //redux-toolkit
 const persistConfig = {
   key: 'redux',
@@ -51,15 +50,17 @@ const rootReducer = combineReducers({
   UserReducer,
   TestReducer,
 });
+// 包裹 reducer 以使其支持持久化
 const PersistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
-  reducer: {
-    Store: PersistedReducer,
-    //如果不需要缓冲，就把reducer放到这里
-  },
+  // reducer: {
+  //   Store: PersistedReducer,
+  //   //如果不需要缓冲，就把reducer放到这里
+  // },
+  reducer: PersistedReducer, // 配置为持久化的 reducer
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: false, // 禁用序列化检查，解决 redux-persist 报错问题
     });
   },
 });

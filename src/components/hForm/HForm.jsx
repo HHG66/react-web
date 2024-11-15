@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-11-14 11:29:52
+ * @LastEditTime: 2024-11-15 10:49:19
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明:
@@ -18,8 +18,8 @@ const HForm = ({ columns, onFinish }) => {
   const [formColumns, serColumns] = useState([]);
 
   useEffect(() => {
-    console.log('表单初始化渲染');
-    console.log(columns);
+    // console.log('表单初始化渲染');
+    // console.log(columns);
     if (columns) {
       serColumns(columns);
     }
@@ -92,6 +92,7 @@ const HForm = ({ columns, onFinish }) => {
     item: PropTypes.any,
     styletype: PropTypes.any,
     htmlType: PropTypes.any,
+    text: PropTypes.isRequired,
   };
 
   SelectComponent.propTypes = {

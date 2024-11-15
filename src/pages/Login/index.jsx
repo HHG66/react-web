@@ -7,12 +7,13 @@ import { setLocalStorage } from '@/utils';
 import useFetch from '@/api/index.js';
 
 import { DownCircleOutlined } from '@ant-design/icons';
+
 // import './index.less'
 import './index2.less';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // import { bindActionCreators } from 'redux'
 // import { actions } from '@/store/export.js'
-import { addInfo, getToken } from '@/store/reducers/User';
+import { addInfo } from '@/store/reducers/User';
 import HForm from '../../components/hForm';
 const Login = () => {
   const navigate = useNavigate();
@@ -55,9 +56,9 @@ const Login = () => {
 
   const onFinish = async (values) => {
     let res = await login(values);
-    console.log(addInfo);
+    if (!res) return;
     dispatch(addInfo(res)); // 派发 addInfo action
-
+    navigate('/home');
     // console.log(dispatch(getToken()));
   };
 

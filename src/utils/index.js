@@ -4,26 +4,37 @@
  * @LastEditTime: 2024-05-21 08:50:06
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\utils\index.js
- * @文件说明: 
+ * @文件说明:
  */
 
 //取localstorage
 export function getLocalStorage(key) {
   // return window.localStorage.getItem(key)
-  return JSON.parse(window.localStorage.getItem(key))
+  try {
+    return JSON.parse(window.localStorage.getItem(key));
+  } catch (error) {
+    return window.localStorage.getItem(key);
+  }
 }
 //存localstorage
 export function setLocalStorage(key, value) {
-  return window.localStorage.setItem(key, JSON.stringify(value))
+  return window.localStorage.setItem(key, JSON.stringify(value));
 }
 /**
  * @description: 日期格式化,后面使用moment的库，提供此方法
- * @param {*} date 
+ * @param {*} date
  * @return {String} YYYY-HH-DD
  */
 export function formatDate(date) {
-  var date1 = new Date(date)
-  return date1.getFullYear() + '-' + (date1.getMonth() + 1) + '-' + date1.getDate() + ''
+  var date1 = new Date(date);
+  return (
+    date1.getFullYear() +
+    '-' +
+    (date1.getMonth() + 1) +
+    '-' +
+    date1.getDate() +
+    ''
+  );
 }
 /**
  * @description: 日期格式化为年月日
@@ -32,8 +43,15 @@ export function formatDate(date) {
  * @return {*}
  */
 export function formatDateStandard(date) {
-  var date2 = new Date(date)
-  return date2.getFullYear() + '年' + (date2.getMonth() + 1) + '月' + date2.getDate() + '日'
+  var date2 = new Date(date);
+  return (
+    date2.getFullYear() +
+    '年' +
+    (date2.getMonth() + 1) +
+    '月' +
+    date2.getDate() +
+    '日'
+  );
 }
 /**
  * @description: 判断是否为邮箱
@@ -41,7 +59,7 @@ export function formatDateStandard(date) {
  * @return {*}
  */
 export function isEmail(str) {
-  return /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(str)
+  return /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(str);
 }
 
 /**
@@ -49,7 +67,9 @@ export function isEmail(str) {
  * @param {number} num
  */
 export function toThousandFilter(num) {
-  return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+  return (+num || 0)
+    .toString()
+    .replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','));
 }
 
 /**
@@ -62,15 +82,15 @@ export function toThousandFilter(num) {
 
 export function formatSinaStock(string) {
   // console.log(string.split(','));
-  let sineInfo = string.split(',')
+  let sineInfo = string.split(',');
   return {
-    'name': sineInfo[0], //名字
-    'todayPrice': sineInfo[1],
-    'yesterdayclosingPrice': sineInfo[2],
-    'currentPrice': sineInfo[3],
-    'date': sineInfo[30],
-    'time': sineInfo[31],
-  }
+    name: sineInfo[0], //名字
+    todayPrice: sineInfo[1],
+    yesterdayclosingPrice: sineInfo[2],
+    currentPrice: sineInfo[3],
+    date: sineInfo[30],
+    time: sineInfo[31],
+  };
 }
 /**
  * @description: 防抖函数
@@ -79,30 +99,29 @@ export function formatSinaStock(string) {
  * @author: 韩宏广
  */
 export function debounce(func, delay) {
-  let timeout
+  let timeout;
   return function () {
-    const _this = this
-    const args = [...arguments]
+    const _this = this;
+    const args = [...arguments];
     if (timeout) {
-      clearTimeout(timeout)
+      clearTimeout(timeout);
     }
     timeout = setTimeout(() => {
-      func.apply(_this, args)
-    }, delay)
-  }
+      func.apply(_this, args);
+    }, delay);
+  };
 }
 
-export  function throttle(func, wait) {
+export function throttle(func, wait) {
   let timeout;
-  return function() {
-      let context = this;
-      let args = arguments;
-      if (!timeout) {
-          timeout = setTimeout(() => {
-              timeout = null;
-              func.apply(context, args)
-          }, wait)
-      }
-
-  }
+  return function () {
+    let context = this;
+    let args = arguments;
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        timeout = null;
+        func.apply(context, args);
+      }, wait);
+    }
+  };
 }
