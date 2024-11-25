@@ -79,11 +79,11 @@ const Routers = [
               <ConsumptionManagement></ConsumptionManagement>
             ),
           },
-          {
-            key: '/consumptiontype/management/associated',
-            title: '关联账单消费名称',
-            component: lazyCompent(<ConsumpAssociated></ConsumpAssociated>),
-          },
+          // {
+          //   key: '/consumptiontype/management/associated',
+          //   title: '关联账单消费名称',
+          //   component: lazyCompent(<ConsumpAssociated></ConsumpAssociated>),
+          // },
         ],
       },
       {

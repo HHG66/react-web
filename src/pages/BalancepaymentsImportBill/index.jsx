@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2024-11-17 16:25:08
+ * @LastEditTime: 2024-11-22 14:15:40
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
@@ -30,6 +30,7 @@ import {
   getinportbillinfoApi,
 } from '@/api/balancepayments';
 import './index.less';
+import moment from 'moment';
 // export class BalancepaymentsImportBill extends Component {
 //   render() {
 //     return (
@@ -45,68 +46,68 @@ const BalancepaymentsImportBill = () => {
   const [columns, setColumns] = useState([
     {
       title: '交易时间',
-      dataIndex: '交易时间',
-      key: '交易时间',
+      dataIndex: 'tradinghours',
+      key: 'tradinghours',
       width: 200,
     },
     {
       title: '交易类型',
-      dataIndex: '交易类型',
-      key: '交易类型',
+      dataIndex: 'tradetype',
+      key: 'tradetype',
       width: 100,
     },
     {
       title: '交易对方',
-      dataIndex: '交易对方',
-      key: '交易对方',
+      dataIndex: 'counterparty',
+      key: 'counterparty',
       width: 150,
     },
     {
       title: '商品',
-      dataIndex: '商品',
-      key: '商品',
+      dataIndex: 'product',
+      key: 'product',
       width: 200,
     },
     {
       title: '收/支',
-      dataIndex: '收/支',
-      key: '收/支',
+      dataIndex: 'collectorbranch',
+      key: 'collectorbranch',
       width: 80,
     },
     {
       title: '金额(元)',
-      dataIndex: '金额(元)',
-      key: '金额(元)',
+      dataIndex: 'amount',
+      key: 'amount',
       width: 100,
     },
     {
       title: '支付方式',
-      dataIndex: '支付方式',
-      key: '支付方式',
+      dataIndex: 'patternpayment',
+      key: 'patternpayment',
       width: 100,
     },
     {
       title: '当前状态',
-      dataIndex: '当前状态',
-      key: '当前状态',
+      dataIndex: 'currentstate',
+      key: 'currentstate',
       width: 100,
     },
     {
       title: '交易单号',
-      dataIndex: '交易单号',
-      key: '交易单号',
+      dataIndex: 'trasactionid',
+      key: 'trasactionid',
       width: 200,
     },
     {
       title: '商户单号',
-      dataIndex: '商户单号',
-      key: '商户单号',
+      dataIndex: 'merchantstoorder',
+      key: 'merchantstoorder',
       width: 200,
     },
     {
       title: '备注',
-      dataIndex: '备注',
-      key: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
       width: 80,
     },
   ]);
@@ -125,19 +126,24 @@ const BalancepaymentsImportBill = () => {
   // });
 
   const [params, setParams] = useState({
-    pageSize: 0,
-    pageNum: 0,
+    pageSize: 10,
+    // pageNum: 0,
+    current:0,
     total: 0,
-    current: 1,
+    page: 1,
   });
   const tableParams = {
     // showSizeChanger: true,
     // showQuickJumper: false,
     showTotal: () => `共${params.total}条`,
     pageSize: params.pageSize,
-    current: params.current,
+    current: params.page,
     total: params.total,
-    onChange: (page, pageSize) => console.log(page, pageSize),
+    onChange: (current, pageSize) => {
+      getdisposebill({
+        ...form,page: current.toString(), pageSize:pageSize.toString()
+      });
+    },
     // onShowSizeChange: (current, pageSize) => this.changePageSize(pageSize, current),
     // onChange: (current) => this.changePage(current),
   };
@@ -158,32 +164,52 @@ const BalancepaymentsImportBill = () => {
     setChildrenDrawer(false);
   };
   useEffect(() => {
-    let params = {
-      date: '2022-12-01',
-    };
-    getdisposebillApi(params).then((res) => {
-      setPres(res.data.list);
+    // let params = {
+    //   // importtime: moment().format('YYYY-MM-DD'),
+      
+    // };
+    getdisposebillApi({...params}).then((res) => {
+      console.log(res);
+
+      setPres(res.data);
       setParams({
-        pageSize: res.data.pagesize,
-        total: res.data.total,
-        current: res.data.current,
+        pageSize: res.meta.pageSize,
+        total: res.meta.total,
+        page: res.meta.page,
       });
     });
   }, []);
-  const getdisposebill = (event) => {
+  const tabelEventFun = (event) => {
     let params = {
-      date: '2022-12-01',
+      importtime: '2022-12-01',
     };
-    getdisposebillApi(params).then((res) => {
-      setPres(res.data.list);
-      setParams({
-        pageSize: res.data.pagesize,
-        total: res.data.total,
-        current: res.data.current,
-      });
-      onClose();
-    });
+    getdisposebill(params);
+    // getdisposebillApi(params).then((res) => {
+    //   setPres(res.data.list);
+    //   setParams({
+    //     pageSize: res.data.pagesize,
+    //     total: res.data.total,
+    //     current: res.data.current,
+    //   });
+    //   onClose();
+    // });
     event.stopPropagation();
+  };
+  const getdisposebill = (paramsObj) => {
+    console.log(form,"form");
+    
+    let params={
+      ...form,
+      ...paramsObj
+    }
+    getdisposebillApi(params).then((res) => {
+      setPres(res.data);
+      setParams({
+        pageSize: res.meta.pagesize,
+        total: res.meta.total,
+        current: res.meta.page,
+      });
+    });
   };
   const exportRecord = () => {
     let data = {
@@ -212,7 +238,7 @@ const BalancepaymentsImportBill = () => {
       交易对方: 'counterparty',
       商品: 'product',
       '收/支': 'collectorbranch',
-      金额: 'amount',
+      "金额(元)": 'amount',
       支付方式: 'patternpayment',
       当前状态: 'currentstate',
       交易单号: 'trasactionid',
@@ -292,9 +318,7 @@ const BalancepaymentsImportBill = () => {
       });
       // setPres(datass);
       ImportingbillsApi(datass).then((res) => {
-        console.log(res);
-        // setPres(res.data);
-        message.success(res.message);
+        getdisposebill();
       });
     };
 
@@ -309,19 +333,20 @@ const BalancepaymentsImportBill = () => {
     console.log('Success:', values);
     // console.log(window.moment(values.tradinghours._d).format('YYYY-MM-DD'));
     let tradinghours = undefined;
-    let inporttime = undefined;
+    let importtime = undefined;
     if (values.tradinghours) {
       tradinghours = window.moment(values.tradinghours._d).format('YYYY-MM-DD');
     }
-    if (values.inporttime) {
-      inporttime = window.moment(values.inporttime._d).format('YYYY-MM');
+    if (values.importtime) {
+      importtime = window.moment(values.importtime).format('YYYY-MM');
     }
     getdisposebillApi({
       ...values,
       tradinghours: tradinghours,
-      inporttime: inporttime,
+      importtime: importtime,
+      ...params
     }).then((res) => {
-      setPres(res.data.list);
+      setPres(res.data);
     });
   };
   const onFinishFailed = (errorInfo) => {
@@ -382,7 +407,7 @@ const BalancepaymentsImportBill = () => {
           <Col>
             <Form.Item
               label="导入时间"
-              name="inporttime"
+              name="importtime"
               auto-complete="new-password"
             >
               <DatePicker picker="month"></DatePicker>
@@ -391,7 +416,7 @@ const BalancepaymentsImportBill = () => {
           <Col>
             <Space>
               <Button type="primary" htmlType="submit">
-                提交
+                查询
               </Button>
               <Button type="primary" htmlType="reset">
                 重置
@@ -445,8 +470,9 @@ const BalancepaymentsImportBill = () => {
         columns={columns}
         dataSource={pres}
         pagination={tableParams}
-        scroll={{ y: 300 }}
+        scroll={{ y: false }}
         className="tab-box"
+        rowKey="_id"
       />
       {/* <table dangerouslySetInnerHTML={{__html: content}}></table> */}
       <Drawer
@@ -470,7 +496,7 @@ const BalancepaymentsImportBill = () => {
             return (
               <Timeline.Item
                 key={ele.importtime}
-                label={<a onClick={getdisposebill}>{ele.importtime}</a>}
+                label={<a onClick={tabelEventFun}>{ele.importtime}</a>}
                 onClick={showChildrenDrawer}
               >
                 {ele.batchname}

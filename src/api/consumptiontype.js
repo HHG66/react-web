@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-13 19:16:40
- * @LastEditTime: 2023-02-20 23:00:31
+ * @LastEditTime: 2024-11-23 10:11:36
  * @LastEditors: 韩宏广
- * @FilePath: /Financial/web/src/api/consumptiontype.js
+ * @FilePath: \financial-web\src\api\consumptiontype.js
  * @文件说明: 消费类型的接口
  */
 import request from "./index";
@@ -11,20 +11,21 @@ import request from "./index";
 export function getConsumptionTypeListApi(searchData) {
   return request({
     method: 'GET',
-    url: '/getconsumptiontypelist',
+    url: '/consumptionType/getconsumptiontypelist',
     params: {
       consumptiontypename: searchData ? searchData.consumptionName : ''
     }
   })
 }
 
-export function newConsumptionType(consumptiontype) {
+export function newConsumptionType(data) {
   return request({
     method: 'POST',
-    url: '/newconsumptiontype',
+    url: '/consumptionType/addConsumptionType',
     data: {
-      consumptiontype: consumptiontype.consumptionName,
-      remarks: consumptiontype.remarks
+      consumptiontype: data.consumptionName,
+      remarks: data.remarks,
+      productKeyWords:data.productKeyWords
     }
   })
 }

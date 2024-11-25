@@ -57,7 +57,8 @@ const Login = () => {
   const onFinish = async (values) => {
     let res = await login(values);
     if (!res) return;
-    dispatch(addInfo(res)); // 派发 addInfo action
+    // console.log(res.data.token);
+    dispatch(addInfo(res.data)); // 派发 addInfo action
     navigate('/home');
     // console.log(dispatch(getToken()));
   };

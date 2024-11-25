@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-11-14 20:24:19
+ * @LastEditTime: 2024-11-21 14:23:15
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明:
@@ -35,13 +35,15 @@ request.interceptors.response.use(
   function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     //这段的拦截没有意义，实际应该不要，暂时保留想一下
-    //正常
-    if (response.data.code === '0') {
-      return response.data.data;
-    } else if (response.data.code === '1') {
+    //业务编码（0成功，1业务失败手动处理，2业务成功前端自动提示，3业务失败前端自动提示）
+    if (response.data.code === '0' || response.data.code === '1') {
+      return response.data;
+    } else if (response.data.code === '2') {
+      message.success(response.data.message);
+      return response.data;
+    } else if (response.data.code === '3') {
       //当结果不正确的时候 ，或者其他情况下，返回结果需要提示就将desc返回成error，这个提示是固定的
-      message.error(response.data.error);
-      // return response.data;
+      message.error(response.data.message);
       return null;
     } else {
       return response.data;
@@ -56,6 +58,13 @@ request.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           window.location.href = '/login';
+          break;
+        case 500:
+          notification.open({
+            message: '网络错误',
+            type: 'error',
+            description: '请检查网络后重试，错误码（500）',
+          });
           break;
         case 502:
           notification.open({

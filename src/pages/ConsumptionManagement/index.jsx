@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-08-28 19:03:26
+ * @LastEditTime: 2024-11-23 10:14:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明: 
@@ -34,14 +34,19 @@ const ConsumptionManagement = () => {
   const columns = [
     {
       title: '消费类型名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'consumptionTypenName',
+      key: 'consumptionTypenName',
       width: 200,
     },
     {
+      title: '关联产品关键字',
+      dataIndex: 'productKeyWords',
+      key: 'productKeyWords',
+    },
+    {
       title: '备注',
-      dataIndex: 'remarks',
-      key: 'remarks',
+      dataIndex: 'remark',
+      key: 'remark',
     },
     {
       title: '操作',
@@ -157,8 +162,9 @@ const ConsumptionManagement = () => {
     console.log(rowdata);
     form.resetFields(["consumptionName"])
     form.setFieldsValue({
-      "consumptionName": rowdata.name,
-      'remarks': rowdata.remarks
+      "consumptionTypenName": rowdata.consumptionTypenName,
+      "productKeyWords":rowdata.productKeyWords,
+      'remark': rowdata.remark
     })
   }
 
@@ -250,7 +256,7 @@ const ConsumptionManagement = () => {
         >
           <Form.Item
             label="消费类型名称"
-            name="consumptionName"
+            name="consumptionTypenName"
             validateTrigger={['onBlur', 'onSubmit']}
             rules={[
               {
@@ -263,9 +269,16 @@ const ConsumptionManagement = () => {
             <Input />
           </Form.Item>
           <Form.Item
+            label="关联产品关键字"
+            name="productKeyWords"
+            // validateTrigger={['onBlur', 'onSubmit']}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             label="备注"
-            name="remarks"
-            validateTrigger={['onBlur', 'onSubmit']}
+            name="remark"
+            // validateTrigger={['onBlur', 'onSubmit']}
           >
             <Input />
           </Form.Item>

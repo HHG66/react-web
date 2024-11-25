@@ -22,6 +22,7 @@ module.exports = {
     'eqeqeq': ["error", 'always'], // 要求使用 === 和 !==
     "no-unused-vars": "warn",
     "no-debugger":'off',
-    "react/no-unknown-property":"warn"
+    "react/no-unknown-property":"warn",
+    "endOfLine": "crlf"
   },
 }

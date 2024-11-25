@@ -1,28 +1,36 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-11-15 10:49:19
+ * @LastEditTime: 2024-11-25 17:08:24
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明:
  */
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, Select ,Tag,Divider,Space } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 // import registerConfig from './register.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef } from 'react';
 import PropTypes from 'prop-types';
+import {
+  StepBackwardOutlined,PlusOutlined 
+} from '@ant-design/icons';
+import KeyWord from './components/keyWord';
 
 const HForm = ({ columns, onFinish }) => {
   const [form] = Form.useForm();
 
   const [formColumns, serColumns] = useState([]);
-
+  const[initialValues,setInitialValues]=useState([])
   useEffect(() => {
     // console.log('表单初始化渲染');
     // console.log(columns);
     if (columns) {
       serColumns(columns);
     }
+
+    // setInitialValues({
+    //   eeee:['1']
+    // })
   }, [columns]);
 
   const InputComponent = (props) => {
@@ -65,11 +73,17 @@ const HForm = ({ columns, onFinish }) => {
   const SelectComponent = (props) => {
     return <Select defaultValue="" options={props.options} />;
   };
+  
+  const KeyWordComponent=(props)=>{
+    return <KeyWord  {...props} key={props.name + props.type} form={form}></KeyWord> 
+  }
+
   const components = {
     input: InputComponent,
     password: PasswordComponent,
     button: ButtonComponent,
     select: SelectComponent,
+    keyword:KeyWordComponent
   };
   PasswordComponent.propTypes = {
     name: PropTypes.isRequired,
@@ -111,6 +125,7 @@ const HForm = ({ columns, onFinish }) => {
         }}
         onFinish={onFinish}
         form={form}
+        // initialValues={initialValues}
       >
         {formColumns &&
           formColumns.map((field) => {
