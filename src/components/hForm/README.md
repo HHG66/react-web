@@ -20,18 +20,18 @@ Form
 
 Form.Item
 
-| 参数        | 说明              | 类型      | 默认值 | 备注                                                         |
-| ----------- | ----------------- | --------- | ------ | ------------------------------------------------------------ |
-| name        | id                | string    | -      | 表单的prop，必填唯一                                         |
-| type        | 表单类型          | string    | -      | 表单类型，必填唯一                                           |
-| placeholder | 提示信息          | string    | -      | 可选，有的表单项不生效                                       |
-| prefix      | 前后缀            | ReactNode | -      | 前后缀，用于附加图标                                         |
-| item        | 配置项            | array     | []     | 可选，传入校验规则                                           |
-| addItem     | 类型为keyword传递 | func      | -      | 可选，keyword添加的回调                                      |
-| htmlType    | 可选-submit       | string    | -      | 按钮配置，当配置后，form组件可以传递onFinish方法回调入参为表单值 |
-| onClick     | 可选              | func      | -      | botton的回调函数，没有回调入参，表单不用这个                 |
-| autoSelect  | 类型为keyword传递 | boolean   | true   | 添加后是否自动选中，默认确定                                 |
-|             |                   |           |        |                                                              |
+| 参数         | 说明              | 类型      | 默认值    | 备注                                                         |
+| ------------ | ----------------- | --------- | --------- | ------------------------------------------------------------ |
+| name         | id                | string    | -         | 表单的prop，必填唯一                                         |
+| type         | 表单类型          | string    | -         | 表单类型，必填唯一                                           |
+| placeholder  | 提示信息          | string    | -         | 可选，有的表单项不生效                                       |
+| prefix       | 前后缀            | ReactNode | -         | 前后缀，用于附加图标                                         |
+| item         | 配置项            | array     | []        | 可选，传入校验规则                                           |
+| addItem      | 类型为keyword传递 | func      | -         | 可选，keyword添加的回调                                      |
+| htmlType     | 可选-submit       | string    | -         | 按钮配置，当配置后，form组件可以传递onFinish方法回调入参为表单值 |
+| onClick      | 可选              | func      | -         | botton的回调函数，没有回调入参，表单不用这个                 |
+| autoSelect   | 类型为keyword传递 | boolean   | true      | 添加后是否自动选中，默认确定                                 |
+| defaultValue | 表单默认值        | any       | undefined | 表单的默认值                                                 |
 
 
 

@@ -1,56 +1,71 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-11-23 10:14:21
+ * @LastEditTime: 2024-11-28 18:25:43
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
- * @文件说明: 
+ * @文件说明:
  */
-import { Table, Form, Input, Row, Col, Button, Space, Modal, message, Popconfirm } from 'antd'
+import {
+  Table,
+  Form,
+  Input,
+  Row,
+  Col,
+  Button,
+  Space,
+  Modal,
+  message,
+  Popconfirm,
+} from 'antd';
 // import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { getConsumptionTypeListApi, newConsumptionType, editConsumptionTypeApi, deleteConsumptiontypeApi } from '@/api/consumptiontype'
-import { useEffect, useState } from 'react';
-import './index.less'
+import {
+  getConsumptionTypeListApi,
+  newConsumptionType,
+  editConsumptionTypeApi,
+  deleteConsumptiontypeApi,
+} from '@/api/consumptiontype';
+import { useEffect, useState,useRef  } from 'react';
+import './index.less';
+import HForm from '@/components/hForm/HForm.jsx';
 const ConsumptionManagement = () => {
-
-  let [dataSource, setDataSource] = useState([])
-  let [formSearch, setFormSearch] = useState(false)
+  let [dataSource, setDataSource] = useState([]);
+  let [formSearch, setFormSearch] = useState(false);
   //对话框
   // const [open, setOpen] = useState(false);
   const [open, setOpen] = useState({
     state: false,
     isEdit: false,
     title: '新增',
-    id: ""
+    id: '',
   });
   const [confirmLoading, setConfirmLoading] = useState(false);
   //表单
-  const [form] = Form.useForm();
+  const formRef = useRef();
+ 
   const [searchform] = Form.useForm();
   const confirm = (record) => {
-    deleteConsumptiontype(record.key)
-  }
+    deleteConsumptiontype(record.key);
+  };
 
   const columns = [
     {
       title: '消费类型名称',
       dataIndex: 'consumptionTypenName',
-      key: 'consumptionTypenName',
+      // key: 'consumptionTypenNae',
       width: 200,
     },
     {
       title: '关联产品关键字',
       dataIndex: 'productKeyWords',
-      key: 'productKeyWords',
     },
     {
       title: '备注',
       dataIndex: 'remark',
-      key: 'remark',
     },
     {
       title: '操作',
-      key: 'action',
+      // key: 'action',
       width: 150,
       render: (_, record) => (
         <Space size="middle">
@@ -69,30 +84,69 @@ const ConsumptionManagement = () => {
       ),
     },
   ];
+  const formConfig = {
+    formProps: {
+      labelCol: {
+        span: 6,
+      },
+    },
+    columns: [
+      {
+        name: 'consumptionTypenName',
+        type: 'input',
+        placeholder: '请输入消费类型名称',
+        label: '消费类型名称',
+        item: {
+          rules: [{ required: true, message: '请输入消费类型名称' }],
+        },
+        defaultValue: '',
+      },
+      {
+        name: 'productKeyWords',
+        type: 'keyword',
+        placeholder: '请输入关联产品关键字',
+        label: '关联产品关键字',
+        validateTrigger: 'onBlur',
+        item: {
+          rules: [],
+        },
+        option: [],
+        // defaultValue: [],
+      },
+      {
+        name: 'remark',
+        type: 'input',
+        placeholder: '请输入备注',
+        label: '备注',
+        option: [],
+        defaultValue: '',
+      },
+    ],
+  };
 
   useEffect(() => {
-    getAllConsumptiontypeList()
-  }, [])
+    getAllConsumptiontypeList();
+  }, []);
   const getAllConsumptiontypeList = () => {
     getConsumptionTypeListApi({}).then((res) => {
-      let data = []
-      res.data.forEach(element => {
+      let data = [];
+      res.data.forEach((element) => {
         data.push({
           ...element,
-          key: element.id
-        })
+          key: element._id,
+        });
       });
-      setDataSource(data)
+      setDataSource(data);
     });
-  }
+  };
   const onReset = () => {
     searchform.resetFields();
-    getAllConsumptiontypeList()
+    getAllConsumptiontypeList();
   };
 
   const onFinish = (values) => {
     getConsumptionTypeListApi(values).then((res) => {
-      setDataSource(res.data)
+      setDataSource(res.data);
     });
   };
 
@@ -109,46 +163,48 @@ const ConsumptionManagement = () => {
     setOpen({
       state: true,
       isEdit: false,
-      title: '新增'
+      title: '新增',
     });
-    form.resetFields()
+    formRef.resetFields();
   };
 
   const handleCancel = () => {
     setOpen({
-      open: false
+      open: false,
     });
   };
   const handleOk = () => {
     //手动调用表单的校验规则，通过后可以提交
-    form.validateFields().then(values => {
-      setConfirmLoading(true);
-      if (open.isEdit !== true) {
-        newConsumptionType(values).then(res => {
-          setConfirmLoading(false);
-          if (res.code === "00000") {
-            message.success(res.message);
-            getAllConsumptiontypeList()
-            setOpen({
-              open: false
-            });
-          }
-        })
-      } else {
-        // console.log("编辑");
-        editConsumptionTypeApi({ ...values, id: open.id }).then((res) => {
-          setConfirmLoading(false);
-          message.success(res.message);
-          getAllConsumptiontypeList()
-          setOpen({
-            open: false
+    formRef
+      .validateFields()
+      .then((values) => {
+        setConfirmLoading(true);
+        if (open.isEdit !== true) {
+          newConsumptionType(values).then((res) => {
+            setConfirmLoading(false);
+            if (res.code === '00000') {
+              message.success(res.message);
+              getAllConsumptiontypeList();
+              setOpen({
+                open: false,
+              });
+            }
           });
-        })
-      }
-
-    }).catch(error => {
-      console.log(error);
-    })
+        } else {
+          // console.log("编辑");
+          editConsumptionTypeApi({ ...values, id: open.id }).then((res) => {
+            setConfirmLoading(false);
+            message.success(res.message);
+            getAllConsumptiontypeList();
+            setOpen({
+              open: false,
+            });
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const editconsumptiontype = (rowdata) => {
@@ -156,37 +212,41 @@ const ConsumptionManagement = () => {
       state: true,
       isEdit: true,
       title: '编辑',
-      id: rowdata.id
+      id: rowdata.id,
     });
-    // console.log(form);
+    // console.log(formRef);
     console.log(rowdata);
-    form.resetFields(["consumptionName"])
-    form.setFieldsValue({
-      "consumptionTypenName": rowdata.consumptionTypenName,
-      "productKeyWords":rowdata.productKeyWords,
-      'remark': rowdata.remark
-    })
-  }
+    // formRef.resetFields(['consumptionName']);
+    // console.log(formRef);
+    // console.log(formRef.current.getFormInstance());
+    formRef.current.getFormInstance().setFieldsValue({
+      consumptionTypenName: rowdata.consumptionTypenName,
+      productKeyWords: rowdata.productKeyWords,
+      remark: rowdata.remark,
+    });
+  };
 
   const deleteConsumptiontype = (id) => {
     deleteConsumptiontypeApi(id).then((res) => {
       if (res.code === '00000') {
-        getAllConsumptiontypeList()
-        message.success(res.message)
+        getAllConsumptiontypeList();
+        message.success(res.message);
       }
-    })
-  }
+    });
+  };
 
   return (
     <>
-      <Form name="basic"
+      <Form
+        name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         form={searchform}
-        autoComplete="off">
+        autoComplete="off"
+      >
         <Row gutter={24}>
           <Col span={6} lg={5}>
-            <Form.Item label="类型名称" name="consumptionName"  >
+            <Form.Item label="类型名称" name="consumptionName">
               <Input />
             </Form.Item>
           </Col>
@@ -198,10 +258,12 @@ const ConsumptionManagement = () => {
             </Form.Item>
           </Col> */}
 
-          <Col span={6} lg={9} >
-            <Form.Item >
+          <Col span={6} lg={9}>
+            <Form.Item>
               <Space>
-                <Button type="primary" htmlType="submit">查询</Button>
+                <Button type="primary" htmlType="submit">
+                  查询
+                </Button>
                 <Button onClick={onReset}>重置</Button>
                 {/* 链接纯粹为了一个样式 */}
                 {/* <div onClick={showHideSearch}>
@@ -220,28 +282,31 @@ const ConsumptionManagement = () => {
         </Row>
       </Form>
 
-      <Row gutter={24} className='btn-form' >
-        <Col span={24} className='btn-positon'>
+      <Row gutter={24} className="btn-form">
+        <Col span={24} className="btn-positon">
           {/* <Space> */}
-          <Button type="primary" onClick={() => showModal()}>+ 新建</Button>
+          <Button type="primary" onClick={() => showModal()}>
+            + 新建
+          </Button>
           {/* <Button>设置</Button> */}
           {/* </Space> */}
         </Col>
       </Row>
       {/* <Outlet></Outlet> */}
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={dataSource} columns={columns} rowKey="_id" />
       {/* <Outlet></Outlet> */}
       <Modal
         title={open.title}
-        className='lili'
+        className="lili"
         styles={{ display: 'block' }}
         open={open.state}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <Form
-          name="basic"
+        <HForm {...formConfig} onFinish={onFinish} formProps={{}} ref={formRef} ></HForm>
+        {/* <Form
+          name="form"
           form={form}
           labelCol={{
             span: 6,
@@ -282,10 +347,9 @@ const ConsumptionManagement = () => {
           >
             <Input />
           </Form.Item>
-        </Form>
+        </Form> */}
       </Modal>
-
     </>
-  )
-}
-export default ConsumptionManagement
+  );
+};
+export default ConsumptionManagement;

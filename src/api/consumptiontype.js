@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-13 19:16:40
- * @LastEditTime: 2024-11-23 10:11:36
+ * @LastEditTime: 2024-11-28 16:45:20
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\consumptiontype.js
  * @文件说明: 消费类型的接口
@@ -23,9 +23,9 @@ export function newConsumptionType(data) {
     method: 'POST',
     url: '/consumptionType/addConsumptionType',
     data: {
-      consumptiontype: data.consumptionName,
-      remarks: data.remarks,
-      productKeyWords:data.productKeyWords
+      // consumptiontype: data.consumptionTypenName,
+      remark: data.remark,
+      productKeyWords: data.productKeyWords
     }
   })
 }
