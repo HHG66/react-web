@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-11-28 18:23:29
+ * @LastEditTime: 2024-11-29 09:02:55
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明:
@@ -161,6 +161,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps},ref) => {
         //   remark: '2',
         // }}
         {...formProps}
+      
       >
         {formColumns &&
           formColumns.map((field) => {

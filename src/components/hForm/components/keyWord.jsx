@@ -14,6 +14,8 @@ function getRandomColor() {
 }
 
 const KeyWord = (props) => {
+  // console.log(props);
+  // debugger
   const inputRef = useRef(null);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -25,7 +27,20 @@ const KeyWord = (props) => {
 
   const [name, setName] = useState(''); // 输入框内容
   const [options, setOptions] = useState(initialOptions); // 选项列表
-
+  useEffect(() => {
+    let newItem = props.form.getFieldValue(props.name);
+    //  console.log( );
+    let defaultOption = [];
+    defaultOption = newItem.map((element) => {
+      return {
+        label: element,
+        value: element,
+      };
+    });
+    // console.log(defaultOption);
+    setOptions((prev) => [...defaultOption]); // 更新选项
+    // console.log(options);
+  }, [props]);
   // 渲染标签
   const tagRender = ({ label, closable, onClose }) => {
     const option = options.find((opt) => opt.value === label);
@@ -71,7 +86,6 @@ const KeyWord = (props) => {
     setName('');
     setTimeout(() => inputRef.current?.focus(), 0); // 聚焦输入框
   };
-
 
   return (
     <>

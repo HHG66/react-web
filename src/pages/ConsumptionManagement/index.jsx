@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-11-28 18:25:43
+ * @LastEditTime: 2024-11-29 10:28:09
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明:
@@ -25,7 +25,7 @@ import {
   editConsumptionTypeApi,
   deleteConsumptiontypeApi,
 } from '@/api/consumptiontype';
-import { useEffect, useState,useRef  } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './index.less';
 import HForm from '@/components/hForm/HForm.jsx';
 const ConsumptionManagement = () => {
@@ -40,9 +40,10 @@ const ConsumptionManagement = () => {
     id: '',
   });
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [currentRowData, setRowdata] = useState(false);
   //表单
   const formRef = useRef();
- 
+
   const [searchform] = Form.useForm();
   const confirm = (record) => {
     deleteConsumptiontype(record.key);
@@ -85,6 +86,7 @@ const ConsumptionManagement = () => {
     },
   ];
   const formConfig = {
+    preserve: false,
     formProps: {
       labelCol: {
         span: 6,
@@ -127,6 +129,20 @@ const ConsumptionManagement = () => {
   useEffect(() => {
     getAllConsumptiontypeList();
   }, []);
+
+  useEffect(() => {
+    // debugger;
+    if (open.state && formRef.current != null) {
+      formRef.current.getFormInstance().setFieldsValue({
+        consumptionTypenName: currentRowData.consumptionTypenName,
+        productKeyWords: currentRowData.productKeyWords,
+        remark: currentRowData.remark,
+      });
+    }
+  }, [open, formRef.current]);
+
+
+
   const getAllConsumptiontypeList = () => {
     getConsumptionTypeListApi({}).then((res) => {
       let data = [];
@@ -214,16 +230,7 @@ const ConsumptionManagement = () => {
       title: '编辑',
       id: rowdata.id,
     });
-    // console.log(formRef);
-    console.log(rowdata);
-    // formRef.resetFields(['consumptionName']);
-    // console.log(formRef);
-    // console.log(formRef.current.getFormInstance());
-    formRef.current.getFormInstance().setFieldsValue({
-      consumptionTypenName: rowdata.consumptionTypenName,
-      productKeyWords: rowdata.productKeyWords,
-      remark: rowdata.remark,
-    });
+    setRowdata(rowdata);
   };
 
   const deleteConsumptiontype = (id) => {
@@ -304,7 +311,12 @@ const ConsumptionManagement = () => {
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <HForm {...formConfig} onFinish={onFinish} formProps={{}} ref={formRef} ></HForm>
+        <HForm
+          {...formConfig}
+          onFinish={onFinish}
+          // formProps={{}}
+          ref={formRef}
+        ></HForm>
         {/* <Form
           name="form"
           form={form}
