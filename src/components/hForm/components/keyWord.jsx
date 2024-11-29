@@ -95,7 +95,7 @@ const KeyWord = (props) => {
         label={props.label}
         name={props.name}
         {...props.item}
-        initialValue={options}
+        // initialValue={options}
       >
         <Select
           mode="multiple"

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-11-29 10:28:09
+ * @LastEditTime: 2024-11-29 10:47:11
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明:
@@ -30,7 +30,7 @@ import './index.less';
 import HForm from '@/components/hForm/HForm.jsx';
 const ConsumptionManagement = () => {
   let [dataSource, setDataSource] = useState([]);
-  let [formSearch, setFormSearch] = useState(false);
+  // let [formSearch, setFormSearch] = useState(false);
   //对话框
   // const [open, setOpen] = useState(false);
   const [open, setOpen] = useState({
@@ -139,9 +139,10 @@ const ConsumptionManagement = () => {
         remark: currentRowData.remark,
       });
     }
-  }, [open, formRef.current]);
-
-
+    if (open.isEdit == false && formRef.current != null) {
+      formRef.current.getFormInstance().resetFields();
+    }
+  }, [open, formRef.current, currentRowData]);
 
   const getAllConsumptiontypeList = () => {
     getConsumptionTypeListApi({}).then((res) => {
@@ -181,7 +182,6 @@ const ConsumptionManagement = () => {
       isEdit: false,
       title: '新增',
     });
-    formRef.resetFields();
   };
 
   const handleCancel = () => {

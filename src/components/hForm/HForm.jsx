@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-11-29 09:02:55
+ * @LastEditTime: 2024-11-29 10:44:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明:
@@ -23,7 +23,7 @@ import PropTypes from 'prop-types';
 import { StepBackwardOutlined, PlusOutlined } from '@ant-design/icons';
 import KeyWord from './components/keyWord';
 
-const HForm = forwardRef(({ columns, onFinish, formProps},ref) => {
+const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   const [form] = Form.useForm();
   React.useImperativeHandle(ref, () => ({
     // 暴露 form 实例的方法，可以根据需要暴露更多方法或属性
@@ -34,11 +34,26 @@ const HForm = forwardRef(({ columns, onFinish, formProps},ref) => {
   const [formColumns, serColumns] = useState([]);
   let initialValues = {};
   columns.forEach((element) => {
+    // debugger
     //keyWord 内部有设置了默认值逻辑，所以需要筛选出
     if (element.type !== 'keyword') {
       initialValues[element.name] = element.defaultValue;
+    } else {
+      if (element.defaultValue) {
+        initialValues[element.name] = [
+          {
+            label: element.defaultValue,
+            value: element.defaultValue,
+          },
+        ];
+      } else {
+        initialValues[element.name] = [];
+      }
     }
   });
+
+  console.log(initialValues);
+  // debugger;
 
   useEffect(() => {
     if (columns) {
@@ -161,7 +176,6 @@ const HForm = forwardRef(({ columns, onFinish, formProps},ref) => {
         //   remark: '2',
         // }}
         {...formProps}
-      
       >
         {formColumns &&
           formColumns.map((field) => {
