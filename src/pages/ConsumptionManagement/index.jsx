@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-11-29 10:47:11
+ * @LastEditTime: 2024-11-29 18:37:22
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明:
@@ -17,11 +17,12 @@ import {
   Modal,
   message,
   Popconfirm,
+  Tag,
 } from 'antd';
 // import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import {
   getConsumptionTypeListApi,
-  newConsumptionType,
+  addConsumptionType,
   editConsumptionTypeApi,
   deleteConsumptiontypeApi,
 } from '@/api/consumptiontype';
@@ -46,19 +47,30 @@ const ConsumptionManagement = () => {
 
   const [searchform] = Form.useForm();
   const confirm = (record) => {
-    deleteConsumptiontype(record.key);
+    deleteConsumptiontype(record._id);
   };
 
   const columns = [
     {
       title: '消费类型名称',
-      dataIndex: 'consumptionTypenName',
+      dataIndex: 'consumptionTypeName',
       // key: 'consumptionTypenNae',
       width: 200,
     },
     {
       title: '关联产品关键字',
       dataIndex: 'productKeyWords',
+      render: (tags) => (
+        <>
+          {tags.map((tag) => {
+            return (
+              <Tag color={tag.color} key={tag.value}>
+                {tag.value.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      ),
     },
     {
       title: '备注',
@@ -94,7 +106,7 @@ const ConsumptionManagement = () => {
     },
     columns: [
       {
-        name: 'consumptionTypenName',
+        name: 'consumptionTypeName',
         type: 'input',
         placeholder: '请输入消费类型名称',
         label: '消费类型名称',
@@ -131,10 +143,9 @@ const ConsumptionManagement = () => {
   }, []);
 
   useEffect(() => {
-    // debugger;
     if (open.state && formRef.current != null) {
       formRef.current.getFormInstance().setFieldsValue({
-        consumptionTypenName: currentRowData.consumptionTypenName,
+        consumptionTypeName: currentRowData.consumptionTypeName,
         productKeyWords: currentRowData.productKeyWords,
         remark: currentRowData.remark,
       });
@@ -162,8 +173,15 @@ const ConsumptionManagement = () => {
   };
 
   const onFinish = (values) => {
+    // console.log(consumptionTypeList);
     getConsumptionTypeListApi(values).then((res) => {
       setDataSource(res.data);
+      setOpen({
+        state: false,
+        isEdit: false,
+        title: '',
+        id: '',
+      });
     });
   };
 
@@ -191,23 +209,24 @@ const ConsumptionManagement = () => {
   };
   const handleOk = () => {
     //手动调用表单的校验规则，通过后可以提交
-    formRef
+    formRef.current
+      .getFormInstance()
       .validateFields()
       .then((values) => {
         setConfirmLoading(true);
         if (open.isEdit !== true) {
-          newConsumptionType(values).then((res) => {
+          addConsumptionType(values).then((res) => {
             setConfirmLoading(false);
-            if (res.code === '00000') {
-              message.success(res.message);
-              getAllConsumptiontypeList();
-              setOpen({
-                open: false,
-              });
-            }
+            if (res.code !== '0') return;
+            message.success(res.message);
+            getAllConsumptiontypeList();
+            setOpen({
+              open: false,
+            });
           });
         } else {
           // console.log("编辑");
+          debugger  
           editConsumptionTypeApi({ ...values, id: open.id }).then((res) => {
             setConfirmLoading(false);
             message.success(res.message);
@@ -215,10 +234,13 @@ const ConsumptionManagement = () => {
             setOpen({
               open: false,
             });
+          }).catch(()=>{
+            setConfirmLoading(false);
           });
         }
       })
       .catch((error) => {
+        setConfirmLoading(false);
         console.log(error);
       });
   };
@@ -228,17 +250,15 @@ const ConsumptionManagement = () => {
       state: true,
       isEdit: true,
       title: '编辑',
-      id: rowdata.id,
+      id: rowdata._id,
     });
     setRowdata(rowdata);
   };
 
   const deleteConsumptiontype = (id) => {
     deleteConsumptiontypeApi(id).then((res) => {
-      if (res.code === '00000') {
-        getAllConsumptiontypeList();
-        message.success(res.message);
-      }
+      if (res.code !== '2') return;
+      getAllConsumptiontypeList();
     });
   };
 
@@ -333,7 +353,7 @@ const ConsumptionManagement = () => {
         >
           <Form.Item
             label="消费类型名称"
-            name="consumptionTypenName"
+            name="consumptionTypeName"
             validateTrigger={['onBlur', 'onSubmit']}
             rules={[
               {

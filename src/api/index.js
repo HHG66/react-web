@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-11-21 14:23:15
+ * @LastEditTime: 2024-11-29 15:11:53
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明:
@@ -73,6 +73,14 @@ request.interceptors.response.use(
             description: '请检查网络后重试，错误码（502）',
           });
           break;
+        case 400:
+          if (error.response.data.code === '3') {
+            //当结果不正确的时候 ，或者其他情况下，返回结果需要提示就将desc返回成error，这个提示是固定的
+            message.error(error.response.data.message);
+            return null;
+          } else {
+            return error;
+          }
         case 0:
           if (error.code === 'ERR_NETWORK') {
             notification.open({

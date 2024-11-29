@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-13 19:16:40
- * @LastEditTime: 2024-11-28 16:45:20
+ * @LastEditTime: 2024-11-29 18:33:10
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\consumptiontype.js
  * @文件说明: 消费类型的接口
@@ -13,17 +13,17 @@ export function getConsumptionTypeListApi(searchData) {
     method: 'GET',
     url: '/consumptionType/getconsumptiontypelist',
     params: {
-      consumptiontypename: searchData ? searchData.consumptionName : ''
+      consumptionTypeName: searchData ? searchData.consumptionName : ''
     }
   })
 }
 
-export function newConsumptionType(data) {
+export function addConsumptionType(data) {
   return request({
     method: 'POST',
     url: '/consumptionType/addConsumptionType',
     data: {
-      // consumptiontype: data.consumptionTypenName,
+      consumptionTypeName: data.consumptionTypeName,
       remark: data.remark,
       productKeyWords: data.productKeyWords
     }
@@ -32,20 +32,19 @@ export function newConsumptionType(data) {
 export function editConsumptionTypeApi(data) {
   return request({
     method: 'POST',
-    url: '/editconsumptiontype',
+    url: '/consumptionType/updateConsumptionType',
     data: {
-      consumptiontypeId: data.id,
-      consumptiontypename: data.consumptionName,
-      remarks: data.remarks
+      _id: data.id,
+      ...data
     }
   })
 }
 export function deleteConsumptiontypeApi(data) {
   return request({
     method: 'POST',
-    url: '/deleteconsumptiontype',
+    url: '/consumptionType/deleteConsumptionType',
     data: {
-      consumptiontypeId: data,
+      _id: data,
     }
   })
 }

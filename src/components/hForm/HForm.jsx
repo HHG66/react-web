@@ -172,7 +172,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
         form={form}
         initialValues={initialValues}
         // initialValues={{
-        //   consumptionTypenName: 'weewwe',
+        //   consumptionTypeName: 'weewwe',
         //   remark: '2',
         // }}
         {...formProps}

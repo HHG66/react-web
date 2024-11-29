@@ -33,8 +33,9 @@ const KeyWord = (props) => {
     let defaultOption = [];
     defaultOption = newItem.map((element) => {
       return {
-        label: element,
-        value: element,
+        label: element.label,
+        value: element.value,
+        color:element.color
       };
     });
     // console.log(defaultOption);
