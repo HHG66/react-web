@@ -62,7 +62,7 @@ const Routers = [
     role: "3",
     subs: [
       { key: '/incometype/management', title: '收入类型管理', component: <IncometypeManagement></IncometypeManagement>},
-      { key: '/incometype/associated', title: '关联收入账单名称', component: <IncometypeAssociated></IncometypeAssociated> },
+      // { key: '/incometype/associated', title: '关联收入账单名称', component: <IncometypeAssociated></IncometypeAssociated> },
     ],
   },
   {

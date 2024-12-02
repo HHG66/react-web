@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-11-29 18:37:22
+ * @LastEditTime: 2024-12-02 11:24:16
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明:
@@ -226,10 +226,8 @@ const ConsumptionManagement = () => {
           });
         } else {
           // console.log("编辑");
-          debugger  
           editConsumptionTypeApi({ ...values, id: open.id }).then((res) => {
             setConfirmLoading(false);
-            message.success(res.message);
             getAllConsumptiontypeList();
             setOpen({
               open: false,

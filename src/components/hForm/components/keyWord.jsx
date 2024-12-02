@@ -87,7 +87,13 @@ const KeyWord = (props) => {
     setName('');
     setTimeout(() => inputRef.current?.focus(), 0); // 聚焦输入框
   };
-
+// 处理选择变化
+const handleChange = (selectedValues) => {
+  const selectedObjects = selectedValues.map((value) =>
+    options.find((opt) => opt.value === value)
+  );
+  props.form.setFieldValue(props.name, selectedObjects); // 更新表单的值为完整对象
+};
   return (
     <>
       {contextHolder}
@@ -104,7 +110,7 @@ const KeyWord = (props) => {
           style={{ width: '100%' }}
           options={options}
           // value={selectValue} // 绑定选中值
-          // onChange={(value) => setSelectValue(value)} // 更新选中值
+          onChange={handleChange} // 更新选中值
           dropdownRender={(menu) => (
             <>
               {menu}

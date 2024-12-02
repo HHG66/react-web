@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-22 20:33:04
- * @LastEditTime: 2023-03-12 14:32:17
+ * @LastEditTime: 2024-12-01 13:02:00
  * @LastEditors: 韩宏广
- * @FilePath: /Financial/web/src/api/incometype.js
+ * @FilePath: \financial-web\src\api\incometype.js
  * @文件说明: 
  */
 import request from './index.js'
@@ -50,7 +50,7 @@ export const getIncomeTypeListApi = (searchform) => {
   }
   return request({
     method: 'GET',
-    url: '/getincometypelist',
+    url: '/consumptionType/getincometypelist',
     params: {
       incometypename: searchData
     }
