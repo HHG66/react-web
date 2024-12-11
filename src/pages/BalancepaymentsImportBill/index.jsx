@@ -461,7 +461,7 @@ const BalancepaymentsImportBill = () => {
       </Row> */}
       </Form>
       <Row>
-        <Col offset={20}>
+        {/* <Col offset={22}>
           <Button
             type="primary"
             style={{ marginBottom: '10px' }}
@@ -469,8 +469,8 @@ const BalancepaymentsImportBill = () => {
           >
             导入记录
           </Button>
-        </Col>
-        <Col>
+        </Col> */}
+        <Col offset={22}>
           <Upload beforeUpload={beforeUpload} showUploadList={false}>
             <Button
               type="primary"
