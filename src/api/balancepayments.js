@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2024-11-21 15:48:26
+ * @LastEditTime: 2024-12-03 15:14:26
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\balancepayments.js
  * @文件说明:
@@ -39,7 +39,7 @@ export const ImportingbillsApi = (data) => {
 };
 export const getdisposebillApi = (params) => {
   console.log(params);
-  
+
   return request({
     url: '/bill/getdisposebill',
     method: 'GET',
@@ -49,9 +49,10 @@ export const getdisposebillApi = (params) => {
       balancepayments: params.balancepayments,
       amount: params.amount,
       transactionid: params.id,
-      importTime:  moment(params.importtime).format('YYYY-MM-DD'),
-      pageSize:params.pageSize,
-      page:params.page
+      // importTime:  moment(params.importtime).format('YYYY-MM-DD'),
+      importTime: params.importtime,
+      pageSize: params.pageSize,
+      page: params.page
     },
   });
 };

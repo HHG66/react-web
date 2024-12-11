@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-11-29 15:11:53
+ * @LastEditTime: 2024-12-03 14:51:00
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明:
@@ -44,7 +44,9 @@ request.interceptors.response.use(
     } else if (response.data.code === '3') {
       //当结果不正确的时候 ，或者其他情况下，返回结果需要提示就将desc返回成error，这个提示是固定的
       message.error(response.data.message);
-      return null;
+      return {
+        code: null,
+      };
     } else {
       return response.data;
     }

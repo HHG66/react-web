@@ -1,28 +1,25 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-22 20:33:04
- * @LastEditTime: 2024-12-01 13:02:00
+ * @LastEditTime: 2024-12-03 14:52:13
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\incometype.js
  * @文件说明: 
  */
 import request from './index.js'
-
-export const newIncometype = (data) => {
+let baseUrl = 'incomeType'
+export const addIncometype = (data) => {
   return request({
     method: 'POST',
-    url: '/newincometype',
-    data: {
-      incomename: data.incomName,
-      remarks: data.remarks
-    }
+    url: baseUrl+'/addIncomeType',
+    data: data
   })
 }
 
 export const editIncometypeApi = (data) => {
   return request({
     method: 'POST',
-    url: '/editincometype',
+    url: baseUrl + '/editincometype',
     data: {
       incomename: data.name,
       incomeId: data.id,
@@ -34,9 +31,9 @@ export const editIncometypeApi = (data) => {
 export const deleteIncomeType = (id) => {
   return request({
     method: 'POST',
-    url: '/deleteincometype',
+    url: baseUrl + '/deleteIncomeType',
     data: {
-      incometypeid: id
+      _id: id
     }
   })
 }
@@ -47,10 +44,10 @@ export const getIncomeTypeListApi = (searchform) => {
     searchData = ''
   } else {
     searchData = searchform.incomename
-  }
+  } 
   return request({
     method: 'GET',
-    url: '/consumptionType/getincometypelist',
+    url: baseUrl + '/getIncomeTypeList',
     params: {
       incometypename: searchData
     }
@@ -61,7 +58,7 @@ export const getIncomeTypeListApi = (searchform) => {
 export const newAssociatedIncome = (data) => {
   return request({
     method: 'POST',
-    url: '/newassociatedincome',
+    url: baseUrl + '/newassociatedincome',
     data: {
       billincomename: data.billIncomeName,
       incomTypeName: data.incomTypeName
@@ -72,7 +69,7 @@ export const newAssociatedIncome = (data) => {
 export const editAssociatedIncomeApi = (data) => {
   return request({
     method: 'POST',
-    url: '/editassociatedincome',
+    url: baseUrl + '/editassociatedincome',
     data: {
       associatedIncomeId: data.id,
       billIncomeName: data.billIncomeName,
@@ -81,24 +78,24 @@ export const editAssociatedIncomeApi = (data) => {
   })
 }
 //删除关联收入账单名称
-export const deleteAssociatedIncomeApi=(data)=>{
+export const deleteAssociatedIncomeApi = (data) => {
   return request({
-    method:"POST",
-    url:"/deleteassociatedincome",
-    data:{
-      associatedIncomeId:data.id
+    method: "POST",
+    url: baseUrl + "/deleteassociatedincome",
+    data: {
+      associatedIncomeId: data.id
     }
   })
 }
 //获取关联收入账单列表
-export const getAssocicitedIncomeListApi=(params)=>{
+export const getAssocicitedIncomeListApi = (params) => {
   return request({
-    methed:'GET',
-    url:"/getassociatedincomelist",
-    params:{
-      associatedIncomeName:params.associatedIncomeName||'',
-      remarks:params.remarks||"",
-      incomTypeName:params.incomTypeName||''
+    methed: 'GET',
+    url: baseUrl + "/getassociatedincomelist",
+    params: {
+      associatedIncomeName: params.associatedIncomeName || '',
+      remarks: params.remarks || "",
+      incomTypeName: params.incomTypeName || ''
     }
   })
 }

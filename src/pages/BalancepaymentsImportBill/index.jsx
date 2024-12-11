@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2024-11-22 14:15:40
+ * @LastEditTime: 2024-12-03 16:57:24
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
@@ -20,6 +20,7 @@ import {
   Form,
   Input,
   DatePicker,
+  Popconfirm,
 } from 'antd';
 import * as XLSX from 'xlsx';
 // import React, { useCallback, useEffect, useState } from "react";
@@ -110,6 +111,26 @@ const BalancepaymentsImportBill = () => {
       key: 'remark',
       width: 80,
     },
+    {
+      title: '操作',
+      // key: 'action',
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={() => editBili(record)}>编辑</a>
+          <Popconfirm
+            title="确定删除记录？"
+            onConfirm={() => confirm(record)}
+            // onCancel={cancel}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a href="#">删除</a>
+          </Popconfirm>
+          {/* <a onClick={() =>}></a> */}
+        </Space>
+      ),
+    },
   ]);
   const [pres, setPres] = useState([]);
   const [open, setOpen] = useState(false);
@@ -128,25 +149,14 @@ const BalancepaymentsImportBill = () => {
   const [params, setParams] = useState({
     pageSize: 10,
     // pageNum: 0,
-    current:0,
+    current: 0,
     total: 0,
     page: 1,
   });
-  const tableParams = {
-    // showSizeChanger: true,
-    // showQuickJumper: false,
-    showTotal: () => `共${params.total}条`,
-    pageSize: params.pageSize,
-    current: params.page,
-    total: params.total,
-    onChange: (current, pageSize) => {
-      getdisposebill({
-        ...form,page: current.toString(), pageSize:pageSize.toString()
-      });
-    },
-    // onShowSizeChange: (current, pageSize) => this.changePageSize(pageSize, current),
-    // onChange: (current) => this.changePage(current),
+  const editBili = (record) => {
+    console.log(record);
   };
+  useEffect(() => {}, []);
   const [form] = Form.useForm();
   const showDrawer = () => {
     setOpen(true);
@@ -166,9 +176,9 @@ const BalancepaymentsImportBill = () => {
   useEffect(() => {
     // let params = {
     //   // importtime: moment().format('YYYY-MM-DD'),
-      
+
     // };
-    getdisposebillApi({...params}).then((res) => {
+    getdisposebillApi({ ...params }).then((res) => {
       console.log(res);
 
       setPres(res.data);
@@ -195,13 +205,12 @@ const BalancepaymentsImportBill = () => {
     // });
     event.stopPropagation();
   };
-  const getdisposebill = (paramsObj) => {
-    console.log(form,"form");
-    
-    let params={
-      ...form,
-      ...paramsObj
-    }
+  const getdisposebill = async () => {
+    console.log(form, 'form');
+    let validateState = await form.validateFields();
+    console.log(validateState);
+
+    form.getFieldsValue();
     getdisposebillApi(params).then((res) => {
       setPres(res.data);
       setParams({
@@ -238,7 +247,7 @@ const BalancepaymentsImportBill = () => {
       交易对方: 'counterparty',
       商品: 'product',
       '收/支': 'collectorbranch',
-      "金额(元)": 'amount',
+      '金额(元)': 'amount',
       支付方式: 'patternpayment',
       当前状态: 'currentstate',
       交易单号: 'trasactionid',
@@ -330,6 +339,8 @@ const BalancepaymentsImportBill = () => {
   };
 
   const onFinish = (values) => {
+    getdisposebill();
+    return;
     console.log('Success:', values);
     // console.log(window.moment(values.tradinghours._d).format('YYYY-MM-DD'));
     let tradinghours = undefined;
@@ -344,9 +355,14 @@ const BalancepaymentsImportBill = () => {
       ...values,
       tradinghours: tradinghours,
       importtime: importtime,
-      ...params
+      ...params,
     }).then((res) => {
       setPres(res.data);
+      setParams({
+        pageSize: res.meta.pageSize,
+        total: res.meta.total,
+        page: res.meta.page,
+      });
     });
   };
   const onFinishFailed = (errorInfo) => {
@@ -469,7 +485,21 @@ const BalancepaymentsImportBill = () => {
       <Table
         columns={columns}
         dataSource={pres}
-        pagination={tableParams}
+        pagination={{
+          // showSizeChanger: true,
+          // showQuickJumper: false,
+          showTotal: () => `共${params.total}条`,
+          pageSize: params.pageSize,
+          current: params.page,
+          total: params.total,
+          onChange: (current, pageSize) => {
+            getdisposebill({
+              ...form,
+              page: current.toString(),
+              pageSize: pageSize.toString(),
+            });
+          },
+        }}
         scroll={{ y: false }}
         className="tab-box"
         rowKey="_id"

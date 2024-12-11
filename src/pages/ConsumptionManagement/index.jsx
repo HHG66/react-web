@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:17
- * @LastEditTime: 2024-12-02 11:24:16
+ * @LastEditTime: 2024-12-03 14:37:04
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\ConsumptionManagement\index.jsx
  * @文件说明:
@@ -41,7 +41,7 @@ const ConsumptionManagement = () => {
     id: '',
   });
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [currentRowData, setRowdata] = useState(false);
+  const [currentRowData, setRowdata] = useState(null);
   //表单
   const formRef = useRef();
 
@@ -65,7 +65,7 @@ const ConsumptionManagement = () => {
           {tags.map((tag) => {
             return (
               <Tag color={tag.color} key={tag.value}>
-                {tag.value.toUpperCase()}
+                {tag.value}
               </Tag>
             );
           })}
@@ -87,8 +87,8 @@ const ConsumptionManagement = () => {
             title="确定要删除消费类型吗？如果存在关联，需要先删除关联消费账单后再试。"
             onConfirm={() => confirm(record)}
             // onCancel={cancel}
-            okText="Yes"
-            cancelText="No"
+            okText="确定"
+            cancelText="取消"
           >
             <a href="#">删除</a>
           </Popconfirm>

@@ -105,13 +105,13 @@ const Routers = [
               <IncometypeManagement></IncometypeManagement>
             ),
           },
-          {
-            key: '/incometype/associated',
-            title: '关联收入账单名称',
-            component: lazyCompent(
-              <IncometypeAssociated></IncometypeAssociated>
-            ),
-          },
+          // {
+          //   key: '/incometype/associated',
+          //   title: '关联收入账单名称',
+          //   component: lazyCompent(
+          //     <IncometypeAssociated></IncometypeAssociated>
+          //   ),
+          // },
         ],
       },
       {
