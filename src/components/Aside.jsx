@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-11-15 11:01:07
+ * @LastEditTime: 2024-12-12 18:22:16
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明:
@@ -45,7 +45,6 @@ const Aside = () => {
   useEffect(() => {
     // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
     setRouterItem(recursionRouter([...Routers[0]['subs'], Routers[1]]));
-
     // console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
   }, []);
   //递归处理路由表
@@ -130,6 +129,7 @@ const Aside = () => {
           onSelect={onSelect}
           // 为了解决二级菜单展开无法展开的问题
           // {...defaultProps}
+          defaultOpenKeys={['/home']}
         />
       </Sider>
     </>

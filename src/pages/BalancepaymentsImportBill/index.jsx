@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2024-12-03 16:57:24
+ * @LastEditTime: 2024-12-12 17:38:54
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
@@ -25,7 +25,7 @@ import {
 import * as XLSX from 'xlsx';
 // import React, { useCallback, useEffect, useState } from "react";
 import {
-  ImportingbillsApi,
+  importingbillsApi,
   getdisposebillApi,
   getImportRecordsApi,
   getinportbillinfoApi,
@@ -273,8 +273,11 @@ const BalancepaymentsImportBill = () => {
           blankrows: true,
           defval: ' ',
           rawNumbers: true,
-          dateNF: '2022-01-01',
+          dateNF: 'YYYY-MM-DD',
+          UTC:true
         });
+        console.log(sheel);
+        
         // var col_index = XLSX.utils.decode_col("D");
         // console.log(test);
         // setTest(test)
@@ -288,20 +291,26 @@ const BalancepaymentsImportBill = () => {
             // debugger
             tableHead.push({
               title: element,
-              dataIndex: element,
-              key: element,
+              dataIndex: fieldMapping[element],
+              key: fieldMapping[element],
               width: 200,
             });
           } else {
             tableHead.push({
               title: element,
-              dataIndex: element,
-              key: element,
+              dataIndex: fieldMapping[element],
+              key: fieldMapping[element],
               width: 80,
             });
           }
         });
-        // console.log(tableHead);
+        console.log(tableHead);
+        // {
+        //   title: '交易时间',
+        //   dataIndex: 'tradinghours',
+        //   key: 'tradinghours',
+        //   width: 200,
+        // },
         setColumns(tableHead);
         sheel.forEach((element, index) => {
           if (index === 0) {
@@ -310,7 +319,7 @@ const BalancepaymentsImportBill = () => {
           try {
             var rowData = {};
             for (let index = 0; index < element.length; index++) {
-              rowData[fieldMapping[tableHead[index].dataIndex]] =
+              rowData[tableHead[index].dataIndex] =
                 element[index];
               rowData['key'] = Math.ceil(Math.random() * 100000);
             }
@@ -326,7 +335,7 @@ const BalancepaymentsImportBill = () => {
         // }
       });
       // setPres(datass);
-      ImportingbillsApi(datass).then((res) => {
+      importingbillsApi(datass).then((res) => {
         getdisposebill();
       });
     };

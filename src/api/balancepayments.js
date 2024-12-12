@@ -1,13 +1,13 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2024-12-03 15:14:26
+ * @LastEditTime: 2024-12-12 09:42:26
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\balancepayments.js
  * @文件说明:
  */
 import request from './index.js';
-
+const baseUrl = 'bill'
 export const getBalancepayMentsApi = (params) => {
   return request({
     url: '/getbalancepayments',
@@ -18,7 +18,7 @@ export const getBalancepayMentsApi = (params) => {
   });
 };
 
-export const ImportingbillsApi = (data) => {
+export const importingbillsApi = (data) => {
   //把单次导入的账单数据进行了处理，去除了antd中table组件需要的key属性，减少网络带宽
   var datas = [];
   data.forEach((element) => {
@@ -100,11 +100,11 @@ export const newFinancialRecordApi = (data) => {
 
 export const getPeriodTimeBillApi = (params) => {
   return request({
-    url: '/getperiodtimebill',
+    url: baseUrl + '/getPeriodTimebill',
     method: 'GET',
     params: {
-      startdate: params.startDate || '',
-      enddate: params.endDate || '',
+      startDate: params.startDate || '',
+      endDate: params.endDate || '',
     },
   });
 };

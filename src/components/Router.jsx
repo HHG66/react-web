@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-10 16:46:32
- * @LastEditTime: 2024-05-23 17:33:17
+ * @LastEditTime: 2024-12-12 18:24:06
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Router.jsx
  * @文件说明: 
@@ -16,7 +16,7 @@ import {
 
 const AppRouter = () => {
 
-  //递归处理路由表，转成路由
+  //递归处理路由表，转成路由，因为没有细化的菜单权限，所以没有做权限路由
   const processRouting = (routers) => {
     if (routers.length == 0) return
     let routerList = []
@@ -25,6 +25,7 @@ const AppRouter = () => {
       newRoute['path']=element.key
       newRoute['element']=element.component
       newRoute['children']=element.subs
+      newRoute['key']=element.key
       if (newRoute.children&&Array.isArray(newRoute.children)) {
         newRoute.children = processRouting(newRoute.children)
       }else{
@@ -38,7 +39,8 @@ const AppRouter = () => {
 
 
   let router = createBrowserRouter(processRouting(Routers))
-
+  console.log(router);
+  
   return (
     <>
       <RouterProvider router={router} />

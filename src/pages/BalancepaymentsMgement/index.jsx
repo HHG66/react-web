@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:01:04
- * @LastEditTime: 2023-03-12 14:29:23
+ * @LastEditTime: 2024-12-12 09:39:34
  * @LastEditors: 韩宏广
- * @FilePath: /Financial/web/src/pages/BalancepaymentsMgement/index.js
+ * @FilePath: \financial-web\src\pages\BalancepaymentsMgement\index.jsx
  * @文件说明: 
  */
 import { Calendar, Col, Divider, Drawer, Row, Badge, Space, Button, Modal, Form, Input, Select, message, DatePicker } from 'antd'
@@ -126,18 +126,7 @@ const BalancepaymentsMgement = () => {
       })
     }
   }
-  const monthCellRender = (value) => {
-    // const num = ''
-    // if (value.month() === 8) {
-    //   num = 1394;
-    // }
-    // return num ? (
-    //   <div className="notes-month">
-    //     <section>{num}</section>
-    //     <span>Backlog number</span>
-    //   </div>
-    // ) : null;
-  };
+
   const getListData = (value) => {
     let listData = []
     let ss = window.moment(value).format("YYYY-MM")
@@ -243,7 +232,7 @@ const BalancepaymentsMgement = () => {
     {/* BalancepaymentsMgement */}
     <div className='calendar'>
       <Button type='primary' onClick={aRecord}>记一笔</Button>
-      <Calendar onPanelChange={onPanelChange} fullscreen={true} onSelect={onSelect} dateCellRender={dateCellRender} monthCellRender={monthCellRender} />
+      <Calendar onPanelChange={onPanelChange} fullscreen={true} onSelect={onSelect} cellRender={dateCellRender} />
       <Drawer width={640} placement="right" closable={false} onClose={onClose} open={drawers}>
         <p
           rootClassName="site-description-item-profile-p"
