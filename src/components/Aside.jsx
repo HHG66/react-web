@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-12-12 18:22:16
+ * @LastEditTime: 2024-12-13 11:03:20
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Aside.jsx
  * @文件说明:
@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Routers from '@/routers';
 // import { setLocalStorage, getLocalStorage } from '@/utils'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
 const rootSubmenuKeys = [
@@ -22,6 +22,7 @@ const rootSubmenuKeys = [
   '/checkInformation',
 ];
 import SvgIcon from './SvgIcon';
+import { getMenu, setCurrentMenu } from '@/store/reducers/Menu';
 
 const Aside = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -30,6 +31,8 @@ const Aside = () => {
   const [selectedKeys, setselectedKeys] = useState(['']);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const selectMenu = useSelector(getMenu); // 获取 token
+  const dispatch = useDispatch();
 
   const store = useSelector((store) => {
     // if (Object.keys(store.userInfo).length === 0) {
@@ -46,6 +49,7 @@ const Aside = () => {
     // console.log(recursionRouter([...Routers[0]['subs'],Routers[1]]));
     setRouterItem(recursionRouter([...Routers[0]['subs'], Routers[1]]));
     // console.log(recursionRouter([...Routers[0]['subs'], Routers[1]]));
+    // console.log(routerItem, 'routerItem');
   }, []);
   //递归处理路由表
   function recursionRouter(routers) {
@@ -85,9 +89,15 @@ const Aside = () => {
 
   //根据当前路由设置选中导航菜单
   useEffect(() => {
-    setselectedKeys([pathname]);
+    // setselectedKeys([pathname]);
+    // console.log(selectedKeys, 'selectedKeys');
+    // console.log(selectMenu,'selectMenu');
+    // console.log([selectMenu],'[selectMenu]');
   }, [pathname]);
-
+  useEffect(() => {
+    // selectMenu.replec()
+    // console.log(selectMenu.split('/')[1], '---');
+  }, [selectMenu]);
   //这个地方是只展开一个父级菜单，onOpenChange只在打开有子级导航的时候,以及收回侧边栏会触发。
   const onOpenChange = (keys) => {
     console.log('执行了子菜单收回');
@@ -107,7 +117,8 @@ const Aside = () => {
     }
   };
   const onSelect = ({ item, key, keyPath, selectedKeys, domEvent }) => {
-    console.log({ item, key, keyPath, selectedKeys, domEvent });
+    // console.log({ item, key, keyPath, selectedKeys, domEvent });
+    dispatch(setCurrentMenu(key));
     navigate(key);
   };
   return (
@@ -129,7 +140,8 @@ const Aside = () => {
           onSelect={onSelect}
           // 为了解决二级菜单展开无法展开的问题
           // {...defaultProps}
-          defaultOpenKeys={['/home']}
+          defaultOpenKeys={['/' + selectMenu.split('/')[1]]}
+          selectedKeys={selectMenu}
         />
       </Sider>
     </>

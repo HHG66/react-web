@@ -19,7 +19,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import UserReducer from './reducers/User';
 import TestReducer from './reducers/Test';
-
+import MenuReducer from './reducers/Menu'
 // const persistConfig = {
 //   key: 'root',
 //   storage,
@@ -49,6 +49,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   UserReducer,
   TestReducer,
+  MenuReducer
 });
 // 包裹 reducer 以使其支持持久化
 const PersistedReducer = persistReducer(persistConfig, rootReducer);

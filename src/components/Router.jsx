@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-10 16:46:32
- * @LastEditTime: 2024-12-12 18:24:06
+ * @LastEditTime: 2024-12-13 11:10:52
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\Router.jsx
  * @文件说明: 
@@ -39,7 +39,7 @@ const AppRouter = () => {
 
 
   let router = createBrowserRouter(processRouting(Routers))
-  console.log(router);
+  // console.log(router);
   
   return (
     <>
