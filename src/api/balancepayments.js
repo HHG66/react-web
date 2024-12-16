@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2024-12-12 09:42:26
+ * @LastEditTime: 2024-12-13 11:54:13
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\balancepayments.js
  * @文件说明:
@@ -10,7 +10,7 @@ import request from './index.js';
 const baseUrl = 'bill'
 export const getBalancepayMentsApi = (params) => {
   return request({
-    url: '/getbalancepayments',
+    url: baseUrl+'/getbalancepayments',
     method: 'GET',
     params: {
       date: params,

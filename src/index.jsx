@@ -14,7 +14,9 @@ import 'dayjs/locale/zh-cn';
 import { Provider } from 'react-redux'
 import { store } from './store/index'
 import 'virtual:svg-icons-register'
+import isBetween from 'dayjs/plugin/isBetween'
 dayjs.locale('zh-cn');
+dayjs.extend(isBetween)
 
 window.moment=dayjs
 const root = ReactDOM.createRoot(document.getElementById('root'));

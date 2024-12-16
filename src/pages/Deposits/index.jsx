@@ -1,26 +1,47 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2023-01-10 23:16:03
+ * @LastEditTime: 2024-12-16 18:13:21
  * @LastEditors: 韩宏广
- * @FilePath: /Personal-finance/web/src/pages/Deposits/index.js
- * @文件说明: 
+ * @FilePath: \financial-web\src\pages\Deposits\index.jsx
+ * @文件说明:
  */
-import React, { useEffect, useState } from 'react'
-import { Statistic, Row, Col, Button, Tag, Space, Table, Modal, Form, Input, Select, DatePicker, message, Popconfirm } from 'antd'
-import { getDepositListApi, editDepositInfoApi, deleteDepositApi } from '@/api/deposits'
-import './index.less'
+import React, { useEffect, useState } from 'react';
+import {
+  Statistic,
+  Row,
+  Col,
+  Button,
+  Tag,
+  Space,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  message,
+  Popconfirm,
+  InputNumber
+} from 'antd';
+import {
+  getDepositListApi,
+  editDepositInfoApi,
+  deleteDepositApi,
+} from '@/api/deposits';
+import './index.less';
 
 const Deposits = () => {
-  var modelEle
-  const [tableData, settableData] = useState([])
+  var modelEle;
+  const [tableData, settableData] = useState([]);
   const [modelData, setModelData] = useState({
     isModalOpen: false,
-    id: ''
-  })
-  const [actionState, setActionState] = useState("0")
-  const [form] = Form.useForm()
-  const [formSearchData] = Form.useForm()
+    id: '',
+  });
+  const [actionState, setActionState] = useState('0');
+  const [form] = Form.useForm();
+  const [formSearchData] = Form.useForm();
+  const [modelState, setModelState] = useState(false);
   useEffect(() => {
     // getDepositListApi({}).then(res => {
     //   let data = []
@@ -32,8 +53,8 @@ const Deposits = () => {
     //   });
     //   settableData(data)
     // })
-    getDepositList()
-  }, [])
+    getDepositList();
+  }, []);
   const columns = [
     {
       title: '存款名称',
@@ -69,29 +90,30 @@ const Deposits = () => {
         if (type === '定期存款') {
           return (
             <>
-              <Tag color={'red'} >
-                {"定期存款"}
-              </Tag>
+              <Tag color={'red'}>{'定期存款'}</Tag>
             </>
-          )
+          );
         } else if (type === '活期存款') {
           return (
             <>
-              <Tag color={'green'} >
-                {"活期存款"}
-              </Tag>
+              <Tag color={'green'}>{'活期存款'}</Tag>
             </>
-          )
+          );
         }
-
-      }
+      },
     },
     {
       title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => { editDeposit(record) }}>编辑</a>
+          <a
+            onClick={() => {
+              editDeposit(record);
+            }}
+          >
+            编辑
+          </a>
           <Popconfirm
             title="确认删除这条存款单吗?"
             onConfirm={() => confirm(record.id)}
@@ -108,94 +130,82 @@ const Deposits = () => {
 
   const confirm = (id) => {
     // console.log("confirm");
-    deleteDepositApi({ id: id }).then(res => {
-      message.success(res.message)
-      getDepositList()
-    })
-  }
+    deleteDepositApi({ id: id }).then((res) => {
+      message.success(res.message);
+      getDepositList();
+    });
+  };
   //获取存款单列表
   const getDepositList = (data) => {
-    getDepositListApi(data||{}).then(res => {
-      let data = []
-      res.data.forEach(element => {
+    getDepositListApi(data || {}).then((res) => {
+      let data = [];
+      res.data.forEach((element) => {
         data.push({
           ...element,
-          key: element.id
-        })
+          key: element.id,
+        });
       });
-      settableData(data)
-    })
-  }
+      settableData(data);
+    });
+  };
   const editDeposit = (rowdata) => {
-    form.resetFields()
-    setModelData({ ...modelData, id: rowdata.id, isModalOpen: true })
-  }
+    form.resetFields();
+    setModelData({ ...modelData, id: rowdata.id, isModalOpen: true });
+  };
   const handleOk = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       // console.log(values);
-      editDepositInfoApi(values).then(res => {
-        message.success(res.message)
+      editDepositInfoApi(values).then((res) => {
+        message.success(res.message);
         setModelData({
           ...modelData,
-          isModalOpen: false
+          isModalOpen: false,
         });
-      })
-    })
+      });
+    });
   };
   const handleCancel = () => {
     setModelData({
       ...modelData,
-      isModalOpen: false
+      isModalOpen: false,
     });
   };
   const handleChange = (value) => {
-    setActionState(value)
-  }
+    setActionState(value);
+  };
   const onFinish = (values) => {
     console.log(values);
-    getDepositList(values)
-  }
+    getDepositList(values);
+  };
   if (actionState === '0') {
-    modelEle = <>  <Form.Item
-      label="续存金额"
-      name="renewalamount"
-    >
-      <Input />
-    </Form.Item>
-      <Form.Item
-        label="续存利率"
-        name="renewalrate"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="到期时间"
-        name="maturitytime"
-      >
-        <DatePicker style={{ width: "100%" }} />
-      </Form.Item>
-    </>
+    modelEle = (
+      <>
+        {' '}
+        <Form.Item label="续存金额" name="renewalamount">
+          <Input />
+        </Form.Item>
+        <Form.Item label="续存利率" name="renewalrate">
+          <Input />
+        </Form.Item>
+        <Form.Item label="到期时间" name="maturitytime">
+          <DatePicker style={{ width: '100%' }} />
+        </Form.Item>
+      </>
+    );
   } else if (actionState === '1') {
-    modelEle = <>
-      <Form.Item
-        label="利率"
-        name="interestrate"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="利息"
-        name="interest"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="去向"
-        name="gowhere"
-      >
-        <Input />
-      </Form.Item>
-    </>
+    modelEle = (
+      <>
+        <Form.Item label="利率" name="interestrate">
+          <Input />
+        </Form.Item>
+        <Form.Item label="利息" name="interest">
+          <Input />
+        </Form.Item>
+        <Form.Item label="去向" name="gowhere">
+          <Input />
+        </Form.Item>
+      </>
+    );
   }
   return (
     <>
@@ -209,50 +219,112 @@ const Deposits = () => {
           说明：总金额计算的是本金，不包含没有结清的利息收入。
         </Col>
       </Row>
-      <Row className='form-search'>
-        <Col>
-          <Form
-            name="basic"
-            form={formSearchData}
-            // initialValues={}
-            onFinish={onFinish}
-          >
-            <Row gutter={{
-              xs: 8,
-              sm: 10,
-              md: 24,
-              lg: 20,
-            }}>
-              <Col>
-                <Form.Item
-                  label="存款名称"
-                  name="depositname"
-                  auto-complete='new-password'
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item
-                  label="到期时间"
-                  name="maturitytime"
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
+      {/* <Row className='form-search'> */}
+      {/* <Col> */}
+      <Form
+        name="basic"
+        form={formSearchData}
+        // initialValues={}
+        onFinish={onFinish}
+      >
+        <Row
+          gutter={{
+            xs: 8,
+            sm: 10,
+            md: 24,
+            lg: 20,
+          }}
+        >
+          <Col>
+            <Form.Item
+              label="存款名称"
+              name="depositname"
+              auto-complete="new-password"
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col>
+            <Form.Item label="到期时间" name="maturitytime">
+              <DatePicker />
+            </Form.Item>
+          </Col>
 
-              <Col>
-                <Space>
-                  <Button type='primary' htmlType='submit'>提交</Button>
-                  <Button type='primary' htmlType='reset'>重置</Button>
-                </Space>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
-      </Row>
+          <Col>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                提交
+              </Button>
+              <Button type="primary" htmlType="reset">
+                重置
+              </Button>
+            </Space>
+          </Col>
+          <Col offset={22}>
+            <Button
+              type="primary"
+              onClick={() => {
+                setModelState(true);
+              }}
+            >
+              新增
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+      {/* </Col> */}
+      {/* </Row> */}
       <Table columns={columns} dataSource={tableData} />
-      <Modal title="编辑" open={modelData.isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title="新增"
+        open={modelState}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form
+          name="edit"
+          form={form}
+          labelCol={{
+            span: 4,
+          }}
+        >
+          <Form.Item label="存款名称" name="depositName">
+            <Input />
+          </Form.Item>
+          <Form.Item label="本金" name="amountDeposited">
+            <Input />
+          </Form.Item>
+          <Form.Item label="利率" name="interestRate">
+            {/* <Input /> */}
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              // defaultValue="1"
+              // min="0"
+              // max="100"
+              step="0.01"
+              // onChange={onChange}
+              stringMode
+            />
+          </Form.Item>
+          <Form.Item label="到期时间" name="expirationTime">
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item label="存款类型" name="depositType">
+            <Input />
+          </Form.Item>
+          <Form.Item label="备注" name="remark">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="编辑"
+        open={modelData.isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         <Form
           name="edit"
           form={form}
@@ -338,11 +410,10 @@ const Deposits = () => {
             //   </>
             // )
           }
-
         </Form>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default Deposits
+export default Deposits;
