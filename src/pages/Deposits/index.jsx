@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2024-12-16 18:13:21
+ * @LastEditTime: 2024-12-17 16:29:06
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\Deposits\index.jsx
  * @文件说明:
@@ -22,12 +22,13 @@ import {
   DatePicker,
   message,
   Popconfirm,
-  InputNumber
+  InputNumber,
 } from 'antd';
 import {
   getDepositListApi,
   editDepositInfoApi,
-  deleteDepositApi,
+  // deleteDepositApi,
+  createdDepositApi,
 } from '@/api/deposits';
 import './index.less';
 
@@ -40,6 +41,7 @@ const Deposits = () => {
   });
   const [actionState, setActionState] = useState('0');
   const [form] = Form.useForm();
+  const [createdForm] = Form.useForm();
   const [formSearchData] = Form.useForm();
   const [modelState, setModelState] = useState(false);
   useEffect(() => {
@@ -58,35 +60,57 @@ const Deposits = () => {
   const columns = [
     {
       title: '存款名称',
-      dataIndex: 'depositname',
-      key: 'depositname',
+      dataIndex: 'depositName',
+      key: 'depositName',
       render: (text) => <a>{text}</a>,
     },
     {
       title: '金额(¥)',
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'amountDeposited',
+      key: 'amountDeposited',
     },
     {
       title: '利率',
-      dataIndex: 'interestrate',
-      key: 'interestrate',
+      dataIndex: 'interestRate',
+      key: 'interestRate',
     },
     {
       title: '到期时间',
-      dataIndex: 'maturitytime',
-      key: 'maturitytime',
+      dataIndex: 'expirationTime',
+      key: 'expirationTime',
+    },
+    {
+      title: '存款状态',
+      dataIndex: 'depositState',
+      key: 'depositState',
+    },
+    {
+      title: '结息',
+      dataIndex: 'interest',
+      key: 'interest',
+      render: (value, rowData) => {
+        let state = window
+          .moment()
+          // .isSameOrBefore(rowData.expirationTime);
+          .isBefore(rowData.expirationTime,'day');
+          console.log(state)
+        if (!state && value == 0) {
+          return '-';
+        }else{
+          return value
+        }
+      },
     },
     {
       title: '备注',
-      dataIndex: 'remarks',
-      key: 'remarks',
+      dataIndex: 'remark',
+      key: 'remark',
     },
     {
       title: '类型',
-      key: 'type',
-      dataIndex: 'type',
-      render: (_, { type }) => {
+      key: 'depositType',
+      dataIndex: 'depositType',
+      render: (type) => {
         if (type === '定期存款') {
           return (
             <>
@@ -97,6 +121,12 @@ const Deposits = () => {
           return (
             <>
               <Tag color={'green'}>{'活期存款'}</Tag>
+            </>
+          );
+        } else {
+          return (
+            <>
+              <Tag color={'green'}>{type}</Tag>
             </>
           );
         }
@@ -150,12 +180,13 @@ const Deposits = () => {
   };
   const editDeposit = (rowdata) => {
     form.resetFields();
-    setModelData({ ...modelData, id: rowdata.id, isModalOpen: true });
+    setModelData({ ...modelData, id: rowdata._id, isModalOpen: true });
   };
   const handleOk = () => {
     form.validateFields().then((values) => {
       // console.log(values);
-      editDepositInfoApi(values).then((res) => {
+      debugger
+      editDepositInfoApi({...values,_id:modelData.id}).then((res) => {
         message.success(res.message);
         setModelData({
           ...modelData,
@@ -164,6 +195,15 @@ const Deposits = () => {
       });
     });
   };
+  const createdDeposit = () => {
+    createdForm.validateFields().then((values) => {
+      createdDepositApi(values).then((res) => {
+        // message.success(res.message);
+        setModelState(false);
+      });
+    });
+  };
+
   const handleCancel = () => {
     setModelData({
       ...modelData,
@@ -274,16 +314,18 @@ const Deposits = () => {
       </Form>
       {/* </Col> */}
       {/* </Row> */}
-      <Table columns={columns} dataSource={tableData} />
+      <Table columns={columns} dataSource={tableData} rowKey="_id" />
       <Modal
         title="新增"
         open={modelState}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onOk={createdDeposit}
+        onCancel={() => {
+          setModelState(false);
+        }}
       >
         <Form
-          name="edit"
-          form={form}
+          name="created"
+          form={createdForm}
           labelCol={{
             span: 4,
           }}
@@ -292,7 +334,11 @@ const Deposits = () => {
             <Input />
           </Form.Item>
           <Form.Item label="本金" name="amountDeposited">
-            <Input />
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+            />
           </Form.Item>
           <Form.Item label="利率" name="interestRate">
             {/* <Input /> */}
@@ -305,7 +351,7 @@ const Deposits = () => {
               // max="100"
               step="0.01"
               // onChange={onChange}
-              stringMode
+              // stringMode
             />
           </Form.Item>
           <Form.Item label="到期时间" name="expirationTime">

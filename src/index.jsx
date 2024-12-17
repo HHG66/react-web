@@ -15,8 +15,12 @@ import { Provider } from 'react-redux'
 import { store } from './store/index'
 import 'virtual:svg-icons-register'
 import isBetween from 'dayjs/plugin/isBetween'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+
 dayjs.locale('zh-cn');
 dayjs.extend(isBetween)
+dayjs.extend(isSameOrBefore)
+
 
 window.moment=dayjs
 const root = ReactDOM.createRoot(document.getElementById('root'));
