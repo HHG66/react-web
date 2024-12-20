@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-05 08:52:37
- * @LastEditTime: 2024-12-17 16:32:30
+ * @LastEditTime: 2024-12-19 16:59:51
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\deposits.js
  * @文件说明: 
@@ -13,7 +13,7 @@ const baseUrl = 'investment'
 export const getDepositListApi = (params) => {
   let expirationTime
   if (params && params.expirationTime) {
-    expirationTime = window.moment(params.expirationTime._d).format('YYYY-MM-DD')
+    expirationTime = window.moment(params.expirationTime).format('YYYY-MM-DD')
   }
   return request({
     url: baseUrl + '/getDepositList',
@@ -24,8 +24,6 @@ export const getDepositListApi = (params) => {
     }
   })
 }
-
-
 
 export const editDepositInfoApi = (data) => {
   let editdata = {}
@@ -40,28 +38,22 @@ export const editDepositInfoApi = (data) => {
     gowhere: data.gowhere,//去向
     interest: data.interest, //利息
   }
-  // if (data.actiontype === '1') {
-  //   editdata = {
-
-  //   }
-  // }
-  return request({
+  return request({  
     url: baseUrl + '/editDepositInfo',
     method: "POST",
     data: editdata
   })
 }
 
-// export const deleteDepositApi = (data) => {
-//   return request({
-//     url: "/deleteDepositinfo",
-//     method: 'POST',
-//     data: {
-//       id: data.id
-//     }
-//   })
-// }
-
+export const deleteDepositApi = (_id) => {
+  return request({
+    url:baseUrl+ "/deleteDepositInfo",
+    method: 'POST',
+    data: {
+      _id
+    }
+  })
+}
 
 export const createdDepositApi = (formData) => {
   return request({
@@ -70,4 +62,20 @@ export const createdDepositApi = (formData) => {
     data: formData
   })
 }
+
+export const updateDepositsInfoApi = (formData) => {
+  return request({
+    url: baseUrl + "/updateDepositsInfo",
+    method: 'POST',
+    data: formData
+  })
+}
+export const depositSummaryApi = () => {
+  return request({
+    url: baseUrl + "/depositSummary",
+    method: 'GET',
+  })
+}
+
+
 
