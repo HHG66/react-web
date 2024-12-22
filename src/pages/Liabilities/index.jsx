@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-18 20:36:35
- * @LastEditTime: 2024-12-20 16:45:11
+ * @LastEditTime: 2024-12-22 12:24:13
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\Liabilities\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/Liabilities/index.jsx
  * @文件说明:
  */
 import React, { useState, useEffect } from 'react';
@@ -28,11 +28,12 @@ import {
 } from 'antd';
 import {
   getLoanListApi,
-  getLoanInfoListApi,
   deleteLoanListApi,
-  getLoanInfoApi,
   edtLoanInfo,
-  editLoanInfoListApi,
+  // getLoanInfoListApi,
+  // getLoanInfoApi,
+  // editLoanInfoListApi,
+  createdLoanRecordApi
 } from '@/api/liabilities';
 import './index.less';
 
@@ -41,17 +42,17 @@ const Liabilities = () => {
     open: false,
   });
   const [liabilitieInfo, setLiabilitieInfo] = useState({
-    loanname: '花呗', //贷款名称
-    annualinterestrate: '20%', //年利率
-    totalinterest: 300, //总利息
-    loanlife: '1', //贷款年限
-    totalnumberperiods: 24, //总期数
-    thenumberrepaymentsperyear: 12, //每年还款次数
-    loanstarttime: '2021-12-01', //贷款开始时间
-    moderepayment: '最低还款', //还款方式
-    currentnumberissues: 9, //当前期数
+    liabilitiesName: '花呗', //贷款名称
+    interestRate: 20, //年利率
+    interest: 300, //总利息
+    loanPeriod: 1, //贷款年限
+    totalPeriod: 24, //总期数
+    paymentsPerYearNum: 12, //每年还款次数
+    loanInitiationTime: '2021-12-01', //贷款开始时间
+    modeRepayment: '最低还款', //还款方式
+    currentPeriod: 9, //当前期数
     amount: 15000, //总金额
-    residualamount: 9000, //剩余金额
+    balance: 9000, //剩余金额
   });
   const [loanList, setLoanList] = useState([]);
   const [loanInfoList, setLoanInfoList] = useState([]);
@@ -64,54 +65,54 @@ const Liabilities = () => {
   const [createdForm] = Form.useForm();
 
   let label = {
-    loanname: {
+    liabilitiesName: {
       label: '贷款名称',
       editable: true,
     },
-    annualinterestrate: {
-      label: '年利率',
+    interestRate: {
+      label: '年利率（%）',
       editable: true,
     },
-    totalinterest: {
+    interest: {
       label: '总利息',
       editable: true,
     },
-    loanlife: {
+    loanPeriod: {
       label: '贷款年限',
       editable: true,
     },
-    totalnumberperiods: {
+    totalPeriod: {
       label: '总期数',
       editable: true,
     },
-    thenumberrepaymentsperyear: {
+    paymentsPerYearNum: {
       label: '每年还款次数',
       editable: true,
     },
-    loanstarttime: {
+    loanInitiationTime: {
       label: '贷款开始时间',
       editable: true,
     },
-    moderepayment: {
+    modeRepayment: {
       label: '还款方式',
       editable: true,
     },
-    currentnumberissues: {
+    currentPeriod: {
       label: '当前期数',
       editable: true,
     },
     amount: {
       label: '总金额',
     },
-    residualamount: {
+    balance: {
       label: '剩余金额',
     },
   };
   const columns = [
     {
       title: '贷款单名称',
-      dataIndex: 'loanname',
-      key: 'loanname',
+      dataIndex: 'liabilitiesName',
+      key: 'liabilitiesName',
       // render: (text) => <a>{text}</a>,
     },
     {
@@ -121,18 +122,23 @@ const Liabilities = () => {
     },
     {
       title: '还款方式',
-      dataIndex: 'moderepayment',
-      key: 'moderepayment',
+      dataIndex: 'modeRepayment',
+      key: 'modeRepayment',
     },
     {
       title: '总利息',
-      dataIndex: 'totalinterest',
-      key: 'totalinterest',
+      dataIndex: 'interestRate',
+      key: 'interestRate',
+    },
+    {
+      title: '总利息',
+      dataIndex: 'interest',
+      key: 'interest',
     },
     {
       title: '剩余金额',
-      dataIndex: 'residualamount',
-      key: 'residualamount',
+      dataIndex: 'balance',
+      key: 'balance',
     },
     {
       title: '操作',
@@ -148,7 +154,7 @@ const Liabilities = () => {
           </a>
           <Popconfirm
             title="确定删除?"
-            onConfirm={() => confirm(record.id)}
+            onConfirm={() => confirm(record._id)}
             okText="确定"
             cancelText="取消"
           >
@@ -273,16 +279,16 @@ const Liabilities = () => {
   }, []);
 
   const confirm = (id) => {
-    deleteLoanListApi({ id }).then((res) => {
-      message.success(res.message);
+    deleteLoanListApi(id).then((res) => {
+      getLoanList({});
     });
   };
   const getLoanList = (params) => {
     getLoanListApi(params).then((res) => {
       // let list=[]
-      res.data.forEach((element) => {
-        element.key = element.id;
-      });
+      // res.data.forEach((element) => {
+      //   element.key = element.id;
+      // });
       setLoanList(res.data);
     });
   };
@@ -320,7 +326,7 @@ const Liabilities = () => {
         setLoanInfoList(newData);
         setEditingKey('');
         editLoanInfoListApi({ loanid: loanId, loaninfoid: key, ...row }).then(
-          (res) => {}
+          (res) => { }
         );
       } else {
         // newData.push(row);
@@ -333,7 +339,7 @@ const Liabilities = () => {
   };
 
   const seeLansInfo = (rowdata) => {
-    // console.log(loanInfoState);
+    setLoanId(rowdata._id);
     setModelData({
       ...modelData,
       open: true,
@@ -347,7 +353,6 @@ const Liabilities = () => {
     getLoanInfoApi({ id: rowdata.id }).then((res) => {
       setLiabilitieInfo(res.data);
     });
-    setLoanId(rowdata.id);
   };
   const EditableCell = ({
     editing,
@@ -502,7 +507,17 @@ const Liabilities = () => {
     }
     return tabheight;
   };
-  const createdLiabilities = () => {};
+  const createdLiabilities = () => {
+    createdForm.validateFields().then((values) => {
+      console.log(values);
+      createdLoanRecordApi({
+        ...values,
+      }).then((res) => {
+        setModelState(false);
+        getLoanList({});
+      });
+    });
+  };
   return (
     <>
       {/* <div>负债贷款偿还11</div> */}
@@ -629,31 +644,20 @@ const Liabilities = () => {
             span: 4,
           }}
         >
-          <Form.Item label="贷款单名称" name="depositName">
+          <Form.Item label="贷款单名称" name="liabilitiesName">
             <Input />
           </Form.Item>
-          <Form.Item label="金额" name="amountDeposited">
+          <Form.Item label="金额" name="amount">
             <InputNumber
               style={{
                 width: '100%',
               }}
             />
           </Form.Item>
-          <Form.Item label="还款方式" name="interestRate">
-            {/* <Input /> */}
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              // defaultValue="1"
-              // min="0"
-              // max="100"
-              step="0.01"
-              // onChange={onChange}
-              // stringMode
-            />
+          <Form.Item label="还款方式" name="modeRepayment">
+            <Input />
           </Form.Item>
-          <Form.Item label="利率" name="dateCommenced">
+          <Form.Item label="利率" name="interestRate">
             <InputNumber
               style={{
                 width: '100%',
@@ -661,11 +665,21 @@ const Liabilities = () => {
               step="0.01"
             />
           </Form.Item>
-          <Form.Item label="总利息" name="dateCommenced">
-            <DatePicker style={{ width: '100%' }} />
+          <Form.Item label="总利息" name="interest">
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              step="1"
+            />
           </Form.Item>
-          <Form.Item label="剩余金额" name="expirationTime">
-            <DatePicker style={{ width: '100%' }} />
+          <Form.Item label="剩余金额" name="balance">
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              step="1"
+            />
           </Form.Item>
           <Form.Item label="备注" name="remark">
             <Input />
