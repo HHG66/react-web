@@ -47,16 +47,16 @@ export const deleteLoanListApi = (data) => {
 // }
 
 
-
-// export const getLoanInfoApi = (params) => {
-//   return request({
-//     url: '/getloaninfo',
-//     method: 'GET',
-//     params: {
-//       loanid: params.id
-//     }
-//   })
-// }
+// 贷款单详细
+export const getLoanInfoApi = (params) => {
+  return request({
+    url: '/getloaninfo',
+    method: 'GET',
+    params: {
+      loanid: params.id
+    }
+  })
+}
 
 export const edtLoanInfo = (data) => {
   return request({
