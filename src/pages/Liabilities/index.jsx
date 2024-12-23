@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-18 20:36:35
- * @LastEditTime: 2024-12-22 12:24:13
+ * @LastEditTime: 2024-12-23 22:49:35
  * @LastEditors: 韩宏广
  * @FilePath: /personal-finance-web/src/pages/Liabilities/index.jsx
  * @文件说明:
@@ -30,8 +30,8 @@ import {
   getLoanListApi,
   deleteLoanListApi,
   edtLoanInfo,
-  // getLoanInfoListApi,
-  // getLoanInfoApi,
+  getLoanInfoListApi,
+  getLoanInfoApi,
   // editLoanInfoListApi,
   createdLoanRecordApi
 } from '@/api/liabilities';
@@ -64,7 +64,7 @@ const Liabilities = () => {
   const [modelState, setModelState] = useState(false);
   const [createdForm] = Form.useForm();
 
-  let label = {
+  let liabilitiesList = {
     liabilitiesName: {
       label: '贷款名称',
       editable: true,
@@ -344,13 +344,13 @@ const Liabilities = () => {
       ...modelData,
       open: true,
     });
-    getLoanInfoListApi({}).then((res) => {
+    getLoanInfoListApi({_id:rowdata._id}).then((res) => {
       res.data.forEach((element) => {
         element.key = element.id;
       });
       setLoanInfoList(res.data);
     });
-    getLoanInfoApi({ id: rowdata.id }).then((res) => {
+    getLoanInfoApi({ _id: rowdata._id }).then((res) => {
       setLiabilitieInfo(res.data);
     });
   };
@@ -440,13 +440,13 @@ const Liabilities = () => {
   };
   const descriptionsList = (state) => {
     let descriptionsInfo = [];
-    for (const key in liabilitieInfo) {
+    for (const key in liabilitiesList) {
       if (state) {
         //有可编辑的状态才可以进行编辑
-        if (label[key] && label[key].editable === true) {
-          // descriptionsInfo.push(<Descriptions.Item key={key} label={label[key].label}><Input defaultValue={liabilitieInfo[key]} /></Descriptions.Item>
+        if (liabilitiesList[key] && liabilitiesList[key].editable === true) {
+          // descriptionsInfo.push(<Descriptions.Item key={key} liabilitiesList={liabilitiesList[key].liabilitiesList}><Input defaultValue={liabilitieInfo[key]} /></Descriptions.Item>
           descriptionsInfo.push(
-            <Descriptions.Item key={key} label={label[key].label}>
+            <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
               <Input
                 defaultValue={liabilitieInfo[key]}
                 onChange={(e) =>
@@ -459,15 +459,15 @@ const Liabilities = () => {
             </Descriptions.Item>
           );
         } else {
-          descriptionsInfo.push(
-            <Descriptions.Item key={key} label={label[key].label}>
-              {liabilitieInfo[key]}
-            </Descriptions.Item>
-          );
+          // descriptionsInfo.push(
+          //   <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
+          //     {liabilitieInfo[key]}
+          //   </Descriptions.Item>
+          // );
         }
       } else {
         descriptionsInfo.push(
-          <Descriptions.Item key={key} label={label[key].label}>
+          <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
             {liabilitieInfo[key]}
           </Descriptions.Item>
         );

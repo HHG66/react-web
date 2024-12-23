@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-09 09:00:40
- * @LastEditTime: 2024-12-22 10:55:54
+ * @LastEditTime: 2024-12-23 22:32:28
  * @LastEditors: 韩宏广
  * @FilePath: /personal-finance-web/src/api/liabilities.js
  * @文件说明: 
@@ -19,7 +19,7 @@ export const createdLoanRecordApi = (data) => {
 
 export const getLoanListApi = (params) => {
   return request({
-    url: baseUrl +'/getloanlist',
+    url: baseUrl + '/getloanlist',
     method: 'GET',
     params: {
 
@@ -28,39 +28,39 @@ export const getLoanListApi = (params) => {
 }
 export const deleteLoanListApi = (data) => {
   return request({
-    url: baseUrl +'/deleteLoan',
+    url: baseUrl + '/deleteLoan',
     method: 'POST',
     data: {
       loanid: data
     }
   })
 }
-
-// export const getLoanInfoListApi = (params) => {
-//   return request({
-//     url: "/getloaninfolist",
-//     method: 'GET',
-//     params: {
-
-//     }
-//   })
-// }
+//还款计划列表
+export const getLoanInfoListApi = (params) => {
+  return request({
+    url: baseUrl + "/getLoanInfoList",
+    method: 'GET',
+    params: {
+      _id: params._id
+    }
+  })
+}
 
 
 // 贷款单详细
 export const getLoanInfoApi = (params) => {
   return request({
-    url: '/getloaninfo',
+    url: baseUrl+'/getLoanInfo',
     method: 'GET',
     params: {
-      loanid: params.id
+      _id: params._id
     }
   })
 }
 
 export const edtLoanInfo = (data) => {
   return request({
-    url: baseUrl+'/editloaninfo',
+    url: baseUrl + '/editloaninfo',
     method: "POST",
     data: {
       _id: data.id,
