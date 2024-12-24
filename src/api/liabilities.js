@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-09 09:00:40
- * @LastEditTime: 2024-12-23 22:32:28
+ * @LastEditTime: 2024-12-25 00:06:22
  * @LastEditors: 韩宏广
  * @FilePath: /personal-finance-web/src/api/liabilities.js
  * @文件说明: 
@@ -50,7 +50,7 @@ export const getLoanInfoListApi = (params) => {
 // 贷款单详细
 export const getLoanInfoApi = (params) => {
   return request({
-    url: baseUrl+'/getLoanInfo',
+    url: baseUrl + '/getLoanInfo',
     method: 'GET',
     params: {
       _id: params._id
@@ -74,26 +74,28 @@ export const edtLoanInfo = (data) => {
       modeRepayment: data.modeRepayment, //还款方式
       currentPeriod: data.currentPeriod, //当前期数
       amount: data.amount,//总金额
-      balance: data.balance,//剩余金额
+      balance: new Number(data.balance),//剩余金额
     }
   })
 }
-// export const editLoanInfoListApi=(data)=>{
-//   return request({
-//     url:'/editloanInfolist',
-//     method:'POST',
-//     data:{
-//       loaninfoid:data.loaninfoid,
-//       loanid:data.loanid,
-//       numberperiods:data.numberperiods,
-//       repaymentdate:window.moment(data.repaymentdate).format("YYYY-MM-DD"),
-//       openingbalance:data.openingbalance,
-//       plannedrepayment:data.plannedrepayment,
-//       additionalrepayment:data.additionalrepayment,
-//       accumulatedinterest:data.accumulatedinterest,
-//       principal:data.principal,
-//       closingbalance:data.closingbalance,
-//       loanstate:data.loanstate,
-//     }
-//   })
-// }
+
+//贷款偿还计划
+export const updateLoanInfolist = (data) => {
+  return request({
+    url: baseUrl + '/updateLoanInfolist',
+    method: 'POST',
+    data: {
+      _id: data._id,
+      // loanid: data.loanid,
+      numberPeriods: data.numberPeriods,
+      repaymentDate: window.moment(data.repaymentDate).format("YYYY-MM-DD"),
+      initialBalance: data.initialBalance,
+      repaymentScheduleAmt: data.repaymentScheduleAmt,
+      additionalRepayment: data.additionalRepayment,
+      accumulatedInterest: data.accumulatedInterest,
+      principal: data.principal,
+      closingBalance: data.closingBalance,
+      repaymentStatus: data.repaymentStatus,
+    }
+  })
+}
