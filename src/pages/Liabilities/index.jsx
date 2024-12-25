@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-18 20:36:35
- * @LastEditTime: 2024-12-25 00:02:58
+ * @LastEditTime: 2024-12-25 18:04:07
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/pages/Liabilities/index.jsx
+ * @FilePath: \financial-web\src\pages\Liabilities\index.jsx
  * @文件说明:
  */
 import React, { useState, useEffect } from 'react';
@@ -33,7 +33,7 @@ import {
   getLoanInfoListApi,
   getLoanInfoApi,
   updateLoanInfolist,
-  createdLoanRecordApi
+  createdLoanRecordApi,
 } from '@/api/liabilities';
 import './index.less';
 
@@ -60,7 +60,7 @@ const Liabilities = () => {
   const [editingKey, setEditingKey] = useState('');
   const [loanInfoState, setloanInfoState] = useState(false);
   const [loanId, setLoanId] = useState('');
-  const isEditing = (record) => record.key === editingKey;
+  const isEditing = (record) => record.numberPeriods === editingKey;
   const [modelState, setModelState] = useState(false);
   const [createdForm] = Form.useForm();
 
@@ -68,7 +68,7 @@ const Liabilities = () => {
     liabilitiesName: {
       label: '贷款名称',
       editable: true,
-      inputType:"input"
+      inputType: 'input',
     },
     interestRate: {
       label: '年利率（%）',
@@ -93,12 +93,12 @@ const Liabilities = () => {
     loanInitiationTime: {
       label: '贷款开始时间',
       editable: true,
-      inputType:"datePicker"
+      inputType: 'datePicker',
     },
     modeRepayment: {
       label: '还款方式',
       editable: true,
-      inputType:"input"
+      inputType: 'input',
     },
     currentPeriod: {
       label: '当前期数',
@@ -144,6 +144,11 @@ const Liabilities = () => {
       key: 'balance',
     },
     {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+    },
+    {
       title: '操作',
       key: 'action',
       render: (_, record) => (
@@ -171,7 +176,7 @@ const Liabilities = () => {
     {
       title: '期数',
       dataIndex: 'numberPeriods',
-      inputType:'number',
+      inputType: 'number',
       key: 'numberPeriods',
       render: (text) => <a>{text}</a>,
       editable: true,
@@ -179,7 +184,7 @@ const Liabilities = () => {
     {
       title: '还款日期',
       dataIndex: 'repaymentDate',
-      inputType:'datePicker', 
+      inputType: 'datePicker',
       key: 'repaymentDate',
       render: (text) => <a>{text}</a>,
       editable: true,
@@ -189,7 +194,7 @@ const Liabilities = () => {
       title: '期初余额',
       dataIndex: 'initialBalance',
       key: 'initialBalance',
-      inputType:'number',
+      inputType: 'number',
       width: 100,
       editable: true,
     },
@@ -227,7 +232,7 @@ const Liabilities = () => {
       title: '状态',
       dataIndex: 'repaymentStatus',
       key: 'repaymentStatus',
-      inputType:'input',
+      inputType: 'input',
       editable: true,
       render: (_, { loanstate }) => (
         <>
@@ -305,7 +310,7 @@ const Liabilities = () => {
       ...record,
       repaymentDate: window.moment(record.repaymentDate),
     });
-    setEditingKey(record.key);
+    setEditingKey(record.numberPeriods);
   };
   const cancel = () => {
     setEditingKey('');
@@ -333,9 +338,14 @@ const Liabilities = () => {
         // console.log(row);
         setLoanInfoList(newData);
         setEditingKey('');
-        updateLoanInfolist({ _id: loanId, ...row }).then(
-          (res) => { }
-        );
+        updateLoanInfolist({ _id: loanId, ...row }).then((res) => {
+          getLoanInfoListApi({ _id: loanId }).then((res) => {
+            // res.data.forEach((element) => {
+            //   element.key = element.id;
+            // });
+            setLoanInfoList(res.data);
+          });
+        });
       } else {
         // newData.push(row);
         setLoanInfoList(newData);
@@ -352,7 +362,7 @@ const Liabilities = () => {
       ...modelData,
       open: true,
     });
-    getLoanInfoListApi({_id:rowdata._id}).then((res) => {
+    getLoanInfoListApi({ _id: rowdata._id }).then((res) => {
       // res.data.forEach((element) => {
       //   element.key = element.id;
       // });
@@ -374,13 +384,13 @@ const Liabilities = () => {
   }) => {
     // console.log(title);
     // console.log(children);
-  let forType={
-    input:<Input />,
-    datePicker:<DatePicker />,
-    number:<InputNumber/>
-  }
+    let forType = {
+      input: <Input />,
+      datePicker: <DatePicker />,
+      number: <InputNumber />,
+    };
 
-    const inputNode = forType[inputType]||<Input />;
+    const inputNode = forType[inputType] || <Input />;
     // console.log(inputNode);
     return (
       <td {...restProps}>
@@ -417,11 +427,11 @@ const Liabilities = () => {
         return {
           record,
           // inputType: col.dataIndex === 'repaymentDate' ? 'number' : 'text',
-          inputType: col.inputType?col.inputType:"number",
+          inputType: col.inputType ? col.inputType : 'number',
           dataIndex: col.dataIndex,
           title: col.title,
           editing: isEditing(record),
-        }
+        };
       },
     };
   });
@@ -453,7 +463,13 @@ const Liabilities = () => {
     // }, 1000);
     if (loanInfoState === !false) {
       edtLoanInfo({ ...liabilitieInfo, id: loanId }).then((res) => {
-        message.success(res.message);
+        getLoanInfoListApi({ _id: loanId }).then((res) => {
+          // res.data.forEach((element) => {
+          //   element.key = element.id;
+          // });
+          setLoanInfoList(res.data);
+        });
+        // message.success(res.message);
       });
     }
   };
@@ -464,10 +480,15 @@ const Liabilities = () => {
         //有可编辑的状态才可以进行编辑
         if (liabilitiesList[key] && liabilitiesList[key].editable === true) {
           // descriptionsInfo.push(<Descriptions.Item key={key} liabilitiesList={liabilitiesList[key].liabilitiesList}><Input defaultValue={liabilitieInfo[key]} /></Descriptions.Item>
-          if(liabilitiesList[key].inputType!=undefined&&liabilitiesList[key].inputType=='input'){
+          if (
+            liabilitiesList[key].inputType != undefined &&
+            liabilitiesList[key].inputType == 'input'
+          ) {
             descriptionsInfo.push(
-              <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
-                
+              <Descriptions.Item
+                key={key}
+                label={liabilitiesList[key] ? liabilitiesList[key].label : ''}
+              >
                 <Input
                   defaultValue={liabilitieInfo[key]}
                   onChange={(e) =>
@@ -479,24 +500,35 @@ const Liabilities = () => {
                 />
               </Descriptions.Item>
             );
-          }else if(liabilitiesList[key].inputType!=undefined&&liabilitiesList[key].inputType=='datePicker'){
+          } else if (
+            liabilitiesList[key].inputType != undefined &&
+            liabilitiesList[key].inputType == 'datePicker'
+          ) {
             descriptionsInfo.push(
-              <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
-                
+              <Descriptions.Item
+                key={key}
+                label={liabilitiesList[key] ? liabilitiesList[key].label : ''}
+              >
                 <DatePicker
-                  defaultValue={liabilitieInfo[key]}
+                  defaultValue={window.moment(
+                    liabilitieInfo[key],
+                    'YYYY-MM-DD'
+                  )}
                   onChange={(e) =>
                     setLiabilitieInfo({
                       ...liabilitieInfo,
-                      [key]: window.moment(e ).format('YYYY-MM-DD'),
+                      [key]: window.moment(e).format('YYYY-MM-DD'),
                     })
                   }
                 />
               </Descriptions.Item>
             );
-          }else{
+          } else {
             descriptionsInfo.push(
-              <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
+              <Descriptions.Item
+                key={key}
+                label={liabilitiesList[key] ? liabilitiesList[key].label : ''}
+              >
                 <InputNumber
                   defaultValue={liabilitieInfo[key]}
                   onChange={(e) =>
@@ -505,8 +537,12 @@ const Liabilities = () => {
                       [key]: e,
                     })
                   }
+                  style={{
+                    width: '100%',
+                  }}
                 />
-              </Descriptions.Item>)
+              </Descriptions.Item>
+            );
           }
           // descriptionsInfo.push(
           //   <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
@@ -523,14 +559,20 @@ const Liabilities = () => {
           // );
         } else {
           descriptionsInfo.push(
-            <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
+            <Descriptions.Item
+              key={key}
+              label={liabilitiesList[key] ? liabilitiesList[key].label : ''}
+            >
               {liabilitieInfo[key]}
             </Descriptions.Item>
           );
         }
       } else {
         descriptionsInfo.push(
-          <Descriptions.Item key={key} label={liabilitiesList[key]?liabilitiesList[key].label:''}>
+          <Descriptions.Item
+            key={key}
+            label={liabilitiesList[key] ? liabilitiesList[key].label : ''}
+          >
             {liabilitieInfo[key]}
           </Descriptions.Item>
         );
