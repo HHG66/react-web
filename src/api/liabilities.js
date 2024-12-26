@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-09 09:00:40
- * @LastEditTime: 2024-12-25 00:06:22
+ * @LastEditTime: 2024-12-26 22:46:01
  * @LastEditors: 韩宏广
  * @FilePath: /personal-finance-web/src/api/liabilities.js
  * @文件说明: 
@@ -75,6 +75,7 @@ export const edtLoanInfo = (data) => {
       currentPeriod: data.currentPeriod, //当前期数
       amount: data.amount,//总金额
       balance: new Number(data.balance),//剩余金额
+      isPlanSheetUpdated:data.isPlanSheetUpdated
     }
   })
 }
