@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-09 09:00:40
- * @LastEditTime: 2024-12-25 00:06:22
+ * @LastEditTime: 2024-12-27 09:30:53
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/api/liabilities.js
+ * @FilePath: \financial-web\src\api\liabilities.js
  * @文件说明: 
  */
 import request from './index.js'
@@ -19,7 +19,7 @@ export const createdLoanRecordApi = (data) => {
 
 export const getLoanListApi = (params) => {
   return request({
-    url: baseUrl + '/getloanlist',
+    url: baseUrl + '/getLoanList',
     method: 'GET',
     params: {
 
