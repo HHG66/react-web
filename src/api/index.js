@@ -13,8 +13,8 @@ import { getLocalStorage } from '@/utils/index';
 import { throttle } from '@/utils/index.js';
 let request = axios.create({
   // baseURL: "http://127.0.0.1:4523/m1/1605761-0-default/",
-  // baseURL: '/proxy',
-  baseURL: '/',
+  baseURL: '/proxy',
+  // baseURL: '/',
   timeout: 300000,
 });
 
