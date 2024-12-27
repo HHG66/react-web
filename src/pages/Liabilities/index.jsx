@@ -2,9 +2,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-18 20:36:35
- * @LastEditTime: 2024-12-25 18:04:07
+ * @LastEditTime: 2024-12-26 22:45:33
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\Liabilities\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/Liabilities/index.jsx
  * @文件说明:
  */
 import React, { useState, useEffect } from 'react';
@@ -463,17 +463,32 @@ const Liabilities = () => {
     //   console.log(liabilitieInfo);
     // }, 1000);
     if (loanInfoState === !false) {
-      edtLoanInfo({ ...liabilitieInfo, id: loanId }).then((res) => {
-        getLoanInfoListApi({ _id: loanId }).then((res) => {
-          // res.data.forEach((element) => {
-          //   element.key = element.id;
-          // });
-          setLoanInfoList(res.data);
-        });
-        // message.success(res.message);
-      });
+      Modal.confirm({
+        content:"是否更新还款计划表?",
+        cancelText:'不更新',
+        okText:'更新',
+        onOk(){
+          edtLoanInfoApi(true)
+        },
+        onCancel(){
+          edtLoanInfoApi(false)
+        }
+      })
+   
     }
   };
+const   edtLoanInfoApi=(isPlanSheetUpdated)=>{
+  edtLoanInfo({ ...liabilitieInfo, id: loanId,isPlanSheetUpdated:isPlanSheetUpdated }).then((res) => {
+    getLoanInfoListApi({ _id: loanId }).then((res) => {
+      // res.data.forEach((element) => {
+      //   element.key = element.id;
+      // });
+      setLoanInfoList(res.data);
+    });
+    // message.success(res.message);
+  });
+}
+
   const descriptionsList = (state) => {
     let descriptionsInfo = [];
     for (const key in liabilitiesList) {

@@ -75,6 +75,7 @@ export const edtLoanInfo = (data) => {
       currentPeriod: data.currentPeriod, //当前期数
       amount: data.amount,//总金额
       balance: new Number(data.balance),//剩余金额
+      isPlanSheetUpdated:data.isPlanSheetUpdated
     }
   })
 }
