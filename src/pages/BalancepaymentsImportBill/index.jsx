@@ -31,7 +31,7 @@ import {
   getinportbillinfoApi,
 } from '@/api/balancepayments';
 import './index.less';
-import moment from 'moment';
+// import moment from 'moment';
 // export class BalancepaymentsImportBill extends Component {
 //   render() {
 //     return (
