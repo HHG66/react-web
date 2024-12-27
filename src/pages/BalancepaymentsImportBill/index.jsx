@@ -349,30 +349,29 @@ const BalancepaymentsImportBill = () => {
 
   const onFinish = (values) => {
     getdisposebill();
-    return;
-    console.log('Success:', values);
-    // console.log(window.moment(values.tradinghours._d).format('YYYY-MM-DD'));
-    let tradinghours = undefined;
-    let importtime = undefined;
-    if (values.tradinghours) {
-      tradinghours = window.moment(values.tradinghours._d).format('YYYY-MM-DD');
-    }
-    if (values.importtime) {
-      importtime = window.moment(values.importtime).format('YYYY-MM');
-    }
-    getdisposebillApi({
-      ...values,
-      tradinghours: tradinghours,
-      importtime: importtime,
-      ...params,
-    }).then((res) => {
-      setPres(res.data);
-      setParams({
-        pageSize: res.meta.pageSize,
-        total: res.meta.total,
-        page: res.meta.page,
-      });
-    });
+    // console.log('Success:', values);
+    // // console.log(window.moment(values.tradinghours._d).format('YYYY-MM-DD'));
+    // let tradinghours = undefined;
+    // let importtime = undefined;
+    // if (values.tradinghours) {
+    //   tradinghours = window.moment(values.tradinghours._d).format('YYYY-MM-DD');
+    // }
+    // if (values.importtime) {
+    //   importtime = window.moment(values.importtime).format('YYYY-MM');
+    // }
+    // getdisposebillApi({
+    //   ...values,
+    //   tradinghours: tradinghours,
+    //   importtime: importtime,
+    //   ...params,
+    // }).then((res) => {
+    //   setPres(res.data);
+    //   setParams({
+    //     pageSize: res.meta.pageSize,
+    //     total: res.meta.total,
+    //     page: res.meta.page,
+    //   });
+    // });
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
