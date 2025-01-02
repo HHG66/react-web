@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2024-12-03 14:51:00
+ * @LastEditTime: 2024-12-27 18:00:07
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明:
@@ -13,7 +13,8 @@ import { getLocalStorage } from '@/utils/index';
 import { throttle } from '@/utils/index.js';
 let request = axios.create({
   // baseURL: "http://127.0.0.1:4523/m1/1605761-0-default/",
-  baseURL: '/proxy',
+  // baseURL: '/proxy',
+  baseURL: '/api',
   // baseURL: '/',
   timeout: 300000,
 });
