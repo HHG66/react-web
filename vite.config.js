@@ -29,10 +29,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/proxy': {
+      '/api': {
         target: 'http://127.0.0.1:3001',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/proxy/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },
