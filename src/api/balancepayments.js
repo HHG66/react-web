@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2024-12-13 11:54:13
+ * @LastEditTime: 2025-01-04 13:36:50
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\balancepayments.js
  * @文件说明:
@@ -10,7 +10,7 @@ import request from './index.js';
 const baseUrl = 'bill'
 export const getBalancepayMentsApi = (params) => {
   return request({
-    url: baseUrl+'/getbalancepayments',
+    url: baseUrl + '/getbalancepayments',
     method: 'GET',
     params: {
       date: params,
@@ -45,12 +45,12 @@ export const getdisposebillApi = (params) => {
     method: 'GET',
     params: {
       tradinghours: params.tradinghours,
-      transactiontype: params.transactiontype,
-      balancepayments: params.balancepayments,
-      amount: params.amount,
-      transactionid: params.id,
-      // importTime:  moment(params.importtime).format('YYYY-MM-DD'),
-      importTime: params.importtime,
+      tradetype: params.transactiontype,
+      collectorbranch: params.balancepayments ? params.balancepayments : null,
+      amount: params.amount ? params.amount : null,
+      trasactionid: params.id ? params.id : null,
+      importTime: params.importtime ? window.moment(params.importtime).format('YYYY-MM-DD') : null,
+      // importTime: params.importtime,
       pageSize: params.pageSize,
       page: params.page
     },

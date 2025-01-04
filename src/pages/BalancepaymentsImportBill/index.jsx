@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2024-12-27 17:16:15
+ * @LastEditTime: 2025-01-04 12:20:35
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
@@ -211,7 +211,15 @@ const BalancepaymentsImportBill = () => {
     console.log(validateState);
 
     form.getFieldsValue();
-    getdisposebillApi(params).then((res) => {
+    let queryData = {
+      ...validateState,
+    };
+    if (validateState.tradinghours) {
+      queryData.tradinghours = validateState.tradinghours
+        ? window.moment(validateState.tradinghours).format('YYYY-MM-DD')
+        : '';
+    }
+    getdisposebillApi(queryData).then((res) => {
       setPres(res.data);
       setParams({
         pageSize: res.meta.pagesize,
@@ -274,10 +282,10 @@ const BalancepaymentsImportBill = () => {
           defval: ' ',
           rawNumbers: true,
           dateNF: 'YYYY-MM-DD',
-          UTC:true
+          UTC: true,
         });
         console.log(sheel);
-        
+
         // var col_index = XLSX.utils.decode_col("D");
         // console.log(test);
         // setTest(test)
@@ -319,8 +327,7 @@ const BalancepaymentsImportBill = () => {
           try {
             var rowData = {};
             for (let index = 0; index < element.length; index++) {
-              rowData[tableHead[index].dataIndex] =
-                element[index];
+              rowData[tableHead[index].dataIndex] = element[index];
               rowData['key'] = Math.ceil(Math.random() * 100000);
             }
             datass.push(rowData);
