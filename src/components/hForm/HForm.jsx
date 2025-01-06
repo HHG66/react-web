@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2024-11-29 10:44:21
+ * @LastEditTime: 2025-01-06 16:14:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\components\hForm\HForm.jsx
  * @文件说明:
@@ -15,6 +15,7 @@ import {
   Tag,
   Divider,
   Space,
+  DatePicker,
 } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 // import registerConfig from './register.jsx';
@@ -102,6 +103,18 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     return <Select options={props.options} />;
   };
 
+  const datePickerComponent = (props) => {
+    // return <DatePicker />
+    return (
+      <FormItem key={props.name + props.type} name={props.name}>
+        <DatePicker
+          onChange={props.onChange}
+          style={{ width: props.item.width ? props.item.width : '100%' }}
+        />
+      </FormItem>
+    );
+  };
+
   const KeyWordComponent = (props) => {
     return (
       <KeyWord {...props} key={props.name + props.type} form={form}></KeyWord>
@@ -129,6 +142,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     button: ButtonComponent,
     select: SelectComponent,
     keyword: KeyWordComponent,
+    date: datePickerComponent,
   };
   PasswordComponent.propTypes = {
     name: PropTypes.isRequired,

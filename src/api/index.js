@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-02 13:13:54
- * @LastEditTime: 2025-01-02 18:28:04
+ * @LastEditTime: 2025-01-06 11:27:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\index.js
  * @文件说明:
@@ -62,6 +62,13 @@ request.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           window.location.href = '/login';
+          break;
+        case 413:
+          notification.open({
+            message: '请求错误',
+            type: 'error',
+            description: '数据量太大！状态码（413）',
+          });
           break;
         case 500:
           notification.open({

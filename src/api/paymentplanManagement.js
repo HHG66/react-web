@@ -6,14 +6,23 @@
  * @FilePath: /Personal-finance/web/src/api/paymentplanManagement.js
  * @文件说明: 
  */
-import request from "./index";
+import request from './index.js';
 
-export const getPlanListApi = (params) => {
+export async function createdPlanApi(data) {
   return request({
-    url: '/getplanlist',
-    method:'GET',
-    params:{
-      year:params.year
-    }
-  })
+    url: '/financialPlan/createdPlan',
+    method: 'POST',
+    data: data,
+  });
 }
+
+export async function getPlanApi(data) {
+  return request({
+    url: '/financialPlan/getPlan',
+    method: 'GET',
+    params: {
+      planDate: data.annual
+    },
+  });
+}
+
