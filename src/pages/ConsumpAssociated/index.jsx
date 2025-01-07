@@ -226,7 +226,7 @@ const ConsumpAssociated = () => {
           </Space>
         </Col>
       </Row>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={data} rowKey="_id"/>
       <Modal
         title={title}
         styles={{ display: 'block' }}

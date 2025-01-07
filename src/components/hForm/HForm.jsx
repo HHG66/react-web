@@ -1,208 +1,106 @@
-/*
- * @Author: HHG
- * @Date: 2024-08-26 14:17:48
- * @LastEditTime: 2025-01-06 16:14:21
- * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\components\hForm\HForm.jsx
- * @文件说明:
- */
-import {
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  Select,
-  Tag,
-  Divider,
-  Space,
-  DatePicker,
-} from 'antd';
-import FormItem from 'antd/es/form/FormItem';
-// import registerConfig from './register.jsx';
-import React, { useEffect, useState, useRef, forwardRef } from 'react';
+import { Button, Form, Input, Select, DatePicker } from 'antd';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import PropTypes from 'prop-types';
-import { StepBackwardOutlined, PlusOutlined } from '@ant-design/icons';
 import KeyWord from './components/keyWord';
 
 const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
-  const [form] = Form.useForm();
-  React.useImperativeHandle(ref, () => ({
-    // 暴露 form 实例的方法，可以根据需要暴露更多方法或属性
-    getFormInstance: () => form,
-    // resetFields: () => form.resetFields(),
-    // validateFields: () => form.validateFields(),
-  }));
-  const [formColumns, serColumns] = useState([]);
-  let initialValues = {};
-  columns.forEach((element) => {
-    // debugger
-    //keyWord 内部有设置了默认值逻辑，所以需要筛选出
-    if (element.type !== 'keyword') {
-      initialValues[element.name] = element.defaultValue;
-    } else {
-      if (element.defaultValue) {
-        initialValues[element.name] = [
-          {
-            label: element.defaultValue,
-            value: element.defaultValue,
-          },
-        ];
-      } else {
-        initialValues[element.name] = [];
-      }
-    }
-  });
+  const [form] = Form.useForm(); // 创建 form 实例
+  const formRef = useRef(); // 引用 ref，方便在外部获取实例
+  const [formColumns, setFormColumns] = useState(columns || []);
 
-  console.log(initialValues);
-  // debugger;
+  // 暴露 form 实例
+  useEffect(() => {
+    formRef.current = form; // 每次 form 更新时都更新 ref
+  }, [form]);
+
+  useImperativeHandle(ref, () => ({
+    getFormInstance: () => formRef.current,
+    resetFields: () => form.resetFields(),
+    validateFields: () => form.validateFields(),
+    setFieldsValue: (values) => form.setFieldsValue(values),
+  }));
 
   useEffect(() => {
-    if (columns) {
-      serColumns(columns);
-    }
+    setFormColumns(columns);
   }, [columns]);
 
-  const InputComponent = (props) => {
-    return (
-      <FormItem
-        key={props.name}
-        label={props.label}
-        name={props.name}
-        {...props.item}
-      >
-        <Input {...props} />
-      </FormItem>
-    );
-  };
-  const PasswordComponent = (props) => {
-    delete props.validateTrigger;
-    return (
-      <FormItem
-        key={props.name + props.type}
-        label={props.label}
-        name={props.name}
-        {...props.item}
-      >
-        <Input.Password {...props} />
-      </FormItem>
-    );
-  };
+  // 初始化表单的默认值
+  const initialValues = columns.reduce((acc, element) => {
+    if (element.type !== 'keyword') {
+      acc[element.name] = element.defaultValue;
+    } else {
+      acc[element.name] = element.defaultValue
+        ? [{ label: element.defaultValue, value: element.defaultValue }]
+        : [];
+    }
+    return acc;
+  }, {});
 
-  const ButtonComponent = (props) => {
-    let styletype = props.styletype ? props.styletype : 'primary';
-    // let type = styletype || 'primary';
-    return (
-      <FormItem key={props.name + props.type}>
-        <Button {...props} type={styletype} htmlType={props.htmlType}>
-          {props.text}
-        </Button>
-      </FormItem>
-    );
-  };
-  const SelectComponent = (props) => {
-    return <Select options={props.options} />;
-  };
-
-  const datePickerComponent = (props) => {
-    // return <DatePicker />
-    return (
-      <FormItem key={props.name + props.type} name={props.name}>
-        <DatePicker
-          onChange={props.onChange}
-          style={{ width: props.item.width ? props.item.width : '100%' }}
-        />
-      </FormItem>
-    );
-  };
-
-  const KeyWordComponent = (props) => {
-    return (
-      <KeyWord {...props} key={props.name + props.type} form={form}></KeyWord>
-    );
-  };
   const handleProp = (props) => {
-    let handleProp = {};
-    handleProp = {
-      ...props,
-    };
-    delete handleProp.defaultValue;
-    return handleProp;
-    // {
-    //   name: 'remark',
-    //   type: 'input',
-    //   placeholder: '请输入备注',
-    //   label: '备注',
-    //   option: [],
-    //   defaultValue:""
-    // },
+    let handledProps = { ...props };
+    if (props.defaultValue === undefined) {
+      delete handledProps.defaultValue;
+    }
+    return handledProps;
   };
+
   const components = {
-    input: InputComponent,
-    password: PasswordComponent,
-    button: ButtonComponent,
-    select: SelectComponent,
-    keyword: KeyWordComponent,
-    date: datePickerComponent,
-  };
-  PasswordComponent.propTypes = {
-    name: PropTypes.isRequired,
-    type: PropTypes.isRequired,
-    label: PropTypes.isRequired,
-    item: PropTypes.any,
-    validateTrigger: PropTypes.isRequired,
-  };
-  InputComponent.propTypes = {
-    name: PropTypes.isRequired,
-    type: PropTypes.isRequired,
-    label: PropTypes.isRequired,
-    item: PropTypes.any,
-  };
-
-  ButtonComponent.propTypes = {
-    name: PropTypes.isRequired,
-    type: PropTypes.isRequired,
-    label: PropTypes.isRequired,
-    item: PropTypes.any,
-    styletype: PropTypes.any,
-    htmlType: PropTypes.any,
-    text: PropTypes.isRequired,
-  };
-
-  SelectComponent.propTypes = {
-    name: PropTypes.isRequired,
-    type: PropTypes.isRequired,
-    label: PropTypes.isRequired,
-    item: PropTypes.any,
-    options: PropTypes.array,
+    input: (props) => (
+      <Form.Item {...props}>
+        <Input {...props} />
+      </Form.Item>
+    ),
+    password: (props) => (
+      <Form.Item {...props}>
+        <Input.Password {...props} />
+      </Form.Item>
+    ),
+    button: (props) => (
+      <Form.Item>
+        <Button {...props} type={props.styletype||"primary"}>{props.text}</Button>
+      </Form.Item>
+    ),
+    select: (props) => (
+      <Form.Item {...props}>
+        <Select {...props} />
+      </Form.Item>
+    ),
+    date: (props) => (
+      <Form.Item {...props}>
+        <DatePicker {...props} />
+      </Form.Item>
+    ),
+    keyword: (props) => <KeyWord {...props} form={form} />,
   };
 
   return (
-    <>
-      <Form
-        // style={{
-        //   padding: 8,
-        // }}
-        onFinish={onFinish}
-        form={form}
-        initialValues={initialValues}
-        // initialValues={{
-        //   consumptionTypeName: 'weewwe',
-        //   remark: '2',
-        // }}
-        {...formProps}
-      >
-        {formColumns &&
-          formColumns.map((field) => {
-            //handleProp处理一些单个组件不需要的设置
-            return components[field.type](handleProp(field));
-          })}
-      </Form>
-    </>
+    <Form
+      onFinish={onFinish}
+      form={form}
+      initialValues={initialValues} // 使用 initialValues 来设置初始值
+      {...formProps}
+    >
+      {formColumns.map((field, index) => {
+        return components[field.type]
+          ? React.cloneElement(components[field.type](handleProp(field)), {
+              key: field.name || index, // 使用 `field.name` 或 `index` 作为 key
+            })
+          : null;
+      })}
+    </Form>
   );
 });
+
 HForm.propTypes = {
   columns: PropTypes.array.isRequired,
-  onFinish: PropTypes.func, // 正确使用 PropTypes.func 来验证函数类型
+  onFinish: PropTypes.func.isRequired,
+  formProps: PropTypes.object,
 };
 
 export default HForm;

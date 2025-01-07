@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-13 23:18:35
- * @LastEditTime: 2023-01-13 23:20:12
+ * @LastEditTime: 2025-01-07 17:14:26
  * @LastEditors: 韩宏广
- * @FilePath: /Personal-finance/web/src/api/paymentplanManagement.js
+ * @FilePath: \financial-web\src\api\paymentplanManagement.js
  * @文件说明: 
  */
 import request from './index.js';
@@ -21,8 +21,17 @@ export async function getPlanApi(data) {
     url: '/financialPlan/getPlan',
     method: 'GET',
     params: {
-      planDate: data.annual
+      planDate: data.annual,
+      period: data.period,
     },
   });
 }
 
+
+export async function updataPlan(data) {
+  return request({
+    url: '/financialPlan/updataPlan',
+    method: 'POST',
+    data: data,
+  });
+}

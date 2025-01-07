@@ -217,7 +217,7 @@ const Routers = [
       },
       {
         key: '/paymentplanmanagement',
-        title: '收支计划管理',
+        title: '收支预算管理',
         icon: {
           name: 'paymentplanmanagement',
           style: {
@@ -228,7 +228,7 @@ const Routers = [
         subs: [
           {
             key: '/paymentplanmanagement/majorplan',
-            title: '主要计划',
+            title: '主要预算',
             component: lazyCompent(
               <PaymentplanManagement></PaymentplanManagement>
             ),
@@ -237,6 +237,11 @@ const Routers = [
           {
             key: '/paymentplanmanagement/depositplan',
             title: '存款计划',
+            component: lazyCompent(<DepositPlan></DepositPlan>),
+            role: '6-2',
+          }, {
+            key: '/paymentplanmanagement/depositplan12',
+            title: '预算执行监控',
             component: lazyCompent(<DepositPlan></DepositPlan>),
             role: '6-2',
           },
