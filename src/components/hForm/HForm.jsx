@@ -44,35 +44,35 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
 
   const handleProp = (props) => {
     let handledProps = { ...props };
-    if (props.defaultValue === undefined) {
-      delete handledProps.defaultValue;
-    }
+    delete handledProps.defaultValue;
     return handledProps;
   };
 
   const components = {
     input: (props) => (
-      <Form.Item {...props}>
+      <Form.Item {...props} {...props.item}>
         <Input {...props} />
       </Form.Item>
     ),
     password: (props) => (
-      <Form.Item {...props}>
+      <Form.Item {...props} {...props.item}>
         <Input.Password {...props} />
       </Form.Item>
     ),
     button: (props) => (
-      <Form.Item>
-        <Button {...props} type={props.styletype||"primary"}>{props.text}</Button>
+      <Form.Item {...props.item}>
+        <Button {...props} type={props.styletype || 'primary'}>
+          {props.text}
+        </Button>
       </Form.Item>
     ),
     select: (props) => (
-      <Form.Item {...props}>
+      <Form.Item {...props} {...props.item}>
         <Select {...props} />
       </Form.Item>
     ),
     date: (props) => (
-      <Form.Item {...props}>
+      <Form.Item {...props} {...props.item}>
         <DatePicker {...props} />
       </Form.Item>
     ),

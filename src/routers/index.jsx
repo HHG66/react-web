@@ -228,7 +228,7 @@ const Routers = [
         subs: [
           {
             key: '/paymentplanmanagement/majorplan',
-            title: '主要预算',
+            title: '预算管理',
             component: lazyCompent(
               <PaymentplanManagement></PaymentplanManagement>
             ),

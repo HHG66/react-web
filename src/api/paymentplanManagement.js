@@ -35,3 +35,11 @@ export async function updataPlan(data) {
     data: data,
   });
 }
+
+export async function deletePlanApi(data) {
+  return request({
+    url: '/financialPlan/deletePlan',
+    method: 'POST',
+    data: data,
+  });
+}

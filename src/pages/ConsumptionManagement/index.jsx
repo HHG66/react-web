@@ -117,7 +117,7 @@ const ConsumptionManagement = () => {
         item: {
           rules: [{ required: true, message: '请输入消费类型名称' }],
         },
-        defaultValue: '',
+        // defaultValue: '123',
       },
       {
         name: 'productKeyWords',
@@ -137,7 +137,7 @@ const ConsumptionManagement = () => {
         placeholder: '请输入备注',
         label: '备注',
         option: [],
-        defaultValue: '',
+        // defaultValue: '',
       },
     ],
   };

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-07 18:02:31
+ * @LastEditTime: 2025-01-08 17:19:51
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
@@ -26,6 +26,7 @@ import {
   createdPlanApi,
   getPlanApi,
   updataPlan,
+  deletePlanApi,
 } from '@/api/paymentplanManagement';
 import './index.less';
 import HForm from '../../components/hForm';
@@ -116,12 +117,44 @@ const PaymentplanManagement = () => {
           >
             编辑
           </a>
-          <a>删除</a>
+          <a
+            onClick={() => {
+              deletePlanAffirm(record);
+            }}
+          >
+            删除
+          </a>
         </Space>
       ),
     },
   ];
-
+  const deletePlanAffirm = (rowData) => {
+    Modal.confirm({
+      content: '是否删除计划',
+      okText: '确定',
+      cancelText: '取消',
+      // footer:null,
+      onOk: () => {
+        deletePlan();
+      },
+    });
+    const deletePlan = () => {
+      deletePlanApi({ _id: rowData._id }).then(() => {
+        getPlan();
+      });
+    };
+    // Modal.info({
+    //   title: '提示',
+    //   content: '是否删除计划',
+    //   okText: "确定",
+    //   cancelText: '取消',
+    //   onOk: () => {
+    //     console.log('---');
+    //     // 在这里添加你的逻辑，比如删除计划
+    //   },
+    //   // 不需要设置 footer: null，因为 Modal.info 会自动处理
+    // });
+  };
   const [data, setTabelDate] = useState([]);
   const items = [
     {
@@ -173,15 +206,21 @@ const PaymentplanManagement = () => {
     // } else {
     //   setYear(window.moment(new Date()).format('YYYY'));
     // }
-
+    getPlan();
+  };
+  const getPlan = () => {
+    let queryParameter = form.getFieldValue();
+    queryParameter.annual
+      ? (queryParameter.annual = window
+          .moment(queryParameter.annual)
+          .format('YYYY-MM'))
+      : '';
     getPlanApi({
-      ...values,
-      annual: window.moment(values.annual).format('YYYY-MM-DD'),
+      ...queryParameter,
     }).then((res) => {
       setTabelDate(res.data);
     });
   };
-
   const [open, setOpen] = useState(false);
   const onClose = () => {
     setOpen(false);
@@ -207,6 +246,7 @@ const PaymentplanManagement = () => {
         item: {
           rules: [{ required: true, message: '请输入预算名称' }],
         },
+        // defaultValue:'123'
       },
       {
         name: 'period',
@@ -217,9 +257,6 @@ const PaymentplanManagement = () => {
         options: periodOptionList,
         item: {
           rules: [{ required: true, message: '请选择周期' }],
-          style: {
-            width: '120px',
-          },
         },
       },
       {
@@ -231,21 +268,33 @@ const PaymentplanManagement = () => {
         options: incomePatternOptionList,
         item: {
           rules: [{ required: true, message: '请选择周期' }],
-          style: {
-            width: '120px',
-          },
+          // style: {
+          //   width: '120px',
+          // },
         },
       },
-
+      {
+        name: 'amount',
+        type: 'input',
+        placeholder: '请输入金额',
+        label: '金额',
+        //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+        item: {
+          rules: [{ required: true, message: '请输入金额' }],
+          // style: {
+          //   width: '120px',
+          // },
+        },
+      },
       {
         name: 'planDate',
         type: 'date',
         placeholder: '请选择日期',
         label: '日期',
         item: {
-          // rules: [
-
-          // ],
+          rules: [{ required: true, message: '请选择日期' }],
+        },
+        style: {
           width: '100%',
         },
       },
@@ -284,7 +333,7 @@ const PaymentplanManagement = () => {
         });
       });
     } else {
-      updataPlan(formData).then((res) => {
+      updataPlan({ ...formData, _id: currentRowData._id }).then((res) => {
         setCreatedModel({
           ...createdModel,
           modelState: false,

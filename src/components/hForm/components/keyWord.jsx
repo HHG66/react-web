@@ -28,20 +28,23 @@ const KeyWord = (props) => {
   const [name, setName] = useState(''); // 输入框内容
   const [options, setOptions] = useState(initialOptions); // 选项列表
   useEffect(() => {
+    console.log(props, 'props');
+
     let newItem = props.form.getFieldValue(props.name);
-    //  console.log( );
+
     let defaultOption = [];
     defaultOption = newItem.map((element) => {
       return {
         label: element.label,
         value: element.value,
-        color:element.color
+        color: element.color,
       };
     });
-    // console.log(defaultOption);
     setOptions((prev) => [...defaultOption]); // 更新选项
+    // console.log(defaultOption, '-------+');
     // console.log(options);
-  }, [props]);
+    //因为打开的时候form创建未完成所以无法获取到对应的值，所以需要监测props.form.getFieldValue(props.name)来确保有值的时候赋值
+  }, [props, props.form.getFieldValue(props.name)]);
   // 渲染标签
   const tagRender = ({ label, closable, onClose }) => {
     const option = options.find((opt) => opt.value === label);
@@ -87,13 +90,13 @@ const KeyWord = (props) => {
     setName('');
     setTimeout(() => inputRef.current?.focus(), 0); // 聚焦输入框
   };
-// 处理选择变化
-const handleChange = (selectedValues) => {
-  const selectedObjects = selectedValues.map((value) =>
-    options.find((opt) => opt.value === value)
-  );
-  props.form.setFieldValue(props.name, selectedObjects); // 更新表单的值为完整对象
-};
+  // 处理选择变化
+  const handleChange = (selectedValues) => {
+    const selectedObjects = selectedValues.map((value) =>
+      options.find((opt) => opt.value === value)
+    );
+    props.form.setFieldValue(props.name, selectedObjects); // 更新表单的值为完整对象
+  };
   return (
     <>
       {contextHolder}
