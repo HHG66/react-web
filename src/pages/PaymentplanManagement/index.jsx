@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-09 16:45:03
+ * @LastEditTime: 2025-01-09 23:59:37
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/PaymentplanManagement/index.jsx
  * @文件说明:
  */
 import { useEffect, useState, useRef } from 'react';
@@ -388,10 +388,10 @@ const PaymentplanManagement = () => {
       {
         name: 'planDate',
         type: 'date',
-        placeholder: '请选择日期',
-        label: '日期',
+        placeholder: '请选择生效日期',
+        label: '生效日期',
         item: {
-          rules: [{ required: true, message: '请选择日期' }],
+          rules: [{ required: true, message: '请选择生效日期' }],
         },
         style: {
           width: '100%',
