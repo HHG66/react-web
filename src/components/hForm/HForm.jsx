@@ -24,6 +24,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     resetFields: () => form.resetFields(),
     validateFields: () => form.validateFields(),
     setFieldsValue: (values) => form.setFieldsValue(values),
+    getFieldValue:(name)=>form.getFieldValue(name)
   }));
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     ),
     select: (props) => (
       <Form.Item {...props} {...props.item}>
-        <Select {...props} />
+        <Select {...props} {...props.item}/>
       </Form.Item>
     ),
     date: (props) => (

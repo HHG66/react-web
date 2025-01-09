@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-08 17:19:51
+ * @LastEditTime: 2025-01-09 16:45:03
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
@@ -59,6 +59,19 @@ const PaymentplanManagement = () => {
       label: '变动收入',
     },
   ];
+
+  let expenditurePatternOptionList = [
+    {
+      value: '01',
+      label: '固定支出',
+    },
+    {
+      value: '02',
+      label: '变动支出',
+    },
+  ];
+
+
   const columns = [
     {
       title: '名称',
@@ -90,7 +103,18 @@ const PaymentplanManagement = () => {
         let labelText = incomePatternOptionList.find((opt) => {
           return opt.value == value;
         });
-        return labelText ? labelText.label : '';
+        return labelText ? labelText.label : '-';
+      },
+    },
+    {
+      title: '支出方式',
+      dataIndex: 'expenditurePattern',
+      key: 'expenditurePattern',
+      render: (value) => {
+        let labelText = expenditurePatternOptionList.find((opt) => {
+          return opt.value == value;
+        });
+        return labelText ? labelText.label : '-';
       },
     },
     {
@@ -260,6 +284,67 @@ const PaymentplanManagement = () => {
         },
       },
       {
+        name: 'receiveOrSpend',
+        type: 'select',
+        placeholder: '请选择',
+        label: '收/支',
+        //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+        options: [{ label: '收入', value: '01' },{ label: '支出', value: '02' }],
+        item: {
+          rules: [{ required: true, message: '请选择' }],
+        },
+        onChange(value) {
+          if (value == '01') {
+            const updatedColumns = formConfig.columns.map((column) => {
+              if (column.name === 'incomePattern') {
+                return {
+                  ...column,
+                  hidden: false,
+                  item:{
+                    rules: [{ required: true, message: '请选择收入方式' }],
+                  }
+                };
+              }
+              if (column.name === 'expenditurePattern') {
+                return {
+                  ...column,
+                  hidden: true,
+                  item:{
+                    rules: [{ required: false }],
+                  }
+                };
+              }
+              return column;
+            });
+            SetFormConfig({ ...formConfig, columns: updatedColumns });
+          }else{
+            const updatedColumns = formConfig.columns.map((column) => {
+              if (column.name === 'incomePattern') {
+                return {
+                  ...column,
+                  hidden: true,
+                  item:{
+                    rules: [{ required: false }],
+                  }
+                };
+              }
+              if (column.name === 'expenditurePattern') {
+                return {
+                  ...column,
+                  hidden: false,
+                  item:{
+                    rules: [{ required: true, message: '请选择支出方式' }],
+                  }
+                };
+              }
+              return column;
+            });
+            console.log(updatedColumns);
+            SetFormConfig({ ...formConfig, columns: updatedColumns });
+          }
+        },
+      },
+      {
         name: 'incomePattern',
         type: 'select',
         placeholder: '请选择收入方式',
@@ -267,11 +352,25 @@ const PaymentplanManagement = () => {
         //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
         options: incomePatternOptionList,
         item: {
-          rules: [{ required: true, message: '请选择周期' }],
+          rules: [{ required: true, message: '请选择收入方式' }],
           // style: {
           //   width: '120px',
           // },
         },
+      },
+      {
+        name: 'expenditurePattern',
+        type: 'select',
+        placeholder: '请选择支出方式',
+        label: '支出方式',
+        options: expenditurePatternOptionList,
+        item: {
+          rules: [{ required: true, message: '请选择支出方式' }],
+          // style: {
+          //   width: '120px',
+          // },
+        },
+        hidden:true
       },
       {
         name: 'amount',
@@ -312,6 +411,7 @@ const PaymentplanManagement = () => {
       },
     ],
   });
+
   const [currentRowData, setRowdata] = useState();
   const handleOk = () => {};
   const handleCancel = () => {
