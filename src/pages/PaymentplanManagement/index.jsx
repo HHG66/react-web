@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-09 23:59:37
+ * @LastEditTime: 2025-01-10 18:40:02
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/pages/PaymentplanManagement/index.jsx
+ * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
  */
 import { useEffect, useState, useRef } from 'react';
@@ -30,6 +30,9 @@ import {
 } from '@/api/paymentplanManagement';
 import './index.less';
 import HForm from '../../components/hForm';
+import { getConsumptionTypeListApi } from '@/api/consumptiontype';
+import { getIncomeTypeListApi } from '@/api/incometype';
+
 const PaymentplanManagement = () => {
   let periodOptionList = [
     {
@@ -71,7 +74,6 @@ const PaymentplanManagement = () => {
     },
   ];
 
-
   const columns = [
     {
       title: '名称',
@@ -80,7 +82,7 @@ const PaymentplanManagement = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: '时间',
+      title: '生效时间',
       dataIndex: 'planDate',
       key: 'planDate',
     },
@@ -207,12 +209,12 @@ const PaymentplanManagement = () => {
       children: '',
     },
   ];
-  const [year, setYear] = useState('2019');
-  const [plan, setPlan] = useState({
-    income: [],
-    consumption: [],
-    other: [],
-  });
+  // const [year, setYear] = useState('2019');
+  // const [plan, setPlan] = useState({
+  //   income: [],
+  //   consumption: [],
+  //   other: [],
+  // });
   // const [description, setDescription] = useState({
   //   detailed: 'none',
   //   month: '一月份',
@@ -254,6 +256,44 @@ const PaymentplanManagement = () => {
     modelState: false,
     title: '新增',
   });
+
+//   const correlationTypeList=[
+//     {
+//         "label": "ce11",
+//         "value": "674d602b1050a0ace66778ef"
+//     },
+//     {
+//         "label": "1",
+//         "value": "674eab17377230f2c0bcb288"
+//     },
+//     {
+//         "label": "楚呈轩",
+//         "value": "674eab2c377230f2c0bcb28c"
+//     },
+//     {
+//         "label": "222",
+//         "value": "674ead96377230f2c0bcb293"
+//     },
+//     {
+//         "label": "测1",
+//         "value": "674eadec377230f2c0bcb297"
+//     }
+// ]
+
+// useEffect(()=>{
+//   setTest({
+//     ...test,
+//     test1:'12312'
+//   })
+// },[])
+// const [test,setTest]=useState({
+//   test1:"ttt",
+//   onChange:()=>{
+//     console.log(test);
+//   }
+// })
+
+
   const [formConfig, SetFormConfig] = useState({
     formProps: {
       labelCol: {
@@ -289,52 +329,57 @@ const PaymentplanManagement = () => {
         placeholder: '请选择',
         label: '收/支',
         //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
-        options: [{ label: '收入', value: '01' },{ label: '支出', value: '02' }],
+        options: [
+          { label: '收入', value: '01' },
+          { label: '支出', value: '02' },
+        ],
         item: {
           rules: [{ required: true, message: '请选择' }],
         },
         onChange(value) {
+          updateFormConfigBasedOnReceiveOrSpend(value);
+          return
           if (value == '01') {
             const updatedColumns = formConfig.columns.map((column) => {
               if (column.name === 'incomePattern') {
                 return {
                   ...column,
                   hidden: false,
-                  item:{
+                  item: {
                     rules: [{ required: true, message: '请选择收入方式' }],
-                  }
+                  },
                 };
               }
               if (column.name === 'expenditurePattern') {
                 return {
                   ...column,
                   hidden: true,
-                  item:{
+                  item: {
                     rules: [{ required: false }],
-                  }
+                  },
                 };
               }
               return column;
             });
             SetFormConfig({ ...formConfig, columns: updatedColumns });
-          }else{
+          } else {
             const updatedColumns = formConfig.columns.map((column) => {
               if (column.name === 'incomePattern') {
                 return {
                   ...column,
                   hidden: true,
-                  item:{
+                  item: {
                     rules: [{ required: false }],
-                  }
+                  },
                 };
               }
               if (column.name === 'expenditurePattern') {
                 return {
                   ...column,
                   hidden: false,
-                  item:{
+                  item: {
                     rules: [{ required: true, message: '请选择支出方式' }],
-                  }
+                  },
                 };
               }
               return column;
@@ -370,7 +415,21 @@ const PaymentplanManagement = () => {
           //   width: '120px',
           // },
         },
-        hidden:true
+        hidden: true,
+      },
+      {
+        name: 'associationType',
+        type: 'select',
+        placeholder: '请选择收/支关联类型',
+        label: '关联类型',
+        //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+        options: [],
+        item: {
+          rules: [{ required: true, message: '请选择收/支关联类型' }],
+          // style: {
+          //   width: '120px',
+          // },
+        },
       },
       {
         name: 'amount',
@@ -411,7 +470,30 @@ const PaymentplanManagement = () => {
       },
     ],
   });
-
+  const updateFormConfigBasedOnReceiveOrSpend = (value) => {
+    const updatedColumns = formConfig.columns.map((column) => {
+      if (column.name === 'incomePattern') {
+        return {
+          ...column,
+          hidden: value !== '01',  // Hide incomePattern if not '01'
+          item: {
+            rules: value === '01' ? [{ required: true, message: '请选择收入方式' }] : [],
+          },
+        };
+      }
+      if (column.name === 'expenditurePattern') {
+        return {
+          ...column,
+          hidden: value !== '02',  // Hide expenditurePattern if not '02'
+          item: {
+            rules: value === '02' ? [{ required: true, message: '请选择支出方式' }] : [],
+          },
+        };
+      }
+      return column;
+    });
+    SetFormConfig({ ...formConfig, columns: updatedColumns });
+  };
   const [currentRowData, setRowdata] = useState();
   const handleOk = () => {};
   const handleCancel = () => {
@@ -445,9 +527,31 @@ const PaymentplanManagement = () => {
     }
   };
   useEffect(() => {
-    setYear('2023');
     getPlanApi({}).then((res) => {
       setTabelDate(res.data);
+    });
+    getConsumptionTypeListApi().then((res) => {
+      getIncomeTypeListApi().then((resData) => {
+        let list = [...res.data, ...resData.data];
+        let processedAssociationList = list.map((ele) => {
+          // debugger
+          return {
+            label: ele.incomeName || ele.consumptionTypeName,
+            value: ele._id,
+          };
+        });
+        console.log(processedAssociationList, 'processedAssociationList');
+        const updatedColumns = formConfig.columns.map((column) => {
+          if (column.name === 'associationType') {
+            return {
+              ...column,
+              options:processedAssociationList
+            };
+          }
+          return column;
+        });
+        SetFormConfig({ ...formConfig, columns: updatedColumns });
+      });
     });
   }, []);
   useEffect(() => {
@@ -482,6 +586,23 @@ const PaymentplanManagement = () => {
           <Col span={6}>
             <Form.Item name="annual" label="年度">
               <DatePicker picker="year" style={{ width: '100%' }} />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="period" label="周期">
+              <Select
+                style={{
+                  width: 120,
+                }}
+                // onChange={handleChange}
+                options={[
+                  ...periodOptionList,
+                  {
+                    label: '全部',
+                    value: '-1',
+                  },
+                ]}
+              />
             </Form.Item>
           </Col>
           <Col span={6}>
