@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-11 22:43:09
- * @LastEditTime: 2023-01-12 16:50:58
+ * @LastEditTime: 2025-01-13 09:31:01
  * @LastEditors: 韩宏广
- * @FilePath: \financial\web\src\pages\DepositPlan\index.js
+ * @FilePath: \financial-web\src\pages\DepositPlan\index.jsx
  * @文件说明: 
  */
 import { useEffect, useState } from 'react'
@@ -12,7 +12,20 @@ import { getDepositPlan,editSingleDepositPlanApi } from '@/api/depositplan'
 import './index.less'
 const { Title } = Typography;
 const DepositPlan = () => {
-  const [depositBox, setDepositBox] = useState([])
+  const [depositBox, setDepositBox] = useState([
+    //   {
+    //     "id": 1,
+    //     "iscomplete": true
+    // },
+    // {
+    //     "id": 2,
+    //     "iscomplete": true
+    // },
+    // {
+    //     "id": 3,
+    //     "iscomplete": true
+    // }
+  ])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm()
 

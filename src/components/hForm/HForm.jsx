@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, DatePicker } from 'antd';
+import { Button, Form, Input, Select, DatePicker,InputNumber  } from 'antd';
 import React, {
   useEffect,
   useState,
@@ -53,6 +53,11 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
       <Form.Item {...props} {...props.item}>
         <Input {...props} />
       </Form.Item>
+    ),
+    number:(props)=>(
+      <Form.Item {...props} {...props.item}>
+       <InputNumber {...props}    />
+    </Form.Item>
     ),
     password: (props) => (
       <Form.Item {...props} {...props.item}>
