@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2025-01-13 18:13:12
+ * @LastEditTime: 2025-01-13 22:17:55
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\Deposits\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/Deposits/index.jsx
  * @文件说明:
  */
 import React, { useEffect, useState, useRef } from 'react';
@@ -222,8 +222,8 @@ const Deposits = () => {
         item: {
           rules: [{ required: true, message: '请选择存款时间' }],
         },
-        style:{
-          width:'100%'
+        style: {
+          width: '100%'
         }
       },
       {
@@ -235,8 +235,8 @@ const Deposits = () => {
         item: {
           rules: [{ required: true, message: '请输入金额' }],
         },
-        style:{
-          width:'100%'
+        style: {
+          width: '100%'
         }
       },
       // {
@@ -253,7 +253,11 @@ const Deposits = () => {
       // },
     ],
   });
-
+  const [dynamicRules, setDynamicRules] = useState({})
+  const [componentDisabled, setComponentDisabled] = useState({
+    dateCommenced: false,
+    expirationTime:false
+  })
   const confirm = (id) => {
     deleteDepositApi(id).then((res) => {
       // message.success(res.message);
@@ -276,21 +280,21 @@ const Deposits = () => {
       setTotalDeposits(res.data.unmaturedDeposit);
     });
   };
-  const editDeposit = (rowdata) => {
-    form.resetFields();
-    setModelData({ ...modelData, id: rowdata._id, isModalOpen: true });
-  };
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      // console.log(values);
-      editDepositInfoApi({ ...values, _id: modelData.id }).then((res) => {
-        setModelData({
-          ...modelData,
-          isModalOpen: false,
-        });
-      });
-    });
-  };
+  // const editDeposit = (rowdata) => {
+  //   form.resetFields();
+  //   setModelData({ ...modelData, id: rowdata._id, isModalOpen: true });
+  // };
+  // const handleOk = () => {
+  //   form.validateFields().then((values) => {
+  //     // console.log(values);
+  //     editDepositInfoApi({ ...values, _id: modelData.id }).then((res) => {
+  //       setModelData({
+  //         ...modelData,
+  //         isModalOpen: false,
+  //       });
+  //     });
+  //   });
+  // };
   const createdDeposit = () => {
     createdForm.validateFields().then((values) => {
       createdDepositApi({
@@ -312,9 +316,9 @@ const Deposits = () => {
   //     isModalOpen: false,
   //   });
   // };
-  const handleChange = (value) => {
-    setActionState(value);
-  };
+  // const handleChange = (value) => {
+  //   setActionState(value);
+  // };
   const onFinish = (values) => {
     console.log(values);
     getDepositList(values);
@@ -342,6 +346,86 @@ const Deposits = () => {
 
     return '*'.repeat(totalDeposits.toString().length);
     // return string.replace('','*')
+  };
+  const depositTypeChange = (value) => {
+    switch (value) {
+      case "01":
+        setDynamicRules((dynamicRules) => {
+          return {
+            // ...dynamicRules,
+            dateCommenced:
+              [{
+                required: true,
+                message: '请输入本金',
+              },]
+          }
+        })
+        console.log(updateComponentDisabled(componentDisabled,['expirationTime']));
+        setComponentDisabled(updateComponentDisabled(componentDisabled,['expirationTime']))
+        break;
+      case '02':
+        setDynamicRules((dynamicRules) => {
+          return {
+            // ...dynamicRules,
+            interestRate: [{
+              required: true,
+              message: '请输入利率',
+            }],
+            dateCommenced:
+              [{
+                required: true,
+                message: '请输入本金',
+              },],
+
+            expirationTime: [{
+              required: true,
+              message: '请选择到期时间',
+            },]
+          }
+        })
+        setComponentDisabled((componentDisabled) => {
+          // 创建一个新的对象，包含所有原始属性
+          const newComponentDisabled = { ...componentDisabled };
+
+          // 遍历对象的所有属性
+          for (let key in newComponentDisabled) {
+            // 检查属性值是否为 true（在这个例子中其实不需要循环，因为只有一个 true 值）
+            newComponentDisabled[key] = false;
+            // 注意：如果需要对 false 值或其他类型的值进行处理，可以在这里添加逻辑
+          }
+
+          return {
+            ...newComponentDisabled,
+            expirationTime: true
+          }
+        })
+        break
+      default:
+        break;
+    }
+
+  }
+
+  const updateComponentDisabled = (componentDisabled, specialFields) => {
+    const newComponentDisabled = { ...componentDisabled };
+    for (let key in newComponentDisabled) {
+      if (!specialFields.includes(key)) {
+        newComponentDisabled[key] = false;
+      }
+    }
+    // 特别处理指定的字段
+    specialFields.forEach(field => {
+      if (field in newComponentDisabled) {
+        // 这里可以根据需要设置字段的值，比如总是设置为 true，或者根据其他逻辑设置
+        newComponentDisabled[field] = true; // 或者其他值
+      } else {
+        // 如果需要，可以添加新字段到对象中
+        // newComponentDisabled[field] = someValue;
+      }
+    });
+    // 注意：如果 specialFields 中有字段不在 componentDisabled 中，上面的循环不会添加它们
+    // 如果需要添加这些字段，可以在循环后手动添加
+    return newComponentDisabled;
   };
   if (actionState === '0') {
     modelEle = (
@@ -482,17 +566,35 @@ const Deposits = () => {
             span: 4,
           }}
         >
-          <Form.Item label="存款名称" name="depositName">
+          <Form.Item label="存款名称" name="depositName" rules={[
+            {
+              required: true,
+              message: '请输入存款名称',
+            },
+          ]}>
             <Input />
           </Form.Item>
-          <Form.Item label="本金" name="amountDeposited">
+          <Form.Item label="存款类型" name="depositType" rules={[
+            {
+              required: true,
+              message: '请选择存款类型',
+            },
+          ]}>
+            <Select options={[{ value: '01', label: '活期存款' }, { value: '02', label: '定期存款' }, { value: '03', label: '定投存款' }, { value: '04', label: '目标存款' }]} onChange={depositTypeChange} />
+          </Form.Item>
+          <Form.Item label="本金" name="amountDeposited" rules={[
+            {
+              required: true,
+              message: '请输入本金',
+            },
+          ]} >
             <InputNumber
               style={{
                 width: '100%',
               }}
             />
           </Form.Item>
-          <Form.Item label="利率" name="interestRate">
+          <Form.Item label="利率" name="interestRate" rules={dynamicRules["interestRate"]}>
             {/* <Input /> */}
             <InputNumber
               style={{
@@ -502,18 +604,15 @@ const Deposits = () => {
               // min="0"
               // max="100"
               step="0.01"
-              // onChange={onChange}
-              // stringMode
+            // onChange={onChange}
+            // stringMode
             />
           </Form.Item>
-          <Form.Item label="起始时间" name="dateCommenced">
-            <DatePicker style={{ width: '100%' }} />
+          <Form.Item label="起始时间" name="dateCommenced" rules={dynamicRules["dateCommenced"]} >
+            <DatePicker style={{ width: '100%' }} disabled={componentDisabled["dateCommenced"]} />
           </Form.Item>
-          <Form.Item label="到期时间" name="expirationTime">
-            <DatePicker style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="存款类型" name="depositType">
-            <Input />
+          <Form.Item label="到期时间" name="expirationTime" rules={dynamicRules["expirationTime"]} >
+            <DatePicker style={{ width: '100%' }} disabled={componentDisabled["expirationTime"]} />
           </Form.Item>
           <Form.Item label="备注" name="remark">
             <Input />
@@ -605,8 +704,8 @@ const Deposits = () => {
               // min="0"
               // max="100"
               step="0.01"
-              // onChange={onChange}
-              // stringMode
+            // onChange={onChange}
+            // stringMode
             />
           </Form.Item>
           <Form.Item label="起始时间" name="dateCommenced">
