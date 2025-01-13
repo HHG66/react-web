@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-10 18:40:02
+ * @LastEditTime: 2025-01-11 00:17:00
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/PaymentplanManagement/index.jsx
  * @文件说明:
  */
 import { useEffect, useState, useRef } from 'react';
@@ -338,55 +338,6 @@ const PaymentplanManagement = () => {
         },
         onChange(value) {
           updateFormConfigBasedOnReceiveOrSpend(value);
-          return
-          if (value == '01') {
-            const updatedColumns = formConfig.columns.map((column) => {
-              if (column.name === 'incomePattern') {
-                return {
-                  ...column,
-                  hidden: false,
-                  item: {
-                    rules: [{ required: true, message: '请选择收入方式' }],
-                  },
-                };
-              }
-              if (column.name === 'expenditurePattern') {
-                return {
-                  ...column,
-                  hidden: true,
-                  item: {
-                    rules: [{ required: false }],
-                  },
-                };
-              }
-              return column;
-            });
-            SetFormConfig({ ...formConfig, columns: updatedColumns });
-          } else {
-            const updatedColumns = formConfig.columns.map((column) => {
-              if (column.name === 'incomePattern') {
-                return {
-                  ...column,
-                  hidden: true,
-                  item: {
-                    rules: [{ required: false }],
-                  },
-                };
-              }
-              if (column.name === 'expenditurePattern') {
-                return {
-                  ...column,
-                  hidden: false,
-                  item: {
-                    rules: [{ required: true, message: '请选择支出方式' }],
-                  },
-                };
-              }
-              return column;
-            });
-            console.log(updatedColumns);
-            SetFormConfig({ ...formConfig, columns: updatedColumns });
-          }
         },
       },
       {
@@ -471,28 +422,34 @@ const PaymentplanManagement = () => {
     ],
   });
   const updateFormConfigBasedOnReceiveOrSpend = (value) => {
-    const updatedColumns = formConfig.columns.map((column) => {
-      if (column.name === 'incomePattern') {
-        return {
-          ...column,
-          hidden: value !== '01',  // Hide incomePattern if not '01'
-          item: {
-            rules: value === '01' ? [{ required: true, message: '请选择收入方式' }] : [],
-          },
-        };
-      }
-      if (column.name === 'expenditurePattern') {
-        return {
-          ...column,
-          hidden: value !== '02',  // Hide expenditurePattern if not '02'
-          item: {
-            rules: value === '02' ? [{ required: true, message: '请选择支出方式' }] : [],
-          },
-        };
-      }
-      return column;
+    // 使用更新函数以获取最新的 formConfig 值
+    SetFormConfig((currentFormConfig) => {
+      const updatedColumns = currentFormConfig.columns.map((column) => {
+        if (column.name === 'incomePattern') {
+          return {
+            ...column,
+            hidden: value !== '01',  // 如果不是 '01' 则隐藏 incomePattern
+            item: {
+              rules: value === '01' ? [{ required: true, message: '请选择收入方式' }] : [],
+            },
+          };
+        }
+        if (column.name === 'expenditurePattern') {
+          return {
+            ...column,
+            hidden: value !== '02',  // 如果不是 '02' 则隐藏 expenditurePattern
+            item: {
+              rules: value === '02' ? [{ required: true, message: '请选择支出方式' }] : [],
+            },
+          };
+        }
+        return column;
+      });
+      return {
+        ...currentFormConfig,
+        columns: updatedColumns,
+      };
     });
-    SetFormConfig({ ...formConfig, columns: updatedColumns });
   };
   const [currentRowData, setRowdata] = useState();
   const handleOk = () => {};
@@ -530,6 +487,10 @@ const PaymentplanManagement = () => {
     getPlanApi({}).then((res) => {
       setTabelDate(res.data);
     });
+    
+  }, []);
+  
+  useEffect(()=>{
     getConsumptionTypeListApi().then((res) => {
       getIncomeTypeListApi().then((resData) => {
         let list = [...res.data, ...resData.data];
@@ -550,10 +511,24 @@ const PaymentplanManagement = () => {
           }
           return column;
         });
-        SetFormConfig({ ...formConfig, columns: updatedColumns });
+        console.log(updatedColumns,'updatedColumns');
+        SetFormConfig((formConfig)=>{
+          console.log(formConfig,'formConfigformConfigformConfig');
+          return {
+              ...formConfig,
+              columns:updatedColumns
+          }
+        });
+        setTimeout(() => {
+          console.log(formConfig,'formConfigcccc');
+        }, 1000);
       });
     });
-  }, []);
+    // formConfig
+  },[])
+
+
+
   useEffect(() => {
     if (createdModel.modelState != true || formRef.current == undefined) return;
     if (createdModel.title == '编辑') {
@@ -576,10 +551,12 @@ const PaymentplanManagement = () => {
         className="ant-advanced-search-form"
         onFinish={onFinish}
         labelCol={{
-          xl: 4,
+          xl: 6,
+          span:8
         }}
         initialValues={{
           period: 'month',
+          viewingPeriod:'01'
         }}
       >
         <Row gutter={24}>
@@ -592,7 +569,7 @@ const PaymentplanManagement = () => {
             <Form.Item name="period" label="周期">
               <Select
                 style={{
-                  width: 120,
+                  width:'100%',
                 }}
                 // onChange={handleChange}
                 options={[
@@ -606,17 +583,20 @@ const PaymentplanManagement = () => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="period" label="周期">
+            <Form.Item  name="viewingPeriod" label="查看时段">
               <Select
                 style={{
-                  width: 120,
-                }}
+                  width: 180,
+                }} 
                 // onChange={handleChange}
                 options={[
-                  ...periodOptionList,
                   {
-                    label: '全部',
-                    value: '-1',
+                    label: '当前',
+                    value: '01',
+                  },
+                  {
+                    label: '历史',
+                    value: '02',
                   },
                 ]}
               />
