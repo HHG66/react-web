@@ -1,12 +1,12 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2024-12-20 16:31:20
+ * @LastEditTime: 2025-01-13 18:13:12
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\Deposits\index.jsx
  * @文件说明:
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Statistic,
   Row,
@@ -24,15 +24,17 @@ import {
   Popconfirm,
   InputNumber,
   Flex,
+  Drawer,
 } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import HForm from '@/components/hForm/HForm.jsx';
 import {
   getDepositListApi,
   editDepositInfoApi,
   deleteDepositApi,
   createdDepositApi,
   updateDepositsInfoApi,
-  depositSummaryApi
+  depositSummaryApi,
 } from '@/api/deposits';
 import './index.less';
 
@@ -55,8 +57,10 @@ const Deposits = () => {
   const [depositsInfoForm] = Form.useForm();
   const [isShow, setShow] = useState(false);
   const [totalDeposits, setTotalDeposits] = useState(0);
+  const [depositsDrawerState, setDepositsDrawerState] = useState(false);
+  const [depositsDrawerData, setDepositsDrawerData] = useState([]);
+  const [addDepositRecordsModel, setDepositRecordsModel] = useState(false);
   useEffect(() => {
-   
     getDepositList();
   }, []);
   const columns = [
@@ -67,7 +71,7 @@ const Deposits = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: '金额(¥)',
+      title: '总金额(¥)',
       dataIndex: 'amountDeposited',
       key: 'amountDeposited',
     },
@@ -160,11 +164,25 @@ const Deposits = () => {
           </a>
           <a
             onClick={() => {
+              setDepositsDrawerState(true);
+            }}
+          >
+            查看详细
+          </a>
+          <a
+            onClick={() => {
+              setDepositRecordsModel(true);
+            }}
+          >
+            添加存款
+          </a>
+          {/* <a
+            onClick={() => {
               editDeposit(record);
             }}
           >
             编辑
-          </a>
+          </a> */}
           <Popconfirm
             title="确认删除这条存款单吗?"
             onConfirm={() => confirm(record._id)}
@@ -178,6 +196,63 @@ const Deposits = () => {
       ),
     },
   ];
+  const depositsDrawerColumns = [
+    {
+      title: '存款日期',
+      dataIndex: 'depositDate',
+      key: 'depositDate',
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: '金额',
+      dataIndex: 'depositRecordAmount',
+      key: 'depositRecordAmount',
+      // render: (text) => <a>{text}</a>,
+    },
+  ];
+  const formRef = useRef();
+  const [formConfig, SetFormConfig] = useState({
+    columns: [
+      {
+        name: 'depositDate',
+        type: 'date',
+        placeholder: '请选择存款时间',
+        label: '存款时间',
+        //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+        item: {
+          rules: [{ required: true, message: '请选择存款时间' }],
+        },
+        style:{
+          width:'100%'
+        }
+      },
+      {
+        name: 'depositRecordAmount',
+        type: 'number',
+        placeholder: '请输入金额',
+        label: '金额',
+        //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+        item: {
+          rules: [{ required: true, message: '请输入金额' }],
+        },
+        style:{
+          width:'100%'
+        }
+      },
+      // {
+      //   // name: "submit",
+      //   type: 'button',
+      //   styletype: 'primary',
+      //   text: '提交',
+      //   className: 'plan-form-button',
+      //   htmlType: 'submit',
+      //   item: {
+      //     // labelAlign: 'right',
+      //     // className: 'login-button-item',
+      //   },
+      // },
+    ],
+  });
 
   const confirm = (id) => {
     deleteDepositApi(id).then((res) => {
@@ -197,9 +272,9 @@ const Deposits = () => {
       });
       settableData(data);
     });
-    depositSummaryApi().then(res => {
-      setTotalDeposits(res.data.unmaturedDeposit)
-    })
+    depositSummaryApi().then((res) => {
+      setTotalDeposits(res.data.unmaturedDeposit);
+    });
   };
   const editDeposit = (rowdata) => {
     form.resetFields();
@@ -221,7 +296,9 @@ const Deposits = () => {
       createdDepositApi({
         ...values,
         dateCommenced: window.moment(values.dateCommenced).format('YYYY-MM-DD'),
-        expirationTime: window.moment(values.expirationTime).format('YYYY-MM-DD'),
+        expirationTime: window
+          .moment(values.expirationTime)
+          .format('YYYY-MM-DD'),
       }).then((res) => {
         // message.success(res.message);
         setModelState(false);
@@ -229,12 +306,12 @@ const Deposits = () => {
     });
   };
 
-  const handleCancel = () => {
-    setModelData({
-      ...modelData,
-      isModalOpen: false,
-    });
-  };
+  // const handleCancel = () => {
+  //   setModelData({
+  //     ...modelData,
+  //     isModalOpen: false,
+  //   });
+  // };
   const handleChange = (value) => {
     setActionState(value);
   };
@@ -443,7 +520,7 @@ const Deposits = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal
+      {/* <Modal
         title="编辑"
         open={modelData.isModalOpen}
         onOk={handleOk}
@@ -466,11 +543,9 @@ const Deposits = () => {
               },
             ]}
           >
-            {/* <Input /> */}
+             
             <Select
-              // style={{
-              //   width: 120,
-              // }}
+           
               onChange={handleChange}
               options={[
                 {
@@ -490,7 +565,7 @@ const Deposits = () => {
           </Form.Item>
           {modelEle}
         </Form>
-      </Modal>
+      </Modal> */}
 
       <Modal
         title="更新信息"
@@ -547,6 +622,37 @@ const Deposits = () => {
             <Input />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Drawer
+        title="存款详细信息"
+        onClose={() => setDepositsDrawerState(false)}
+        open={depositsDrawerState}
+        width={'50%'}
+      >
+        <Table
+          columns={depositsDrawerColumns}
+          dataSource={depositsDrawerData}
+          size="small"
+        />
+      </Drawer>
+
+      <Modal
+        title="存款详细"
+        open={addDepositRecordsModel}
+        onCancel={() => setDepositRecordsModel(false)}
+        style={{ marginBotton: '10px' }}
+      >
+        <HForm
+          {...formConfig}
+          formProps={{
+            labelCol: {
+              span: 4,
+            },
+          }}
+          // onFinish={createdPlanconfirm}
+          ref={formRef}
+        ></HForm>
       </Modal>
     </>
   );

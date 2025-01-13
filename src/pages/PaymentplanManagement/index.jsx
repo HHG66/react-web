@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-10 18:40:02
+ * @LastEditTime: 2025-01-13 18:23:07
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
@@ -338,55 +338,6 @@ const PaymentplanManagement = () => {
         },
         onChange(value) {
           updateFormConfigBasedOnReceiveOrSpend(value);
-          return
-          if (value == '01') {
-            const updatedColumns = formConfig.columns.map((column) => {
-              if (column.name === 'incomePattern') {
-                return {
-                  ...column,
-                  hidden: false,
-                  item: {
-                    rules: [{ required: true, message: '请选择收入方式' }],
-                  },
-                };
-              }
-              if (column.name === 'expenditurePattern') {
-                return {
-                  ...column,
-                  hidden: true,
-                  item: {
-                    rules: [{ required: false }],
-                  },
-                };
-              }
-              return column;
-            });
-            SetFormConfig({ ...formConfig, columns: updatedColumns });
-          } else {
-            const updatedColumns = formConfig.columns.map((column) => {
-              if (column.name === 'incomePattern') {
-                return {
-                  ...column,
-                  hidden: true,
-                  item: {
-                    rules: [{ required: false }],
-                  },
-                };
-              }
-              if (column.name === 'expenditurePattern') {
-                return {
-                  ...column,
-                  hidden: false,
-                  item: {
-                    rules: [{ required: true, message: '请选择支出方式' }],
-                  },
-                };
-              }
-              return column;
-            });
-            console.log(updatedColumns);
-            SetFormConfig({ ...formConfig, columns: updatedColumns });
-          }
         },
       },
       {
