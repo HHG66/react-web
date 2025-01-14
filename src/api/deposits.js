@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-01-05 08:52:37
- * @LastEditTime: 2024-12-19 16:59:51
+ * @LastEditTime: 2025-01-14 18:18:42
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\api\deposits.js
  * @文件说明: 
@@ -76,6 +76,27 @@ export const depositSummaryApi = () => {
     method: 'GET',
   })
 }
+
+export const createdDepositRecordApi = (data) => {
+  return request({
+    url: baseUrl + "/createdDepositRecord",
+    method: 'POST',
+    data
+  })
+}
+
+
+export const getDepositRecordsListApi = (_id) => {
+  return request({
+    url: baseUrl + "/getDepositRecordsList",
+    method: 'GET',
+    params:{
+      _id
+    }
+  })
+}
+
+
 
 
 

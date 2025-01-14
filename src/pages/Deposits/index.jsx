@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2025-01-13 22:17:55
+ * @LastEditTime: 2025-01-14 18:16:57
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/pages/Deposits/index.jsx
+ * @FilePath: \financial-web\src\pages\Deposits\index.jsx
  * @文件说明:
  */
 import React, { useEffect, useState, useRef } from 'react';
@@ -35,6 +35,8 @@ import {
   createdDepositApi,
   updateDepositsInfoApi,
   depositSummaryApi,
+  createdDepositRecordApi,
+  getDepositRecordsListApi
 } from '@/api/deposits';
 import './index.less';
 
@@ -121,28 +123,44 @@ const Deposits = () => {
       key: 'remark',
     },
     {
-      title: '类型',
+      title: '存款类型',
       key: 'depositType',
       dataIndex: 'depositType',
       render: (type) => {
-        if (type === '定期存款') {
-          return (
-            <>
-              <Tag color={'red'}>{'定期存款'}</Tag>
-            </>
-          );
-        } else if (type === '活期存款') {
-          return (
-            <>
-              <Tag color={'green'}>{'活期存款'}</Tag>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <Tag color={'green'}>{type}</Tag>
-            </>
-          );
+        switch (type) {
+          case '01':
+            return (
+              <>
+                <Tag color={'red'}>{'活期存款'}</Tag>
+              </>
+            );
+          case '02':
+            return (
+              <>
+                <Tag color={'magenta'}>{'定期存款'}</Tag>
+              </>
+            );
+          case '03':
+            return (
+              <>
+                <Tag color={'volcano'}>{'零存整取'}</Tag>
+              </>
+            );
+          case '04':
+            return (
+              <>
+                <Tag color={'cyan'}>{'零存整取'}</Tag>
+              </>
+            );
+          case '05':
+            return (
+              <>
+                <Tag color={'blue'}>{'零存整取'}</Tag>
+              </>
+            );
+          default:
+            '-';
+            break;
         }
       },
     },
@@ -165,17 +183,38 @@ const Deposits = () => {
           <a
             onClick={() => {
               setDepositsDrawerState(true);
+              getDepositRecordsList()
             }}
           >
             查看详细
           </a>
-          <a
+          {
+            record.depositType != '02' ? (
+              <a
+                onClick={() => {
+                  setDepositRecordsModel(true);
+                  //共用了修改的state
+                  setUpdataState({
+                    ...updataInfo,
+                    openState: false,
+                    _id: record._id,
+                  });
+                }}
+              >
+                添加存款
+              </a>
+            ) : (
+              ''
+            )
+            // console.log(record)
+          }
+          {/* <a
             onClick={() => {
               setDepositRecordsModel(true);
             }}
           >
             添加存款
-          </a>
+          </a> */}
           {/* <a
             onClick={() => {
               editDeposit(record);
@@ -223,8 +262,8 @@ const Deposits = () => {
           rules: [{ required: true, message: '请选择存款时间' }],
         },
         style: {
-          width: '100%'
-        }
+          width: '100%',
+        },
       },
       {
         name: 'depositRecordAmount',
@@ -236,8 +275,18 @@ const Deposits = () => {
           rules: [{ required: true, message: '请输入金额' }],
         },
         style: {
-          width: '100%'
-        }
+          width: '100%',
+        },
+      },
+      {
+        name: 'remark',
+        type: 'input',
+        placeholder: '请输入备注',
+        defaultValue:'',
+        label: '备注',
+        style: {
+          width: '100%',
+        },
       },
       // {
       //   // name: "submit",
@@ -253,11 +302,8 @@ const Deposits = () => {
       // },
     ],
   });
-  const [dynamicRules, setDynamicRules] = useState({})
-  const [componentDisabled, setComponentDisabled] = useState({
-    dateCommenced: false,
-    expirationTime:false
-  })
+  // const [dynamicRules, setDynamicRules] = useState({});
+
   const confirm = (id) => {
     deleteDepositApi(id).then((res) => {
       // message.success(res.message);
@@ -300,12 +346,14 @@ const Deposits = () => {
       createdDepositApi({
         ...values,
         dateCommenced: window.moment(values.dateCommenced).format('YYYY-MM-DD'),
-        expirationTime: window
-          .moment(values.expirationTime)
-          .format('YYYY-MM-DD'),
+        expirationTime: values.expirationTime
+          ? window.moment(values.expirationTime).format('YYYY-MM-DD')
+          : null,
       }).then((res) => {
         // message.success(res.message);
-        setModelState(false);
+        if (res.code == '0' || res.code == '2') {
+          setModelState(false);
+        }
       });
     });
   };
@@ -327,9 +375,9 @@ const Deposits = () => {
     depositsInfoForm.validateFields().then((field) => {
       updateDepositsInfoApi({
         ...field,
-        expirationTime: window
-          .moment(field.expirationTime)
-          .format('YYYY-MM-DD'),
+        expirationTime: field.expirationTime
+          ? window.moment(field.expirationTime).format('YYYY-MM-DD')
+          : null,
         _id: updataInfo._id,
       }).then((res) => {
         setUpdataState({
@@ -347,64 +395,10 @@ const Deposits = () => {
     return '*'.repeat(totalDeposits.toString().length);
     // return string.replace('','*')
   };
+  const [dynamicForm, setDynamicForm] = useState('01');
   const depositTypeChange = (value) => {
-    switch (value) {
-      case "01":
-        setDynamicRules((dynamicRules) => {
-          return {
-            // ...dynamicRules,
-            dateCommenced:
-              [{
-                required: true,
-                message: '请输入本金',
-              },]
-          }
-        })
-        console.log(updateComponentDisabled(componentDisabled,['expirationTime']));
-        setComponentDisabled(updateComponentDisabled(componentDisabled,['expirationTime']))
-        break;
-      case '02':
-        setDynamicRules((dynamicRules) => {
-          return {
-            // ...dynamicRules,
-            interestRate: [{
-              required: true,
-              message: '请输入利率',
-            }],
-            dateCommenced:
-              [{
-                required: true,
-                message: '请输入本金',
-              },],
-
-            expirationTime: [{
-              required: true,
-              message: '请选择到期时间',
-            },]
-          }
-        })
-        setComponentDisabled((componentDisabled) => {
-          // 创建一个新的对象，包含所有原始属性
-          const newComponentDisabled = { ...componentDisabled };
-
-          // 遍历对象的所有属性
-          for (let key in newComponentDisabled) {
-            // 检查属性值是否为 true（在这个例子中其实不需要循环，因为只有一个 true 值）
-            newComponentDisabled[key] = false;
-            // 注意：如果需要对 false 值或其他类型的值进行处理，可以在这里添加逻辑
-          }
-
-          return {
-            ...newComponentDisabled,
-            expirationTime: true
-          }
-        })
-        break
-      default:
-        break;
-    }
-
-  }
+    setDynamicForm(value);
+  };
 
   const updateComponentDisabled = (componentDisabled, specialFields) => {
     const newComponentDisabled = { ...componentDisabled };
@@ -414,7 +408,7 @@ const Deposits = () => {
       }
     }
     // 特别处理指定的字段
-    specialFields.forEach(field => {
+    specialFields.forEach((field) => {
       if (field in newComponentDisabled) {
         // 这里可以根据需要设置字段的值，比如总是设置为 true，或者根据其他逻辑设置
         newComponentDisabled[field] = true; // 或者其他值
@@ -427,6 +421,145 @@ const Deposits = () => {
     // 如果需要添加这些字段，可以在循环后手动添加
     return newComponentDisabled;
   };
+  // const setComponentRules = (componentDisabled, specialFields) => {
+  //   let rules = {
+  //     interestRate: [
+  //       {
+  //         required: true,
+  //         message: '请输入利率',
+  //       },
+  //     ],
+  //   };
+  // };
+  const getDynamicForm = (value) => {
+    let formObj = {
+      '01': (
+        <>
+          <Form.Item
+            label="本金"
+            name="amountDeposited"
+            rules={[
+              {
+                required: true,
+                message: '请输入本金',
+              },
+            ]}
+          >
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="利率" name="interestRate">
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              step="0.01"
+            />
+          </Form.Item>
+          <Form.Item
+            label="起始时间"
+            name="dateCommenced"
+            rules={[
+              {
+                required: true,
+                message: '请输入本金',
+              },
+            ]}
+          >
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item>
+          {/* <Form.Item
+            label="到期时间"
+            name="expirationTime"
+            rules={[
+              {
+                required: true,
+                message: '请选择到期时间',
+              },
+            ]}
+          >
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item> */}
+        </>
+      ),
+      '02': (
+        <>
+          <Form.Item
+            label="本金"
+            name="amountDeposited"
+            rules={[
+              {
+                required: true,
+                message: '请输入本金',
+              },
+            ]}
+          >
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="利率" name="interestRate">
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              step="0.01"
+            />
+          </Form.Item>
+          <Form.Item
+            label="起始时间"
+            name="dateCommenced"
+            rules={[
+              {
+                required: true,
+                message: '请输入本金',
+              },
+            ]}
+          >
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item
+            label="到期时间"
+            name="expirationTime"
+            rules={[
+              {
+                required: true,
+                message: '请选择到期时间',
+              },
+            ]}
+          >
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item>
+        </>
+      ),
+      '03': '',
+    };
+    return formObj[value];
+  };
+  const createdDepositRecords = () => {
+    formRef.current
+      .getFormInstance()
+      .validateFields()
+      .then((value) => {
+        createdDepositRecordApi({
+          ...value,
+          depositDate: window.moment(value.depositDate).format('YYYY-MM-DD'),
+          _id:updataInfo._id
+        }).then((res) => {
+          setDepositRecordsModel(false)
+        });
+      });
+  };
+  const getDepositRecordsList=()=>{
+    getDepositRecordsListApi(updataInfo._id).then(res=>{
+      setDepositsDrawerData(res.data)
+    })
+  }
   if (actionState === '0') {
     modelEle = (
       <>
@@ -566,105 +699,50 @@ const Deposits = () => {
             span: 4,
           }}
         >
-          <Form.Item label="存款名称" name="depositName" rules={[
-            {
-              required: true,
-              message: '请输入存款名称',
-            },
-          ]}>
+          <Form.Item
+            label="存款名称"
+            name="depositName"
+            rules={[
+              {
+                required: true,
+                message: '请输入存款名称',
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="存款类型" name="depositType" rules={[
-            {
-              required: true,
-              message: '请选择存款类型',
-            },
-          ]}>
-            <Select options={[{ value: '01', label: '活期存款' }, { value: '02', label: '定期存款' }, { value: '03', label: '定投存款' }, { value: '04', label: '目标存款' }]} onChange={depositTypeChange} />
-          </Form.Item>
-          <Form.Item label="本金" name="amountDeposited" rules={[
-            {
-              required: true,
-              message: '请输入本金',
-            },
-          ]} >
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
+          <Form.Item
+            label="存款类型"
+            name="depositType"
+            rules={[
+              {
+                required: true,
+                message: '请选择存款类型',
+              },
+            ]}
+          >
+            <Select
+              options={[
+                { value: '01', label: '活期存款' },
+                { value: '02', label: '定期存款' },
+                { value: '03', label: '零存整取' },
+                { value: '04', label: '目标存款' },
+                { value: '05', label: '存本取息' },
+              ]}
+              onChange={depositTypeChange}
             />
           </Form.Item>
-          <Form.Item label="利率" name="interestRate" rules={dynamicRules["interestRate"]}>
-            {/* <Input /> */}
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              // defaultValue="1"
-              // min="0"
-              // max="100"
-              step="0.01"
-            // onChange={onChange}
-            // stringMode
-            />
-          </Form.Item>
-          <Form.Item label="起始时间" name="dateCommenced" rules={dynamicRules["dateCommenced"]} >
-            <DatePicker style={{ width: '100%' }} disabled={componentDisabled["dateCommenced"]} />
-          </Form.Item>
-          <Form.Item label="到期时间" name="expirationTime" rules={dynamicRules["expirationTime"]} >
-            <DatePicker style={{ width: '100%' }} disabled={componentDisabled["expirationTime"]} />
-          </Form.Item>
+
+          {dynamicForm == '01'
+            ? getDynamicForm('01')
+            : dynamicForm == '02'
+              ? getDynamicForm('02')
+              : getDynamicForm('03')}
           <Form.Item label="备注" name="remark">
             <Input />
           </Form.Item>
         </Form>
       </Modal>
-      {/* <Modal
-        title="编辑"
-        open={modelData.isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form
-          name="edit"
-          form={form}
-          labelCol={{
-            span: 4,
-          }}
-        >
-          <Form.Item
-            label="操作"
-            name="actiontype"
-            rules={[
-              {
-                required: true,
-                message: '请选择操作类型!',
-              },
-            ]}
-          >
-             
-            <Select
-           
-              onChange={handleChange}
-              options={[
-                {
-                  value: '0',
-                  label: '续存',
-                },
-                {
-                  value: '1',
-                  label: '结息',
-                },
-                // {
-                //   value: 'Yiminghe',
-                //   label: 'yiminghe',
-                // },
-              ]}
-            />
-          </Form.Item>
-          {modelEle}
-        </Form>
-      </Modal> */}
 
       <Modal
         title="更新信息"
@@ -684,10 +762,25 @@ const Deposits = () => {
             span: 4,
           }}
         >
-          <Form.Item label="存款名称" name="depositName">
+          <Form.Item
+            label="存款名称"
+            name="depositName"
+            rules={[
+              {
+                required: true,
+                message: '请输入存款名称',
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="本金" name="amountDeposited">
+          {dynamicForm == '01'
+            ? getDynamicForm('01')
+            : dynamicForm == '02'
+              ? getDynamicForm('02')
+              : getDynamicForm('03')}
+
+          {/* <Form.Item label="本金" name="amountDeposited">
             <InputNumber
               style={{
                 width: '100%',
@@ -695,17 +788,12 @@ const Deposits = () => {
             />
           </Form.Item>
           <Form.Item label="利率" name="interestRate">
-            {/* <Input /> */}
             <InputNumber
               style={{
                 width: '100%',
               }}
-              // defaultValue="1"
-              // min="0"
-              // max="100"
+           
               step="0.01"
-            // onChange={onChange}
-            // stringMode
             />
           </Form.Item>
           <Form.Item label="起始时间" name="dateCommenced">
@@ -713,10 +801,7 @@ const Deposits = () => {
           </Form.Item>
           <Form.Item label="到期时间" name="expirationTime">
             <DatePicker style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="存款类型" name="depositType">
-            <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="备注" name="remark">
             <Input />
           </Form.Item>
@@ -741,6 +826,7 @@ const Deposits = () => {
         open={addDepositRecordsModel}
         onCancel={() => setDepositRecordsModel(false)}
         style={{ marginBotton: '10px' }}
+        onOk={createdDepositRecords}
       >
         <HForm
           {...formConfig}
