@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-01-13 21:08:56
+ * @LastEditTime: 2025-02-11 16:39:47
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/pages/PaymentplanManagement/index.jsx
+ * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
  */
 import { useEffect, useState, useRef } from 'react';
@@ -120,6 +120,14 @@ const PaymentplanManagement = () => {
       },
     },
     {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (value) => {
+         return window.moment(value).format('YYYY-MM-DD')
+      },
+    },
+    {
       title: '操作',
       key: 'action',
       render: (_, record) => (
@@ -181,7 +189,7 @@ const PaymentplanManagement = () => {
     //   // 不需要设置 footer: null，因为 Modal.info 会自动处理
     // });
   };
-  const [data, setTabelDate] = useState([]);
+  const [tableData, setTabelDate] = useState([]);
   const items = [
     {
       key: 'planName',
@@ -236,13 +244,12 @@ const PaymentplanManagement = () => {
   };
   const getPlan = () => {
     let queryParameter = form.getFieldValue();
+    let params = { ...queryParameter };
     queryParameter.annual
-      ? (queryParameter.annual = window
-          .moment(queryParameter.annual)
-          .format('YYYY-MM'))
+      ? (params.annual = window.moment(queryParameter.annual).format('YYYY-MM'))
       : '';
     getPlanApi({
-      ...queryParameter,
+      ...params,
     }).then((res) => {
       setTabelDate(res.data);
     });
@@ -257,42 +264,41 @@ const PaymentplanManagement = () => {
     title: '新增',
   });
 
-//   const correlationTypeList=[
-//     {
-//         "label": "ce11",
-//         "value": "674d602b1050a0ace66778ef"
-//     },
-//     {
-//         "label": "1",
-//         "value": "674eab17377230f2c0bcb288"
-//     },
-//     {
-//         "label": "楚呈轩",
-//         "value": "674eab2c377230f2c0bcb28c"
-//     },
-//     {
-//         "label": "222",
-//         "value": "674ead96377230f2c0bcb293"
-//     },
-//     {
-//         "label": "测1",
-//         "value": "674eadec377230f2c0bcb297"
-//     }
-// ]
+  //   const correlationTypeList=[
+  //     {
+  //         "label": "ce11",
+  //         "value": "674d602b1050a0ace66778ef"
+  //     },
+  //     {
+  //         "label": "1",
+  //         "value": "674eab17377230f2c0bcb288"
+  //     },
+  //     {
+  //         "label": "楚呈轩",
+  //         "value": "674eab2c377230f2c0bcb28c"
+  //     },
+  //     {
+  //         "label": "222",
+  //         "value": "674ead96377230f2c0bcb293"
+  //     },
+  //     {
+  //         "label": "测1",
+  //         "value": "674eadec377230f2c0bcb297"
+  //     }
+  // ]
 
-// useEffect(()=>{
-//   setTest({
-//     ...test,
-//     test1:'12312'
-//   })
-// },[])
-// const [test,setTest]=useState({
-//   test1:"ttt",
-//   onChange:()=>{
-//     console.log(test);
-//   }
-// })
-
+  // useEffect(()=>{
+  //   setTest({
+  //     ...test,
+  //     test1:'12312'
+  //   })
+  // },[])
+  // const [test,setTest]=useState({
+  //   test1:"ttt",
+  //   onChange:()=>{
+  //     console.log(test);
+  //   }
+  // })
 
   const [formConfig, SetFormConfig] = useState({
     formProps: {
@@ -428,18 +434,24 @@ const PaymentplanManagement = () => {
         if (column.name === 'incomePattern') {
           return {
             ...column,
-            hidden: value !== '01',  // 如果不是 '01' 则隐藏 incomePattern
+            hidden: value !== '01', // 如果不是 '01' 则隐藏 incomePattern
             item: {
-              rules: value === '01' ? [{ required: true, message: '请选择收入方式' }] : [],
+              rules:
+                value === '01'
+                  ? [{ required: true, message: '请选择收入方式' }]
+                  : [],
             },
           };
         }
         if (column.name === 'expenditurePattern') {
           return {
             ...column,
-            hidden: value !== '02',  // 如果不是 '02' 则隐藏 expenditurePattern
+            hidden: value !== '02', // 如果不是 '02' 则隐藏 expenditurePattern
             item: {
-              rules: value === '02' ? [{ required: true, message: '请选择支出方式' }] : [],
+              rules:
+                value === '02'
+                  ? [{ required: true, message: '请选择支出方式' }]
+                  : [],
             },
           };
         }
@@ -487,10 +499,9 @@ const PaymentplanManagement = () => {
     getPlanApi({}).then((res) => {
       setTabelDate(res.data);
     });
-    
   }, []);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     getConsumptionTypeListApi().then((res) => {
       getIncomeTypeListApi().then((resData) => {
         let list = [...res.data, ...resData.data];
@@ -506,28 +517,26 @@ const PaymentplanManagement = () => {
           if (column.name === 'associationType') {
             return {
               ...column,
-              options:processedAssociationList
+              options: processedAssociationList,
             };
           }
           return column;
         });
-        console.log(updatedColumns,'updatedColumns');
-        SetFormConfig((formConfig)=>{
-          console.log(formConfig,'formConfigformConfigformConfig');
+        console.log(updatedColumns, 'updatedColumns');
+        SetFormConfig((formConfig) => {
+          console.log(formConfig, 'formConfigformConfigformConfig');
           return {
-              ...formConfig,
-              columns:updatedColumns
-          }
+            ...formConfig,
+            columns: updatedColumns,
+          };
         });
         setTimeout(() => {
-          console.log(formConfig,'formConfigcccc');
+          console.log(formConfig, 'formConfigcccc');
         }, 1000);
       });
     });
     // formConfig
-  },[])
-
-
+  }, []);
 
   useEffect(() => {
     if (createdModel.modelState != true || formRef.current == undefined) return;
@@ -552,11 +561,11 @@ const PaymentplanManagement = () => {
         onFinish={onFinish}
         labelCol={{
           xl: 6,
-          span:8
+          span: 8,
         }}
         initialValues={{
           period: 'month',
-          viewingPeriod:'01'
+          viewingPeriod: '01',
         }}
       >
         <Row gutter={24}>
@@ -569,7 +578,7 @@ const PaymentplanManagement = () => {
             <Form.Item name="period" label="周期">
               <Select
                 style={{
-                  width:'100%',
+                  width: '100%',
                 }}
                 // onChange={handleChange}
                 options={[
@@ -583,11 +592,11 @@ const PaymentplanManagement = () => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item  name="viewingPeriod" label="查看时段">
+            <Form.Item name="viewingPeriod" label="查看时段">
               <Select
                 style={{
                   width: 180,
-                }} 
+                }}
                 // onChange={handleChange}
                 options={[
                   {
@@ -642,7 +651,7 @@ const PaymentplanManagement = () => {
         </Row>
       </Form>
 
-      <Table columns={columns} dataSource={data} rowKey="_id" />
+      <Table columns={columns} dataSource={tableData} rowKey="_id" />
 
       <Drawer
         title="详细"
