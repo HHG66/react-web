@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-02-11 16:39:47
+ * @LastEditTime: 2025-02-12 17:14:40
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
@@ -73,7 +73,7 @@ const PaymentplanManagement = () => {
       label: '变动支出',
     },
   ];
-
+  const [isPatternState, setPatternState] = useState(false);
   const columns = [
     {
       title: '名称',
@@ -124,7 +124,7 @@ const PaymentplanManagement = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (value) => {
-         return window.moment(value).format('YYYY-MM-DD')
+        return window.moment(value).format('YYYY-MM-DD');
       },
     },
     {
@@ -299,8 +299,8 @@ const PaymentplanManagement = () => {
   //     console.log(test);
   //   }
   // })
-
-  const [formConfig, SetFormConfig] = useState({
+  const [associationOptions, setAssociationOptions] = useState([]);
+  const formConfig = {
     formProps: {
       labelCol: {
         span: 4,
@@ -343,7 +343,9 @@ const PaymentplanManagement = () => {
           rules: [{ required: true, message: '请选择' }],
         },
         onChange(value) {
-          updateFormConfigBasedOnReceiveOrSpend(value);
+          // updateFormConfigBasedOnReceiveOrSpend(value);
+          setPatternState(value === '01' ? false : true);
+          updateAssociationOptions(value); // 改为调用新方法
         },
       },
       {
@@ -351,10 +353,17 @@ const PaymentplanManagement = () => {
         type: 'select',
         placeholder: '请选择收入方式',
         label: '收入方式',
+        hidden: isPatternState,
         //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
         options: incomePatternOptionList,
         item: {
-          rules: [{ required: true, message: '请选择收入方式' }],
+          rules: [
+            {
+              required: isPatternState == true ? false : true,
+
+              message: '请选择收入方式',
+            },
+          ],
           // style: {
           //   width: '120px',
           // },
@@ -365,14 +374,19 @@ const PaymentplanManagement = () => {
         type: 'select',
         placeholder: '请选择支出方式',
         label: '支出方式',
+        hidden: !isPatternState,
         options: expenditurePatternOptionList,
         item: {
-          rules: [{ required: true, message: '请选择支出方式' }],
+          rules: [
+            {
+              required: isPatternState == true ? true : false,
+              message: '请选择支出方式',
+            },
+          ],
           // style: {
           //   width: '120px',
           // },
         },
-        hidden: true,
       },
       {
         name: 'associationType',
@@ -380,7 +394,7 @@ const PaymentplanManagement = () => {
         placeholder: '请选择收/支关联类型',
         label: '关联类型',
         //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
-        options: [],
+        options: associationOptions,
         item: {
           rules: [{ required: true, message: '请选择收/支关联类型' }],
           // style: {
@@ -417,7 +431,7 @@ const PaymentplanManagement = () => {
         // name: "submit",
         type: 'button',
         styletype: 'primary',
-        text: '提交',
+        text: '提交11',
         className: 'plan-form-button',
         htmlType: 'submit',
         item: {
@@ -426,41 +440,186 @@ const PaymentplanManagement = () => {
         },
       },
     ],
-  });
+  };
+  // const [formConfig, SetFormConfig] = useState({
+  //   formProps: {
+  //     labelCol: {
+  //       span: 4,
+  //     },
+  //   },
+  //   columns: [
+  //     {
+  //       name: 'planName',
+  //       type: 'input',
+  //       placeholder: '请输入名称',
+  //       label: '预算名称',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       item: {
+  //         rules: [{ required: true, message: '请输入预算名称' }],
+  //       },
+  //       // defaultValue:'123'
+  //     },
+  //     {
+  //       name: 'period',
+  //       type: 'select',
+  //       placeholder: '请选择周期',
+  //       label: '周期',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       options: periodOptionList,
+  //       item: {
+  //         rules: [{ required: true, message: '请选择周期' }],
+  //       },
+  //     },
+  //     {
+  //       name: 'receiveOrSpend',
+  //       type: 'select',
+  //       placeholder: '请选择',
+  //       label: '收/支',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       options: [
+  //         { label: '收入', value: '01' },
+  //         { label: '支出', value: '02' },
+  //       ],
+  //       item: {
+  //         rules: [{ required: true, message: '请选择' }],
+  //       },
+  //       onChange(value) {
+  //         updateFormConfigBasedOnReceiveOrSpend(value);
+  //         updateAssociationOptions(value); // 改为调用新方法
+
+  //       },
+  //     },
+  //     {
+  //       name: 'incomePattern',
+  //       type: 'select',
+  //       placeholder: '请选择收入方式',
+  //       label: '收入方式',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       options: incomePatternOptionList,
+  //       item: {
+  //         rules: [{ required: true, message: '请选择收入方式' }],
+  //         // style: {
+  //         //   width: '120px',
+  //         // },
+  //       },
+  //     },
+  //     {
+  //       name: 'expenditurePattern',
+  //       type: 'select',
+  //       placeholder: '请选择支出方式',
+  //       label: '支出方式',
+  //       options: expenditurePatternOptionList,
+  //       item: {
+  //         rules: [{ required: true, message: '请选择支出方式' }],
+  //         // style: {
+  //         //   width: '120px',
+  //         // },
+  //       },
+  //       hidden: true,
+  //     },
+  //     {
+  //       name: 'associationType',
+  //       type: 'select',
+  //       placeholder: '请选择收/支关联类型',
+  //       label: '关联类型',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       options: associationOptions,
+  //       item: {
+  //         rules: [{ required: true, message: '请选择收/支关联类型' }],
+  //         // style: {
+  //         //   width: '120px',
+  //         // },
+  //       },
+  //     },
+  //     {
+  //       name: 'amount',
+  //       type: 'input',
+  //       placeholder: '请输入金额',
+  //       label: '金额',
+  //       //Form.Item设置相关的属性，注意是封装组件直接继承antd的表单属性
+  //       item: {
+  //         rules: [{ required: true, message: '请输入金额' }],
+  //         // style: {
+  //         //   width: '120px',
+  //         // },
+  //       },
+  //     },
+  //     {
+  //       name: 'planDate',
+  //       type: 'date',
+  //       placeholder: '请选择生效日期',
+  //       label: '生效日期',
+  //       item: {
+  //         rules: [{ required: true, message: '请选择生效日期' }],
+  //       },
+  //       style: {
+  //         width: '100%',
+  //       },
+  //     },
+  //     {
+  //       // name: "submit",
+  //       type: 'button',
+  //       styletype: 'primary',
+  //       text: '提交',
+  //       className: 'plan-form-button',
+  //       htmlType: 'submit',
+  //       item: {
+  //         // labelAlign: 'right',
+  //         // className: 'login-button-item',
+  //       },
+  //     },
+  //   ],
+  // });
   const updateFormConfigBasedOnReceiveOrSpend = (value) => {
     // 使用更新函数以获取最新的 formConfig 值
-    SetFormConfig((currentFormConfig) => {
-      const updatedColumns = currentFormConfig.columns.map((column) => {
-        if (column.name === 'incomePattern') {
-          return {
-            ...column,
-            hidden: value !== '01', // 如果不是 '01' 则隐藏 incomePattern
-            item: {
-              rules:
-                value === '01'
-                  ? [{ required: true, message: '请选择收入方式' }]
-                  : [],
-            },
-          };
-        }
-        if (column.name === 'expenditurePattern') {
-          return {
-            ...column,
-            hidden: value !== '02', // 如果不是 '02' 则隐藏 expenditurePattern
-            item: {
-              rules:
-                value === '02'
-                  ? [{ required: true, message: '请选择支出方式' }]
-                  : [],
-            },
-          };
-        }
-        return column;
-      });
-      return {
-        ...currentFormConfig,
-        columns: updatedColumns,
-      };
+    // SetFormConfig((currentFormConfig) => {
+    //   const updatedColumns = currentFormConfig.columns.map((column) => {
+    //     if (column.name === 'incomePattern') {
+    //       return {
+    //         ...column,
+    //         hidden: value !== '01', // 如果不是 '01' 则隐藏 incomePattern
+    //         item: {
+    //           rules:
+    //             value === '01'
+    //               ? [{ required: true, message: '请选择收入方式' }]
+    //               : [],
+    //         },
+    //       };
+    //     }
+    //     if (column.name === 'expenditurePattern') {
+    //       return {
+    //         ...column,
+    //         hidden: value !== '02', // 如果不是 '02' 则隐藏 expenditurePattern
+    //         item: {
+    //           rules:
+    //             value === '02'
+    //               ? [{ required: true, message: '请选择支出方式' }]
+    //               : [],
+    //         },
+    //       };
+    //     }
+    //     return column;
+    //   });
+    //   return {
+    //     ...currentFormConfig,
+    //     columns: updatedColumns,
+    //   };
+    // });
+  };
+  // 优化后的updateFormConfigOption函数
+  const updateAssociationOptions = (value) => {
+    const api =
+      value === '01' ? getIncomeTypeListApi : getConsumptionTypeListApi;
+    api().then((res) => {
+      const options = res.data.map((item) => ({
+        label: item.incomeName || item.consumptionTypeName,
+        value: item._id,
+      }));
+      setAssociationOptions(options);
+      // 清空已选值
+      formRef.current
+        ?.getFormInstance()
+        .setFieldsValue({ associationType: undefined });
     });
   };
   const [currentRowData, setRowdata] = useState();
@@ -472,6 +631,7 @@ const PaymentplanManagement = () => {
     });
   };
   const createdPlanconfirm = (formData) => {
+    debugger;
     // console.log(window.moment(formData.planDate).format('YYYY-MM-DD'))
     if (createdModel.title == '新增') {
       createdPlanApi(formData).then((res) => {
@@ -502,43 +662,6 @@ const PaymentplanManagement = () => {
   }, []);
 
   useEffect(() => {
-    getConsumptionTypeListApi().then((res) => {
-      getIncomeTypeListApi().then((resData) => {
-        let list = [...res.data, ...resData.data];
-        let processedAssociationList = list.map((ele) => {
-          // debugger
-          return {
-            label: ele.incomeName || ele.consumptionTypeName,
-            value: ele._id,
-          };
-        });
-        console.log(processedAssociationList, 'processedAssociationList');
-        const updatedColumns = formConfig.columns.map((column) => {
-          if (column.name === 'associationType') {
-            return {
-              ...column,
-              options: processedAssociationList,
-            };
-          }
-          return column;
-        });
-        console.log(updatedColumns, 'updatedColumns');
-        SetFormConfig((formConfig) => {
-          console.log(formConfig, 'formConfigformConfigformConfig');
-          return {
-            ...formConfig,
-            columns: updatedColumns,
-          };
-        });
-        setTimeout(() => {
-          console.log(formConfig, 'formConfigcccc');
-        }, 1000);
-      });
-    });
-    // formConfig
-  }, []);
-
-  useEffect(() => {
     if (createdModel.modelState != true || formRef.current == undefined) return;
     if (createdModel.title == '编辑') {
       formRef.current.resetFields();
@@ -550,7 +673,15 @@ const PaymentplanManagement = () => {
       formRef.current.resetFields();
     }
   }, [createdModel, currentRowData]);
-
+  // 处理编辑模式初始化
+  useEffect(() => {
+    if (createdModel.modelState && currentRowData) {
+      const { receiveOrSpend } = currentRowData;
+      if (receiveOrSpend) {
+        updateAssociationOptions(receiveOrSpend);
+      }
+    }
+  }, [currentRowData, createdModel.modelState]);
   return (
     <>
       {/* 主要计划 */}

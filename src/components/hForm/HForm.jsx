@@ -13,7 +13,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   const [form] = Form.useForm(); // 创建 form 实例
   const formRef = useRef(); // 引用 ref，方便在外部获取实例
   const [formColumns, setFormColumns] = useState(columns || []);
-  console.log(formColumns,'formColumnsformColumns');
+  // console.log(formColumns,'formColumnsformColumns');
   // 暴露 form 实例
   useEffect(() => {
     formRef.current = form; // 每次 form 更新时都更新 ref
@@ -27,7 +27,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   }));
 
   useEffect(() => {
-    setFormColumns(columns);
+    setFormColumns([...columns]);
   }, [columns]);
 
   // 初始化表单的默认值
