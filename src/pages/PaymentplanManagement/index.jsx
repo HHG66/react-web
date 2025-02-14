@@ -1,12 +1,12 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-02-12 17:14:40
+ * @LastEditTime: 2025-02-14 18:22:54
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
  */
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef,memo } from 'react';
 import {
   Descriptions,
   Button,
@@ -34,6 +34,7 @@ import { getConsumptionTypeListApi } from '@/api/consumptiontype';
 import { getIncomeTypeListApi } from '@/api/incometype';
 
 const PaymentplanManagement = () => {
+  const PureHform=memo(HForm)
   let periodOptionList = [
     {
       value: 'einmal',
@@ -431,7 +432,7 @@ const PaymentplanManagement = () => {
         // name: "submit",
         type: 'button',
         styletype: 'primary',
-        text: '提交11',
+        text: '提交',
         className: 'plan-form-button',
         htmlType: 'submit',
         item: {

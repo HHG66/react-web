@@ -1,10 +1,11 @@
-import { Button, Form, Input, Select, DatePicker,InputNumber  } from 'antd';
+import { Button, Form, Input, Select, DatePicker, InputNumber } from 'antd';
 import React, {
   useEffect,
   useState,
   useRef,
   forwardRef,
   useImperativeHandle,
+  useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import KeyWord from './components/keyWord';
@@ -12,8 +13,9 @@ import KeyWord from './components/keyWord';
 const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   const [form] = Form.useForm(); // 创建 form 实例
   const formRef = useRef(); // 引用 ref，方便在外部获取实例
-  const [formColumns, setFormColumns] = useState(columns || []);
-  // console.log(formColumns,'formColumnsformColumns');
+  const formColumns = useMemo(() => (columns ? [...columns] : []), [columns]);
+  // const [formColumns, setFormColumns] = useState(memoColumns || []);
+  console.log(formColumns, 'formColumnsformColumns');
   // 暴露 form 实例
   useEffect(() => {
     formRef.current = form; // 每次 form 更新时都更新 ref
@@ -23,24 +25,32 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     resetFields: () => form.resetFields(),
     validateFields: () => form.validateFields(),
     setFieldsValue: (values) => form.setFieldsValue(values),
-    getFieldValue:(name)=>form.getFieldValue(name)
+    getFieldValue: (name) => form.getFieldValue(name),
   }));
 
-  useEffect(() => {
-    setFormColumns([...columns]);
-  }, [columns]);
+  // useEffect(() => {
+  //   // setFormColumns([...columns]);
+  //   //深度比较columns和formColumns是否相等，不相等则更新formColumns
+  //   if (!isEqual(columns, formColumns)) {
+  //     setFormColumns([...columns]);
+  //   }
+  // }, [columns]);
 
   // 初始化表单的默认值
-  const initialValues = columns.reduce((acc, element) => {
-    if (element.type !== 'keyword') {
-      acc[element.name] = element.defaultValue;
-    } else {
-      acc[element.name] = element.defaultValue
-        ? [{ label: element.defaultValue, value: element.defaultValue }]
-        : [];
-    }
-    return acc;
-  }, {});
+  const initialValues = useMemo(
+    () =>
+      formColumns.reduce((acc, element) => {
+        if (element.type !== 'keyword') {
+          acc[element.name] = element.defaultValue;
+        } else {
+          acc[element.name] = element.defaultValue
+            ? [{ label: element.defaultValue, value: element.defaultValue }]
+            : [];
+        }
+        return acc;
+      }, {}),
+    [formColumns]
+  ); // 依赖formColumns
 
   const handleProp = (props) => {
     let handledProps = { ...props };
@@ -54,10 +64,10 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
         <Input {...props} />
       </Form.Item>
     ),
-    number:(props)=>(
+    number: (props) => (
       <Form.Item {...props} {...props.item}>
-       <InputNumber {...props}    />
-    </Form.Item>
+        <InputNumber {...props} />
+      </Form.Item>
     ),
     password: (props) => (
       <Form.Item {...props} {...props.item}>
@@ -73,7 +83,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     ),
     select: (props) => (
       <Form.Item {...props} {...props.item}>
-        <Select {...props} {...props.item}/>
+        <Select {...props} {...props.item} />
       </Form.Item>
     ),
     date: (props) => (
