@@ -1,12 +1,12 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 17:04:01
- * @LastEditTime: 2025-02-14 18:22:54
+ * @LastEditTime: 2025-02-17 09:07:37
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\PaymentplanManagement\index.jsx
  * @文件说明:
  */
-import { useEffect, useState, useRef,memo } from 'react';
+import { useEffect, useState, useRef, memo } from 'react';
 import {
   Descriptions,
   Button,
@@ -34,7 +34,7 @@ import { getConsumptionTypeListApi } from '@/api/consumptiontype';
 import { getIncomeTypeListApi } from '@/api/incometype';
 
 const PaymentplanManagement = () => {
-  const PureHform=memo(HForm)
+  const PureHform = memo(HForm);
   let periodOptionList = [
     {
       value: 'einmal',
@@ -571,42 +571,7 @@ const PaymentplanManagement = () => {
   //     },
   //   ],
   // });
-  const updateFormConfigBasedOnReceiveOrSpend = (value) => {
-    // 使用更新函数以获取最新的 formConfig 值
-    // SetFormConfig((currentFormConfig) => {
-    //   const updatedColumns = currentFormConfig.columns.map((column) => {
-    //     if (column.name === 'incomePattern') {
-    //       return {
-    //         ...column,
-    //         hidden: value !== '01', // 如果不是 '01' 则隐藏 incomePattern
-    //         item: {
-    //           rules:
-    //             value === '01'
-    //               ? [{ required: true, message: '请选择收入方式' }]
-    //               : [],
-    //         },
-    //       };
-    //     }
-    //     if (column.name === 'expenditurePattern') {
-    //       return {
-    //         ...column,
-    //         hidden: value !== '02', // 如果不是 '02' 则隐藏 expenditurePattern
-    //         item: {
-    //           rules:
-    //             value === '02'
-    //               ? [{ required: true, message: '请选择支出方式' }]
-    //               : [],
-    //         },
-    //       };
-    //     }
-    //     return column;
-    //   });
-    //   return {
-    //     ...currentFormConfig,
-    //     columns: updatedColumns,
-    //   };
-    // });
-  };
+
   // 优化后的updateFormConfigOption函数
   const updateAssociationOptions = (value) => {
     const api =
@@ -632,7 +597,6 @@ const PaymentplanManagement = () => {
     });
   };
   const createdPlanconfirm = (formData) => {
-    debugger;
     // console.log(window.moment(formData.planDate).format('YYYY-MM-DD'))
     if (createdModel.title == '新增') {
       createdPlanApi(formData).then((res) => {

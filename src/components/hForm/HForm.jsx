@@ -9,17 +9,22 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import KeyWord from './components/keyWord';
+import { useFormColumns } from './hooks/useFormColumns'; // 引入独立钩子
 
 const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   const [form] = Form.useForm(); // 创建 form 实例
   const formRef = useRef(); // 引用 ref，方便在外部获取实例
-  const formColumns = useMemo(() => (columns ? [...columns] : []), [columns]);
+  //优化过程
   // const [formColumns, setFormColumns] = useState(memoColumns || []);
-  console.log(formColumns, 'formColumnsformColumns');
-  // 暴露 form 实例
+  // const formColumns = useMemo(() => (columns ? [...columns] : []), [columns]);
+  const formColumns = useFormColumns(columns, [columns]);
+  // console.log(formColumns, 'formColumnsformColumns');
+
   useEffect(() => {
     formRef.current = form; // 每次 form 更新时都更新 ref
   }, [form]);
+
+
   useImperativeHandle(ref, () => ({
     getFormInstance: () => formRef.current,
     resetFields: () => form.resetFields(),

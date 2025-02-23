@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-04 00:00:16
- * @LastEditTime: 2025-01-14 18:16:57
+ * @LastEditTime: 2025-02-23 10:07:32
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\Deposits\index.jsx
  * @文件说明:
@@ -171,6 +171,14 @@ const Deposits = () => {
         <Space size="middle">
           <a
             onClick={() => {
+              depositsInfoForm.setFieldsValue({
+                depositName: record.depositName,
+                amountDeposited: record.amountDeposited,
+                interestRate: record.interestRate,
+                dateCommenced: window.moment(record.dateCommenced),
+                expirationTime: window.moment(record.expirationTime),
+                remark: record.remark,
+              });
               setUpdataState({
                 ...updataInfo,
                 openState: true,
@@ -183,11 +191,12 @@ const Deposits = () => {
           <a
             onClick={() => {
               setDepositsDrawerState(true);
-              getDepositRecordsList()
+              getDepositRecordsList({_id: record._id})
             }}
           >
             查看详细
           </a>
+          {/* 暂时废弃 */}
           {
             record.depositType != '02' ? (
               <a
@@ -247,6 +256,17 @@ const Deposits = () => {
       dataIndex: 'depositRecordAmount',
       key: 'depositRecordAmount',
       // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: '利息',
+      dataIndex: 'galeOfInterest',
+      key: 'galeOfInterest',
     },
   ];
   const formRef = useRef();
@@ -352,6 +372,7 @@ const Deposits = () => {
       }).then((res) => {
         // message.success(res.message);
         if (res.code == '0' || res.code == '2') {
+          getDepositList();
           setModelState(false);
         }
       });
@@ -380,6 +401,7 @@ const Deposits = () => {
           : null,
         _id: updataInfo._id,
       }).then((res) => {
+        getDepositList();
         setUpdataState({
           ...updataInfo,
           openState: false,
@@ -400,27 +422,6 @@ const Deposits = () => {
     setDynamicForm(value);
   };
 
-  const updateComponentDisabled = (componentDisabled, specialFields) => {
-    const newComponentDisabled = { ...componentDisabled };
-    for (let key in newComponentDisabled) {
-      if (!specialFields.includes(key)) {
-        newComponentDisabled[key] = false;
-      }
-    }
-    // 特别处理指定的字段
-    specialFields.forEach((field) => {
-      if (field in newComponentDisabled) {
-        // 这里可以根据需要设置字段的值，比如总是设置为 true，或者根据其他逻辑设置
-        newComponentDisabled[field] = true; // 或者其他值
-      } else {
-        // 如果需要，可以添加新字段到对象中
-        // newComponentDisabled[field] = someValue;
-      }
-    });
-    // 注意：如果 specialFields 中有字段不在 componentDisabled 中，上面的循环不会添加它们
-    // 如果需要添加这些字段，可以在循环后手动添加
-    return newComponentDisabled;
-  };
   // const setComponentRules = (componentDisabled, specialFields) => {
   //   let rules = {
   //     interestRate: [
@@ -451,7 +452,7 @@ const Deposits = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label="利率" name="interestRate">
+          <Form.Item label="年利率" name="interestRate">
             <InputNumber
               style={{
                 width: '100%',
@@ -503,7 +504,7 @@ const Deposits = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label="利率" name="interestRate">
+          <Form.Item label="年利率" name="interestRate">
             <InputNumber
               style={{
                 width: '100%',
@@ -555,8 +556,8 @@ const Deposits = () => {
         });
       });
   };
-  const getDepositRecordsList=()=>{
-    getDepositRecordsListApi(updataInfo._id).then(res=>{
+  const getDepositRecordsList=({_id})=>{
+    getDepositRecordsListApi(_id).then(res=>{
       setDepositsDrawerData(res.data)
     })
   }
@@ -662,7 +663,7 @@ const Deposits = () => {
           <Col>
             <Space>
               <Button type="primary" htmlType="submit">
-                提交
+                查询
               </Button>
               <Button type="primary" htmlType="reset">
                 重置
