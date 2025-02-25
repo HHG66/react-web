@@ -1,27 +1,47 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:59:38
- * @LastEditTime: 2023-01-31 22:29:31
+ * @LastEditTime: 2025-02-25 17:11:29
  * @LastEditors: 韩宏广
- * @FilePath: /Personal-finance/web/src/pages/Funds/index.js
- * @文件说明: 
+ * @FilePath: \financial-web\src\pages\Funds\index.jsx
+ * @文件说明:
  */
-import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Input, Row, Space, DatePicker, Table, Select, Modal, InputNumber, Popconfirm, message } from 'antd';
-import './index.less'
-import { getPositionFundsListApi, deleteFundApi, editfundinfo } from '@/api/funds'
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Row,
+  Space,
+  DatePicker,
+  Table,
+  Select,
+  Modal,
+  InputNumber,
+  Popconfirm,
+  message,
+} from 'antd';
+import './index.less';
+import {
+  getPositionFundsListApi,
+  deleteFundApi,
+  editfundinfo,
+} from '@/api/funds';
 // import { getSineFundInfoApi } from '@/api/other';
 // import { formatSinaStock } from '@/utils/index';
-
-
+import HForm from '@/components/hForm/HForm.jsx';
+import useCreateFund from './hooks/useCreatFund';
 const Funds = () => {
+  const { formConfig, createdModelHandleOk,creatFundModal,setCreatFundModal } = useCreateFund();
+
   // Funds 组件
   const [form] = Form.useForm();
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fundInfo, setFundInfo] = useState(true);
-  const [editfundid, setEditFundid] = useState('')
-  const [formModel] = Form.useForm()
+  const [editfundid, setEditFundid] = useState('');
+  const [formModel] = Form.useForm();
   const columns = [
     {
       title: '基金名称',
@@ -130,17 +150,16 @@ const Funds = () => {
             okText="确定"
             cancelText="取消"
           >
-            <a >删除</a>
+            <a>删除</a>
           </Popconfirm>
-
         </Space>
       ),
     },
   ];
 
   useEffect(() => {
-    let params = {}
-    getPositionFundsListApi(params).then(res => {
+    let params = {};
+    getPositionFundsListApi(params).then((res) => {
       // console.log(res);
       // let ss=[]
       // res.data.forEach(element => {
@@ -152,18 +171,18 @@ const Funds = () => {
       //   ss.push(i)
       // });
       // console.log(ss);
-      setData(res.data)
-    })
-  }, [])
+      setData(res.data);
+    });
+  }, []);
 
   const onFinish = (values) => {
-    let startdate
-    let enddate
+    let startdate;
+    let enddate;
     if (values.startdate) {
-      startdate = window.moment(values.startdate._d).format('HHHH-YY-DD')
+      startdate = window.moment(values.startdate._d).format('HHHH-YY-DD');
     }
     if (values.enddate) {
-      enddate = window.moment(values.enddate._d).format('HHHH-YY-DD')
+      enddate = window.moment(values.enddate._d).format('HHHH-YY-DD');
     }
     console.log(startdate, enddate);
     // console.log(enddate);
@@ -183,49 +202,69 @@ const Funds = () => {
     //     }
     //   });
     // })
-
-
-
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
   const editState = (rowData) => {
-    setEditFundid(rowData.fundid)
+    setEditFundid(rowData.fundid);
     // console.log("editState");
-    setIsModalOpen(true)
-    formModel.resetFields(['sellingprice', 'sellingnumber', 'addnumber', 'price'])
-    formModel.setFieldsValue({ sellingnumber: 1, addnumber: 1 })
-  }
+    setIsModalOpen(true);
+    formModel.resetFields([
+      'sellingprice',
+      'sellingnumber',
+      'addnumber',
+      'price',
+    ]);
+    formModel.setFieldsValue({ sellingnumber: 1, addnumber: 1 });
+  };
   const deletefunds = (rowData) => {
     // console.log("deletefunds");
     // console.log(rowData);
-    deleteFundApi(rowData.fundid).then(res => {
-      message.success(res.message)
-    })
-  }
+    deleteFundApi(rowData.fundid).then((res) => {
+      message.success(res.message);
+    });
+  };
   const handleOk = () => {
-    formModel.validateFields().then((values) => {
-      // console.log(values);
-      editfundinfo({ ...values, fundid: editfundid }).then(res => {
-        // console.log(res);
-        message.success(res.message)
-        setIsModalOpen(false);
+    formModel
+      .validateFields()
+      .then((values) => {
+        // console.log(values);
+        editfundinfo({ ...values, fundid: editfundid }).then((res) => {
+          // console.log(res);
+          message.success(res.message);
+          setIsModalOpen(false);
+        });
       })
-    }).catch(error => {
-      console.log(error);
-    })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   const handleChange = (value) => {
     if (parseInt(value) === 2) {
-      setFundInfo(false)
+      setFundInfo(false);
     } else {
-      setFundInfo(true)
+      setFundInfo(true);
     }
-    formModel.resetFields(['sellingprice', 'sellingnumber', 'addnumber', 'price'])
+    formModel.resetFields([
+      'sellingprice',
+      'sellingnumber',
+      'addnumber',
+      'price',
+    ]);
+  };
+  const createdModelHandleCancel = () => {
+    setCreatFundModal(false);
+  };
+  const createdModelHandleOk1 = (formData) => {
+    console.log(formData);
+  };
+  const onFinish1=(value)=>{
+    console.log(value);
+    
   }
   return (
     <>
@@ -238,20 +277,14 @@ const Funds = () => {
         autoComplete="off"
       >
         <Row>
-          <Space>
+          <Space className="funds-search">
             <Col>
-              <Form.Item
-                label="股票基金名称"
-                name="fundname"
-              >
+              <Form.Item label="股票基金名称" name="fundname">
                 <Input />
               </Form.Item>
             </Col>
             <Col>
-              <Form.Item
-                label="持仓状态"
-                name="holdingstate"
-              >
+              <Form.Item label="持仓状态" name="holdingstate">
                 <Select
                   // defaultValue=""
 
@@ -268,38 +301,56 @@ const Funds = () => {
                     },
                   ]}
                 />
-
               </Form.Item>
             </Col>
-            <Col >
-              <Form.Item
-                label="起始时间"
-                name="startdate"
-              >
+            <Col>
+              <Form.Item label="起始时间" name="startdate">
                 <DatePicker />
               </Form.Item>
             </Col>
-            <Col >
-              <Form.Item
-                label="终止时间"
-                name="enddate"
-              >
+            <Col>
+              <Form.Item label="终止时间" name="enddate">
                 {/* <Input /> */}
                 <DatePicker />
               </Form.Item>
             </Col>
             <Col>
-              <Button htmlType='submit' type='primary'>查询</Button>
+              <Button htmlType="submit" type="primary">
+                查询
+              </Button>
             </Col>
           </Space>
-
         </Row>
       </Form>
 
+      <Button
+        type="primary"
+        onClick={() => setCreatFundModal(true)}
+        style={{ marginBottom: 16 }}
+      >
+        新增
+      </Button>
 
-      <Table columns={columns} dataSource={data} scroll={{ x: 'max-content' }} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        scroll={{ x: 'max-content' }}
+      />
 
-      <Modal title="操作" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title="新增"
+        open={creatFundModal}
+        footer={null}
+      >
+        <HForm {...formConfig}        onFinish={onFinish1}></HForm>
+      </Modal>
+
+      <Modal
+        title="操作"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         <Form
           name="basic"
           labelCol={{
@@ -342,65 +393,63 @@ const Funds = () => {
             />
           </Form.Item>
 
-          {
-            fundInfo ? (
-              <>
-                <Form.Item
-                  label="卖出价格"
-                  name="sellingprice"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your password!',
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  label="卖出数量"
-                  name="sellingnumber"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your password!',
-                    },
-                  ]}
-                >
-                  {/* 数字输入需要动态获取最大数量 max={}  */}
-                  <InputNumber min={1} className="input-number" />
-                </Form.Item>
-              </>
-            ) : (
-              <>
-                <Form.Item
-                  label="加仓数量"
-                  name="addnumber"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your password!',
-                    },
-                  ]}
-                >
-                  {/* <Input /> */}
-                  <InputNumber min={1} className="input-number" />
-                </Form.Item>
-                <Form.Item
-                  label="价格"
-                  name="price"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your password!',
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </>
-            )
-          }
+          {fundInfo ? (
+            <>
+              <Form.Item
+                label="卖出价格"
+                name="sellingprice"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="卖出数量"
+                name="sellingnumber"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                ]}
+              >
+                {/* 数字输入需要动态获取最大数量 max={}  */}
+                <InputNumber min={1} className="input-number" />
+              </Form.Item>
+            </>
+          ) : (
+            <>
+              <Form.Item
+                label="加仓数量"
+                name="addnumber"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                ]}
+              >
+                {/* <Input /> */}
+                <InputNumber min={1} className="input-number" />
+              </Form.Item>
+              <Form.Item
+                label="价格"
+                name="price"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          )}
 
           {/* <Form.Item
             wrapperCol={{
@@ -415,7 +464,7 @@ const Funds = () => {
         </Form>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default Funds
+export default Funds;
