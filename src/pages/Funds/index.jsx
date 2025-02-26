@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:59:38
- * @LastEditTime: 2025-02-25 17:11:29
+ * @LastEditTime: 2025-02-26 09:27:35
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\Funds\index.jsx
  * @文件说明:
@@ -31,9 +31,9 @@ import {
 // import { getSineFundInfoApi } from '@/api/other';
 // import { formatSinaStock } from '@/utils/index';
 import HForm from '@/components/hForm/HForm.jsx';
-import useCreateFund from './hooks/useCreatFund';
+import useCreatFund from './hooks/useCreatFund';
 const Funds = () => {
-  const { formConfig, createdModelHandleOk,creatFundModal,setCreatFundModal } = useCreateFund();
+  const { formConfig, createdModelHandleOk,creatFundModal,setCreatFundModal } = useCreatFund();
 
   // Funds 组件
   const [form] = Form.useForm();
@@ -342,7 +342,7 @@ const Funds = () => {
         open={creatFundModal}
         footer={null}
       >
-        <HForm {...formConfig}        onFinish={onFinish1}></HForm>
+        <HForm {...formConfig} onFinish={createdModelHandleOk}></HForm>
       </Modal>
 
       <Modal

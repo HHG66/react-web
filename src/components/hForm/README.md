@@ -18,7 +18,7 @@ Form
 |         |                      |       |        |                       |
 |         |                      |       |        |                       |
 
-Form.Item
+## Form.Item
 
 | 参数         | 说明              | 类型      | 默认值    | 备注                                                         |
 | ------------ | ----------------- | --------- | --------- | ------------------------------------------------------------ |
@@ -33,13 +33,17 @@ Form.Item
 | autoSelect   | 类型为keyword传递 | boolean   | true      | 添加后是否自动选中，默认确定                                 |
 | defaultValue | 表单默认值        | any       | undefined | 表单的默认值,注意只在表单渲染前设置有效，渲染之后需要通过内部方法设置值 |
 
-## keyword组件
+### keyword组件
 
 | 参数         | 说明   | 备注                                                     |
 | ------------ | ------ | -------------------------------------------------------- |
 | defaultValue | 默认值 | 因为这个是选择框，所以defaultValue的值也应该是option列表 |
-|              |        |                                                          |
-|              |        |                                                          |
+
+### checkbox组件
+
+```
+
+```
 
 
 
@@ -81,6 +85,22 @@ Form.Item
           ],
         },
       },
+       {
+        name: 'creatfundType',
+        label: '创建类型',
+        type: 'checkbox',
+        // valuePropName: "checked",
+        defaultValue:true,
+        options: [
+          {
+            label: "手动",
+            value: "01"
+          },
+        ],
+        item: {
+          // rules: [{ required: true, message: '请输入基金名称' }],
+        },
+       },
       {
         // name: "submit",
         type: 'button',

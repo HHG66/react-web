@@ -25,4 +25,8 @@ module.exports = {
     "react/no-unknown-property":"warn",
     "endOfLine": "crlf"
   },
+  "@typescript-eslint/naming-convention": [
+    true,
+    { "selector": "file", "format": ["camelCase"] }
+  ]
 }

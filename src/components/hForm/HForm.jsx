@@ -1,4 +1,13 @@
-import { Button, Form, Input, Select, DatePicker, InputNumber } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  InputNumber,
+  Checkbox,
+  Radio,
+} from 'antd';
 import React, {
   useEffect,
   useState,
@@ -24,7 +33,6 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     formRef.current = form; // 每次 form 更新时都更新 ref
   }, [form]);
 
-
   useImperativeHandle(ref, () => ({
     getFormInstance: () => formRef.current,
     resetFields: () => form.resetFields(),
@@ -45,12 +53,15 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
   const initialValues = useMemo(
     () =>
       formColumns.reduce((acc, element) => {
-        if (element.type !== 'keyword') {
-          acc[element.name] = element.defaultValue;
-        } else {
-          acc[element.name] = element.defaultValue
-            ? [{ label: element.defaultValue, value: element.defaultValue }]
-            : [];
+        switch (element.type) {
+          case 'keyword':
+            acc[element.name] = element.defaultValue
+              ? [{ label: element.defaultValue, value: element.defaultValue }]
+              : [];
+            break;
+          default:
+            acc[element.name] = element.defaultValue;
+            break;
         }
         return acc;
       }, {}),
@@ -71,7 +82,10 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     ),
     number: (props) => (
       <Form.Item {...props} {...props.item}>
-        <InputNumber {...props} />
+        <InputNumber
+          {...props}
+          style={{ width: props.width ? props.width : '100%' }}
+        />
       </Form.Item>
     ),
     password: (props) => (
@@ -93,10 +107,45 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     ),
     date: (props) => (
       <Form.Item {...props} {...props.item}>
-        <DatePicker {...props} />
+        <DatePicker
+          {...props}
+          style={{ width: props.width ? props.width : '100%' }}
+        />
       </Form.Item>
     ),
     keyword: (props) => <KeyWord {...props} form={form} />,
+    checkbox: (props) => (
+      <Form.Item
+        {...props}
+        {...props.item}
+        valuePropName={props.valuePropName ? props.valuePropName : 'checked'}
+      >
+        {
+          //判断props.options长度是否大于1，大于1则使用Checkbox.Group，否则使用Checkbox
+          props.options.length > 1 ? (
+            <Checkbox.Group options={props.options} />
+          ) : (
+            <Checkbox value={props.options[0].value}>
+              {props.options[0].label}
+            </Checkbox>
+          )
+        }
+      </Form.Item>
+    ),
+    radio: (props) => (
+      <Form.Item {...props} {...props.item}>
+        {
+          //判断props.options长度是否大于1，大于1则使用Radio.Group，否则使用Radio
+          props.options.length > 1 ? (
+            <Radio.Group {...props} options={props.options}></Radio.Group>
+          ) : (
+            <Radio {...props} value={props.options[0].value}>
+              {props.options[0].label}
+            </Radio>
+          )
+        }
+      </Form.Item>
+    ),
   };
   return (
     <Form
