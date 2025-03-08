@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2025-01-04 12:20:35
+ * @LastEditTime: 2025-03-09 00:26:56
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
+ * @FilePath: /personal-finance-web/src/pages/BalancepaymentsImportBill/index.jsx
  * @文件说明:
  */
 import React, { useState, useEffect } from 'react';
@@ -22,7 +22,6 @@ import {
   DatePicker,
   Popconfirm,
 } from 'antd';
-import * as XLSX from 'xlsx';
 // import React, { useCallback, useEffect, useState } from "react";
 import {
   importingbillsApi,
@@ -31,17 +30,8 @@ import {
   getinportbillinfoApi,
 } from '@/api/balancepayments';
 import './index.less';
-// import moment from 'moment';
-// export class BalancepaymentsImportBill extends Component {
-//   render() {
-//     return (
-//       <div>导入账单</div>
-//       <Upload {...props}>
-//       <Button >Click to Upload</Button>
-//     </Upload>
-//     )
-//   }
-// }
+import UploadDialog from './component/UploadDialog'
+import useUploadForm from './hooks/useUploadForm.js'
 const BalancepaymentsImportBill = () => {
   // const [test, setTest] = useState({})
   const [columns, setColumns] = useState([
@@ -132,20 +122,52 @@ const BalancepaymentsImportBill = () => {
       ),
     },
   ]);
+  //导入账单批次信息
+  const [tatelColumns,setTatelColumns]=useState([
+    {
+      title: '导入时间',
+      dataIndex: 'importtime',
+      key: 'importtime',
+      width: 200,
+    },{
+      title: '账单类型',
+      dataIndex: 'billtype',
+      key: 'billtype',
+      width: 200,
+    },{
+      title: '总业务数',
+      dataIndex: 'businesstotal',
+      key: 'businesstotal',
+      width: 200,
+    },{
+      title: '操作',
+      key: 'action',
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={() => editBili(record)}>编辑</a>
+          <Popconfirm
+            title="确定删除记录？"
+            onConfirm={() => confirm(record)}
+            // onCancel={cancel}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a href="#">删除</a>
+          </Popconfirm>
+          {/* 查看批次账单 */}
+          <a onClick={() => showBillDrawer(record)}>查看</a>
+        </Space>
+      ),
+    }
+     ]);
   const [pres, setPres] = useState([]);
   const [open, setOpen] = useState(false);
   const [childrenDrawer, setChildrenDrawer] = useState(false);
   const [record, setRecord] = useState([]);
   const [batchInfo, setBatchInfo] = useState({});
-  // const [tableParams, setTableParams] = useState({
-  //   pagination: {
-  //     current: 1,
-  //     pageSize: 10,
-  //     // total:85,
-  //     // showTotal
-  //   },
-  // });
-
+ 
+  const {isDialogOpen,openDialog,closeDialog}=useUploadForm()
   const [params, setParams] = useState({
     pageSize: 10,
     // pageNum: 0,
@@ -174,10 +196,6 @@ const BalancepaymentsImportBill = () => {
     setChildrenDrawer(false);
   };
   useEffect(() => {
-    // let params = {
-    //   // importtime: moment().format('YYYY-MM-DD'),
-
-    // };
     getdisposebillApi({ ...params }).then((res) => {
       console.log(res);
 
@@ -194,15 +212,6 @@ const BalancepaymentsImportBill = () => {
       importtime: '2022-12-01',
     };
     getdisposebill(params);
-    // getdisposebillApi(params).then((res) => {
-    //   setPres(res.data.list);
-    //   setParams({
-    //     pageSize: res.data.pagesize,
-    //     total: res.data.total,
-    //     current: res.data.current,
-    //   });
-    //   onClose();
-    // });
     event.stopPropagation();
   };
   const getdisposebill = async () => {
@@ -242,149 +251,124 @@ const BalancepaymentsImportBill = () => {
     onChange(file);
     return false;
   };
-  const onChange = (evt) => {
-    // debugger
-    // console.log(evt);
-    // console.log(evt.file);
-    var selectedFile = evt;
-    var reader = new FileReader();
-    // 字段名映射对象
-    const fieldMapping = {
-      交易时间: 'tradinghours',
-      交易类型: 'tradetype',
-      交易对方: 'counterparty',
-      商品: 'product',
-      '收/支': 'collectorbranch',
-      '金额(元)': 'amount',
-      支付方式: 'patternpayment',
-      当前状态: 'currentstate',
-      交易单号: 'trasactionid',
-      商户单号: 'merchantstoorder',
-      备注: 'remark',
-      更新日期: 'updataDate',
-    };
+  // const onChange = (evt) => {
+  //   var selectedFile = evt;
+  //   var reader = new FileReader();
+  //   // 字段名映射对象
+  //   const fieldMapping = {
+  //     交易时间: 'tradinghours',
+  //     交易类型: 'tradetype',
+  //     交易对方: 'counterparty',
+  //     商品: 'product',
+  //     '收/支': 'collectorbranch',
+  //     '金额(元)': 'amount',
+  //     支付方式: 'patternpayment',
+  //     当前状态: 'currentstate',
+  //     交易单号: 'trasactionid',
+  //     商户单号: 'merchantstoorder',
+  //     备注: 'remark',
+  //     更新日期: 'updataDate',
+  //   };
 
-    var datass = [];
-    reader.onload = function (event) {
-      // debugger
-      var data = event.target.result;
-      var workbook = XLSX.read(data, {
-        type: 'binary',
-      });
-      workbook.SheetNames.forEach(function (sheetName) {
-        // XLSX.utils.v
-        var sheeldata = workbook.Sheets[sheetName];
-        // console.log(sheeldata);
-        var sheel = XLSX.utils.sheet_to_json(sheeldata, {
-          header: 1,
-          raw: false,
-          blankrows: true,
-          defval: ' ',
-          rawNumbers: true,
-          dateNF: 'YYYY-MM-DD',
-          UTC: true,
-        });
-        console.log(sheel);
+  //   var datass = [];
+  //   reader.onload = function (event) {
+  //     // debugger
+  //     var data = event.target.result;
+  //     var workbook = XLSX.read(data, {
+  //       type: 'binary',
+  //     });
+  //     workbook.SheetNames.forEach(function (sheetName) {
+  //       // XLSX.utils.v
+  //       var sheeldata = workbook.Sheets[sheetName];
+  //       // console.log(sheeldata);
+  //       var sheel = XLSX.utils.sheet_to_json(sheeldata, {
+  //         header: 1,
+  //         raw: false,
+  //         blankrows: true,
+  //         defval: ' ',
+  //         rawNumbers: true,
+  //         dateNF: 'YYYY-MM-DD',
+  //         UTC: true,
+  //       });
+  //       console.log(sheel);
 
-        // var col_index = XLSX.utils.decode_col("D");
-        // console.log(test);
-        // setTest(test)
-        var tableHead = [];
-        sheel[0].forEach((element) => {
-          if (
-            element === '交易单号' ||
-            element === '商户单号' ||
-            element === '交易时间'
-          ) {
-            // debugger
-            tableHead.push({
-              title: element,
-              dataIndex: fieldMapping[element],
-              key: fieldMapping[element],
-              width: 200,
-            });
-          } else {
-            tableHead.push({
-              title: element,
-              dataIndex: fieldMapping[element],
-              key: fieldMapping[element],
-              width: 80,
-            });
-          }
-        });
-        console.log(tableHead);
-        // {
-        //   title: '交易时间',
-        //   dataIndex: 'tradinghours',
-        //   key: 'tradinghours',
-        //   width: 200,
-        // },
-        setColumns(tableHead);
-        sheel.forEach((element, index) => {
-          if (index === 0) {
-            return;
-          }
-          try {
-            var rowData = {};
-            for (let index = 0; index < element.length; index++) {
-              rowData[tableHead[index].dataIndex] = element[index];
-              rowData['key'] = Math.ceil(Math.random() * 100000);
-            }
-            datass.push(rowData);
-          } catch (error) {
-            console.log(error);
-          }
-        });
-        // console.log(datass);
-        // var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-        // if (XL_row_object.length > 0) {
-        // console.log(JSON.parse(JSON.stringify(XL_row_object)));
-        // }
-      });
-      // setPres(datass);
-      importingbillsApi(datass).then((res) => {
-        getdisposebill();
-      });
-    };
+  //       // var col_index = XLSX.utils.decode_col("D");
+  //       // console.log(test);
+  //       // setTest(test)
+  //       var tableHead = [];
+  //       sheel[0].forEach((element) => {
+  //         if (
+  //           element === '交易单号' ||
+  //           element === '商户单号' ||
+  //           element === '交易时间'
+  //         ) {
+  //           // debugger
+  //           tableHead.push({
+  //             title: element,
+  //             dataIndex: fieldMapping[element],
+  //             key: fieldMapping[element],
+  //             width: 200,
+  //           });
+  //         } else {
+  //           tableHead.push({
+  //             title: element,
+  //             dataIndex: fieldMapping[element],
+  //             key: fieldMapping[element],
+  //             width: 80,
+  //           });
+  //         }
+  //       });
+  //       console.log(tableHead);
+  //       // {
+  //       //   title: '交易时间',
+  //       //   dataIndex: 'tradinghours',
+  //       //   key: 'tradinghours',
+  //       //   width: 200,
+  //       // },
+  //       setColumns(tableHead);
+  //       sheel.forEach((element, index) => {
+  //         if (index === 0) {
+  //           return;
+  //         }
+  //         try {
+  //           var rowData = {};
+  //           for (let index = 0; index < element.length; index++) {
+  //             rowData[tableHead[index].dataIndex] = element[index];
+  //             rowData['key'] = Math.ceil(Math.random() * 100000);
+  //           }
+  //           datass.push(rowData);
+  //         } catch (error) {
+  //           console.log(error);
+  //         }
+  //       });
+  //       // console.log(datass);
+  //       // var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+  //       // if (XL_row_object.length > 0) {
+  //       // console.log(JSON.parse(JSON.stringify(XL_row_object)));
+  //       // }
+  //     });
+  //     // setPres(datass);
+  //     importingbillsApi(datass).then((res) => {
+  //       getdisposebill();
+  //     });
+  //   };
 
-    reader.onerror = function (event) {
-      console.error('File could not be read! Code ' + event.target.error.code);
-    };
-    // 读取上传文件为二进制
-    reader.readAsBinaryString(selectedFile);
-  };
+  //   reader.onerror = function (event) {
+  //     console.error('File could not be read! Code ' + event.target.error.code);
+  //   };
+  //   // 读取上传文件为二进制
+  //   reader.readAsBinaryString(selectedFile);
+  // };
 
   const onFinish = (values) => {
     getdisposebill();
-    // console.log('Success:', values);
-    // // console.log(window.moment(values.tradinghours._d).format('YYYY-MM-DD'));
-    // let tradinghours = undefined;
-    // let importtime = undefined;
-    // if (values.tradinghours) {
-    //   tradinghours = window.moment(values.tradinghours._d).format('YYYY-MM-DD');
-    // }
-    // if (values.importtime) {
-    //   importtime = window.moment(values.importtime).format('YYYY-MM');
-    // }
-    // getdisposebillApi({
-    //   ...values,
-    //   tradinghours: tradinghours,
-    //   importtime: importtime,
-    //   ...params,
-    // }).then((res) => {
-    //   setPres(res.data);
-    //   setParams({
-    //     pageSize: res.meta.pageSize,
-    //     total: res.meta.total,
-    //     page: res.meta.page,
-    //   });
-    // });
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
   return (
     <>
+    <UploadDialog openState={isDialogOpen} onClose={closeDialog}></UploadDialog>
       {/* <div>导入账单</div> */}
       <Form
         name="basic"
@@ -486,19 +470,48 @@ const BalancepaymentsImportBill = () => {
           </Button>
         </Col> */}
         <Col offset={22}>
-          <Upload beforeUpload={beforeUpload} showUploadList={false}>
+        <Button
+              type="primary"
+              style={{ marginBottom: '10px', marginLeft: '10px' }}
+              onClick={openDialog}
+            >
+              导入账单
+            </Button>
+          {/* <Upload beforeUpload={beforeUpload} showUploadList={false}>
             <Button
               type="primary"
               style={{ marginBottom: '10px', marginLeft: '10px' }}
             >
               导入账单
             </Button>
-          </Upload>
+          </Upload> */}
         </Col>
       </Row>
       {/* <Button onClick={addField}>Click </Button> */}
-      <Table
+      {/* <Table
         columns={columns}
+        dataSource={pres}
+        pagination={{
+          // showSizeChanger: true,
+          // showQuickJumper: false,
+          showTotal: () => `共${params.total}条`,
+          pageSize: params.pageSize,
+          current: params.page,
+          total: params.total,
+          onChange: (current, pageSize) => {
+            getdisposebill({
+              ...form,
+              page: current.toString(),
+              pageSize: pageSize.toString(),
+            });
+          },
+        }}
+        scroll={{ y: false }}
+        className="tab-box"
+        rowKey="_id"
+      /> */}
+       <Table
+        columns={tatelColumns}
         dataSource={pres}
         pagination={{
           // showSizeChanger: true,
@@ -548,9 +561,6 @@ const BalancepaymentsImportBill = () => {
               </Timeline.Item>
             );
           })}
-          {/* <Timeline.Item label="2015-09-01 09:12:11">Solve initial network problems</Timeline.Item>
-        <Timeline.Item>Technical testing</Timeline.Item>*/}
-          {/* <Timeline.Item label="2015-09-01 09:12:11">Network problems being solved</Timeline.Item>  */}
         </Timeline>
 
         {/* <Divider />

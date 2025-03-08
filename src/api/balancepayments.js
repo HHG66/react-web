@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2025-01-04 13:36:50
+ * @LastEditTime: 2025-03-08 21:39:05
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\api\balancepayments.js
+ * @FilePath: /personal-finance-web/src/api/balancepayments.js
  * @文件说明:
  */
 import request from './index.js';
@@ -18,10 +18,10 @@ export const getBalancepayMentsApi = (params) => {
   });
 };
 
-export const importingbillsApi = (data) => {
+export const importingbillsApi = ({billList,billType}) => {
   //把单次导入的账单数据进行了处理，去除了antd中table组件需要的key属性，减少网络带宽
   var datas = [];
-  data.forEach((element) => {
+  billList.forEach((element) => {
     var billTable = {};
     for (const key in element) {
       if (key !== 'key') {
@@ -34,7 +34,10 @@ export const importingbillsApi = (data) => {
   return request({
     url: '/bill/importingbills',
     method: 'POST',
-    data: datas,
+    data: {
+      datas,
+      billType
+    },
   });
 };
 export const getdisposebillApi = (params) => {

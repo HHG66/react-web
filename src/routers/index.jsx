@@ -128,7 +128,7 @@ const Routers = [
         subs: [
           {
             key: '/balancepayments/management',
-            title: '收支情况记录',
+            title: '收支日历',//收支情况记录
             component: lazyCompent(
               <BalancepaymentsMgement></BalancepaymentsMgement>
             ),
@@ -136,7 +136,7 @@ const Routers = [
           },
           {
             key: '/balancepayments/importBill',
-            title: '导入账单',
+            title: '账单处理',//原导入账单
             component: lazyCompent(
               <BalancepaymentsImportBill></BalancepaymentsImportBill>
             ),

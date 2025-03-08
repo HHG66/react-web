@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2025-02-26 09:33:44
- * @LastEditTime: 2025-02-26 15:03:22
+ * @LastEditTime: 2025-03-08 13:22:14
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\pages\Funds\hooks\useCreatFund.js
+ * @FilePath: /personal-finance-web/src/pages/Funds/hooks/useCreatFund.js
  * @文件说明: 
  */
 /*

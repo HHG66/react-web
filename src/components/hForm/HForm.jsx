@@ -7,6 +7,7 @@ import {
   InputNumber,
   Checkbox,
   Radio,
+  Upload
 } from 'antd';
 import React, {
   useEffect,
@@ -20,7 +21,9 @@ import PropTypes from 'prop-types';
 import KeyWord from './components/keyWord';
 import { useFormColumns } from './hooks/useFormColumns'; // 引入独立钩子
 
-const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
+const HForm = forwardRef(({ columns, onFinish= () => {}, formProps }, ref) => {
+  // console.log({ columns, onFinish, formProps }, ref);
+  
   const [form] = Form.useForm(); // 创建 form 实例
   const formRef = useRef(); // 引用 ref，方便在外部获取实例
   //优化过程
@@ -39,6 +42,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
     validateFields: () => form.validateFields(),
     setFieldsValue: (values) => form.setFieldsValue(values),
     getFieldValue: (name) => form.getFieldValue(name),
+    getFieldsValue:(nameList) => form.getFieldsValue(nameList),
   }));
 
   // useEffect(() => {
@@ -146,6 +150,13 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
         }
       </Form.Item>
     ),
+    upload:(props)=>(
+      <Form.Item name={props.name} label={props.label} {...props.item}>
+         <Upload {...props}>
+           <Button >选择文件</Button>
+        </Upload>
+      </Form.Item>
+    )
   };
   return (
     <Form
@@ -167,7 +178,7 @@ const HForm = forwardRef(({ columns, onFinish, formProps }, ref) => {
 
 HForm.propTypes = {
   columns: PropTypes.array.isRequired,
-  onFinish: PropTypes.func.isRequired,
+  onFinish: PropTypes.func,
   formProps: PropTypes.object,
 };
 

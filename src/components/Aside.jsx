@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-09-01 10:58:19
- * @LastEditTime: 2024-12-13 11:03:20
+ * @LastEditTime: 2025-03-08 12:43:34
  * @LastEditors: 韩宏广
- * @FilePath: \financial-web\src\components\Aside.jsx
+ * @FilePath: /personal-finance-web/src/components/Aside.jsx
  * @文件说明:
  */
 import { Layout, Menu } from 'antd';
@@ -14,26 +14,26 @@ import Routers from '@/routers';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
-const rootSubmenuKeys = [
-  '/consumptiontype',
-  '/incometype',
-  '/balancepayments',
-  '/investmentmanagement',
-  '/checkInformation',
-];
+// const rootSubmenuKeys = [
+//   '/consumptiontype',
+//   '/incometype',
+//   '/balancepayments',
+//   '/investmentmanagement',
+//   '/checkInformation',
+// ];
 import SvgIcon from './SvgIcon';
 import { getMenu, setCurrentMenu } from '@/store/reducers/Menu';
 
 const Aside = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [routerItem, setRouterItem] = useState([]);
-  const [openKeys, setOpenKeys] = useState([]);
-  const [selectedKeys, setselectedKeys] = useState(['']);
+  // const [openKeys, setOpenKeys] = useState([]);
+  // const [selectedKeys, setselectedKeys] = useState(['']);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const selectMenu = useSelector(getMenu); // 获取 token
   const dispatch = useDispatch();
-
+  const [openMenu,setOpenMenu]=useState([])
   const store = useSelector((store) => {
     // if (Object.keys(store.userInfo).length === 0) {
     //   // console.log(getLocalStorage("asideInfo"));
@@ -87,40 +87,58 @@ const Aside = () => {
     return menuList;
   }
 
-  //根据当前路由设置选中导航菜单
+
+  // setOpenMenu(['/' + selectMenu.split('/')[1]])
   useEffect(() => {
     // setselectedKeys([pathname]);
     // console.log(selectedKeys, 'selectedKeys');
     // console.log(selectMenu,'selectMenu');
     // console.log([selectMenu],'[selectMenu]');
+
+    // ['/' + selectMenu.split('/')[1]]
+    // console.log('selectMenu',selectMenu);
+       //根据当前路由设置选中导航菜单
+  if(selectMenu==pathname){
+    // debugger
+    setOpenMenu(['/' + selectMenu.split('/')[1]])
+  }else{
+    setOpenMenu([])
+    // debugger
+  }
+    // console.log(pathname);
+
   }, [pathname]);
-  useEffect(() => {
+  // useEffect(() => {
     // selectMenu.replec()
     // console.log(selectMenu.split('/')[1], '---');
-  }, [selectMenu]);
+  // }, [selectMenu]);
   //这个地方是只展开一个父级菜单，onOpenChange只在打开有子级导航的时候,以及收回侧边栏会触发。
-  const onOpenChange = (keys) => {
-    console.log('执行了子菜单收回');
-    // console.log(keys);
-    // console.log(openKeys);
-    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
-    console.log(latestOpenKey);
-    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      if (collapsed === false) {
-        // console.log(keys);
-        setOpenKeys(keys);
-        // setLocalStorage("OpenKeys", keys)
-      }
-    } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-      // setLocalStorage("OpenKeys", latestOpenKey ? [latestOpenKey] : [])
-    }
-  };
+  // const onOpenChange = (keys) => {
+  //   console.log('执行了子菜单收回');
+  //   // console.log(keys);
+  //   // console.log(openKeys);
+  //   const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+  //   console.log(latestOpenKey);
+  //   if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+  //     if (collapsed === false) {
+  //       // console.log(keys);
+  //       setOpenKeys(keys);
+  //       // setLocalStorage("OpenKeys", keys)
+  //     }
+  //   } else {
+  //     setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+  //     // setLocalStorage("OpenKeys", latestOpenKey ? [latestOpenKey] : [])
+  //   }
+  // };
   const onSelect = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     // console.log({ item, key, keyPath, selectedKeys, domEvent });
     dispatch(setCurrentMenu(key));
     navigate(key);
   };
+  const onOpenChange=(newOpenKeys)=>{
+    // setOpenKeys(newOpenKeys);
+    setOpenMenu(newOpenKeys)
+  }
   return (
     <>
       <Sider
@@ -134,13 +152,16 @@ const Aside = () => {
         {/* <div className="logo" > </div> */}
         <Menu
           theme="dark"
-          defaultSelectedKeys={'/home'}
+          // defaultSelectedKeys={'/home'}
           mode="inline"
           items={routerItem}
           onSelect={onSelect}
+          onOpenChange={onOpenChange}
           // 为了解决二级菜单展开无法展开的问题
           // {...defaultProps}
-          defaultOpenKeys={['/' + selectMenu.split('/')[1]]}
+          // defaultOpenKeys={['/' + selectMenu.split('/')[1]]}
+          openKeys={openMenu}
+          
           selectedKeys={selectMenu}
         />
       </Sider>
