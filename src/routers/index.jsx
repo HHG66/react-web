@@ -2,7 +2,7 @@ import AssetStatistics from '@/pages/AssetStatistics';
 import SvgIcon from '@/components/Icon';
 import { lazy, Suspense } from 'react';
 import Loaddig from '@/components/Loaddig';
-import { Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 //为什么这种方式报错
 // 在Suspense下不能存在同步加载组件
 import Layouts from '@/pages/Layout';
@@ -44,6 +44,7 @@ const Routers = [
   {
     key: '/',
     component: <Layouts></Layouts>,
+    // component:  <Navigate to="/home" />,
     subs: [
       {
         key: '/home',

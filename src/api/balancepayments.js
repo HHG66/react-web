@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-12-13 20:02:38
- * @LastEditTime: 2025-03-08 21:39:05
+ * @LastEditTime: 2025-03-10 18:04:11
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/api/balancepayments.js
+ * @FilePath: \financial-web\src\api\balancepayments.js
  * @文件说明:
  */
 import request from './index.js';
@@ -40,6 +40,7 @@ export const importingbillsApi = ({billList,billType}) => {
     },
   });
 };
+//查询账单列表
 export const getdisposebillApi = (params) => {
   console.log(params);
 
@@ -108,6 +109,23 @@ export const getPeriodTimeBillApi = (params) => {
     params: {
       startDate: params.startDate || '',
       endDate: params.endDate || '',
+    },
+  });
+};
+
+export const getBillBatchApi = (params) => {
+  return request({
+    url: baseUrl + '/getBillBatch',
+    method: 'GET',
+    params: {
+      // tradinghours: params.tradinghours,
+      // tradetype: params.transactiontype,
+      // collectorbranch: params.balancepayments ? params.balancepayments : null,
+      // amount: params.amount ? params.amount : null,
+      // trasactionid: params.id ? params.id : null,
+      importTime: params.importtime ? window.moment(params.importtime).format('YYYY-MM-DD') : null,
+      // pageSize: params.pageSize,
+      // page: params.page
     },
   });
 };

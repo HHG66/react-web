@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2025-03-09 00:26:56
+ * @LastEditTime: 2025-03-10 18:23:34
  * @LastEditors: 韩宏广
- * @FilePath: /personal-finance-web/src/pages/BalancepaymentsImportBill/index.jsx
+ * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
  */
 import React, { useState, useEffect } from 'react';
@@ -24,122 +24,129 @@ import {
 } from 'antd';
 // import React, { useCallback, useEffect, useState } from "react";
 import {
-  importingbillsApi,
+  getBillBatchApi,
   getdisposebillApi,
   getImportRecordsApi,
   getinportbillinfoApi,
 } from '@/api/balancepayments';
 import './index.less';
-import UploadDialog from './component/UploadDialog'
-import useUploadForm from './hooks/useUploadForm.js'
+import UploadDialog from './component/UploadDialog';
+import useUploadForm from './hooks/useUploadForm.js';
+import { formatDate } from '@/utils/index.js';
 const BalancepaymentsImportBill = () => {
   // const [test, setTest] = useState({})
-  const [columns, setColumns] = useState([
-    {
-      title: '交易时间',
-      dataIndex: 'tradinghours',
-      key: 'tradinghours',
-      width: 200,
-    },
-    {
-      title: '交易类型',
-      dataIndex: 'tradetype',
-      key: 'tradetype',
-      width: 100,
-    },
-    {
-      title: '交易对方',
-      dataIndex: 'counterparty',
-      key: 'counterparty',
-      width: 150,
-    },
-    {
-      title: '商品',
-      dataIndex: 'product',
-      key: 'product',
-      width: 200,
-    },
-    {
-      title: '收/支',
-      dataIndex: 'collectorbranch',
-      key: 'collectorbranch',
-      width: 80,
-    },
-    {
-      title: '金额(元)',
-      dataIndex: 'amount',
-      key: 'amount',
-      width: 100,
-    },
-    {
-      title: '支付方式',
-      dataIndex: 'patternpayment',
-      key: 'patternpayment',
-      width: 100,
-    },
-    {
-      title: '当前状态',
-      dataIndex: 'currentstate',
-      key: 'currentstate',
-      width: 100,
-    },
-    {
-      title: '交易单号',
-      dataIndex: 'trasactionid',
-      key: 'trasactionid',
-      width: 200,
-    },
-    {
-      title: '商户单号',
-      dataIndex: 'merchantstoorder',
-      key: 'merchantstoorder',
-      width: 200,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      key: 'remark',
-      width: 80,
-    },
-    {
-      title: '操作',
-      // key: 'action',
-      width: 150,
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => editBili(record)}>编辑</a>
-          <Popconfirm
-            title="确定删除记录？"
-            onConfirm={() => confirm(record)}
-            // onCancel={cancel}
-            okText="确定"
-            cancelText="取消"
-          >
-            <a href="#">删除</a>
-          </Popconfirm>
-          {/* <a onClick={() =>}></a> */}
-        </Space>
-      ),
-    },
-  ]);
+  // const [columns, setColumns] = useState([
+  //   {
+  //     title: '交易时间',
+  //     dataIndex: 'tradinghours',
+  //     key: 'tradinghours',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '交易类型',
+  //     dataIndex: 'tradetype',
+  //     key: 'tradetype',
+  //     width: 100,
+  //   },
+  //   {
+  //     title: '交易对方',
+  //     dataIndex: 'counterparty',
+  //     key: 'counterparty',
+  //     width: 150,
+  //   },
+  //   {
+  //     title: '商品',
+  //     dataIndex: 'product',
+  //     key: 'product',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '收/支',
+  //     dataIndex: 'collectorbranch',
+  //     key: 'collectorbranch',
+  //     width: 80,
+  //   },
+  //   {
+  //     title: '金额(元)',
+  //     dataIndex: 'amount',
+  //     key: 'amount',
+  //     width: 100,
+  //   },
+  //   {
+  //     title: '支付方式',
+  //     dataIndex: 'patternpayment',
+  //     key: 'patternpayment',
+  //     width: 100,
+  //   },
+  //   {
+  //     title: '当前状态',
+  //     dataIndex: 'currentstate',
+  //     key: 'currentstate',
+  //     width: 100,
+  //   },
+  //   {
+  //     title: '交易单号',
+  //     dataIndex: 'trasactionid',
+  //     key: 'trasactionid',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '商户单号',
+  //     dataIndex: 'merchantstoorder',
+  //     key: 'merchantstoorder',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '备注',
+  //     dataIndex: 'remark',
+  //     key: 'remark',
+  //     width: 80,
+  //   },
+  //   {
+  //     title: '操作',
+  //     // key: 'action',
+  //     width: 150,
+  //     render: (_, record) => (
+  //       <Space size="middle">
+  //         <a onClick={() => editBili(record)}>编辑</a>
+  //         <Popconfirm
+  //           title="确定删除记录？"
+  //           onConfirm={() => confirm(record)}
+  //           // onCancel={cancel}
+  //           okText="确定"
+  //           cancelText="取消"
+  //         >
+  //           <a href="#">删除</a>
+  //         </Popconfirm>
+  //         {/* <a onClick={() =>}></a> */}
+  //       </Space>
+  //     ),
+  //   },
+  // ]);
   //导入账单批次信息
-  const [tatelColumns,setTatelColumns]=useState([
+  const [tatelColumns, setTatelColumns] = useState([
     {
       title: '导入时间',
       dataIndex: 'importtime',
       key: 'importtime',
       width: 200,
-    },{
+      render: (value) => {
+        return window.moment(value).format('YYYY-MM-DD HH:mm:ss');
+      },
+    },
+    {
       title: '账单类型',
       dataIndex: 'billtype',
       key: 'billtype',
       width: 200,
-    },{
+    },
+    {
       title: '总业务数',
       dataIndex: 'businesstotal',
       key: 'businesstotal',
       width: 200,
-    },{
+    },
+    {
       title: '操作',
       key: 'action',
       width: 150,
@@ -159,15 +166,15 @@ const BalancepaymentsImportBill = () => {
           <a onClick={() => showBillDrawer(record)}>查看</a>
         </Space>
       ),
-    }
-     ]);
+    },
+  ]);
   const [pres, setPres] = useState([]);
   const [open, setOpen] = useState(false);
   const [childrenDrawer, setChildrenDrawer] = useState(false);
   const [record, setRecord] = useState([]);
   const [batchInfo, setBatchInfo] = useState({});
- 
-  const {isDialogOpen,openDialog,closeDialog}=useUploadForm()
+
+  const { isDialogOpen, openDialog, closeDialog } = useUploadForm();
   const [params, setParams] = useState({
     pageSize: 10,
     // pageNum: 0,
@@ -198,7 +205,6 @@ const BalancepaymentsImportBill = () => {
   useEffect(() => {
     getdisposebillApi({ ...params }).then((res) => {
       console.log(res);
-
       setPres(res.data);
       setParams({
         pageSize: res.meta.pageSize,
@@ -228,7 +234,7 @@ const BalancepaymentsImportBill = () => {
         ? window.moment(validateState.tradinghours).format('YYYY-MM-DD')
         : '';
     }
-    getdisposebillApi(queryData).then((res) => {
+    getBillBatchApi(queryData).then((res) => {
       setPres(res.data);
       setParams({
         pageSize: res.meta.pagesize,
@@ -368,7 +374,10 @@ const BalancepaymentsImportBill = () => {
   };
   return (
     <>
-    <UploadDialog openState={isDialogOpen} onClose={closeDialog}></UploadDialog>
+      <UploadDialog
+        openState={isDialogOpen}
+        onClose={closeDialog}
+      ></UploadDialog>
       {/* <div>导入账单</div> */}
       <Form
         name="basic"
@@ -385,13 +394,12 @@ const BalancepaymentsImportBill = () => {
             lg: 20,
           }}
         >
-          <Col>
+          {/* <Col>
             <Form.Item
               label="交易时间"
               name="tradinghours"
               auto-complete="new-password"
             >
-              {/* <Input /> */}
               <DatePicker />
             </Form.Item>
           </Col>
@@ -418,7 +426,7 @@ const BalancepaymentsImportBill = () => {
             <Form.Item label="交易单号" name="id" auto-complete="new-password">
               <Input />
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col>
             <Form.Item
               label="导入时间"
@@ -470,13 +478,13 @@ const BalancepaymentsImportBill = () => {
           </Button>
         </Col> */}
         <Col offset={22}>
-        <Button
-              type="primary"
-              style={{ marginBottom: '10px', marginLeft: '10px' }}
-              onClick={openDialog}
-            >
-              导入账单
-            </Button>
+          <Button
+            type="primary"
+            style={{ marginBottom: '10px', marginLeft: '10px' }}
+            onClick={openDialog}
+          >
+            导入账单
+          </Button>
           {/* <Upload beforeUpload={beforeUpload} showUploadList={false}>
             <Button
               type="primary"
@@ -510,7 +518,7 @@ const BalancepaymentsImportBill = () => {
         className="tab-box"
         rowKey="_id"
       /> */}
-       <Table
+      <Table
         columns={tatelColumns}
         dataSource={pres}
         pagination={{
