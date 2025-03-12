@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2022-10-03 23:55:35
- * @LastEditTime: 2025-03-10 18:23:34
+ * @LastEditTime: 2025-03-12 16:19:48
  * @LastEditors: 韩宏广
  * @FilePath: \financial-web\src\pages\BalancepaymentsImportBill\index.jsx
  * @文件说明:
@@ -25,7 +25,6 @@ import {
 // import React, { useCallback, useEffect, useState } from "react";
 import {
   getBillBatchApi,
-  getdisposebillApi,
   getImportRecordsApi,
   getinportbillinfoApi,
 } from '@/api/balancepayments';
@@ -33,96 +32,12 @@ import './index.less';
 import UploadDialog from './component/UploadDialog';
 import useUploadForm from './hooks/useUploadForm.js';
 import { formatDate } from '@/utils/index.js';
+import BillTabelList from './component/BillModalTabelList.jsx';
+import useBillShow from './hooks/useBillShow.js';
 const BalancepaymentsImportBill = () => {
+  const { isModalOpen, openBillModal, closeBillModal } = useBillShow();
   // const [test, setTest] = useState({})
-  // const [columns, setColumns] = useState([
-  //   {
-  //     title: '交易时间',
-  //     dataIndex: 'tradinghours',
-  //     key: 'tradinghours',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '交易类型',
-  //     dataIndex: 'tradetype',
-  //     key: 'tradetype',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '交易对方',
-  //     dataIndex: 'counterparty',
-  //     key: 'counterparty',
-  //     width: 150,
-  //   },
-  //   {
-  //     title: '商品',
-  //     dataIndex: 'product',
-  //     key: 'product',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '收/支',
-  //     dataIndex: 'collectorbranch',
-  //     key: 'collectorbranch',
-  //     width: 80,
-  //   },
-  //   {
-  //     title: '金额(元)',
-  //     dataIndex: 'amount',
-  //     key: 'amount',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '支付方式',
-  //     dataIndex: 'patternpayment',
-  //     key: 'patternpayment',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '当前状态',
-  //     dataIndex: 'currentstate',
-  //     key: 'currentstate',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '交易单号',
-  //     dataIndex: 'trasactionid',
-  //     key: 'trasactionid',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '商户单号',
-  //     dataIndex: 'merchantstoorder',
-  //     key: 'merchantstoorder',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '备注',
-  //     dataIndex: 'remark',
-  //     key: 'remark',
-  //     width: 80,
-  //   },
-  //   {
-  //     title: '操作',
-  //     // key: 'action',
-  //     width: 150,
-  //     render: (_, record) => (
-  //       <Space size="middle">
-  //         <a onClick={() => editBili(record)}>编辑</a>
-  //         <Popconfirm
-  //           title="确定删除记录？"
-  //           onConfirm={() => confirm(record)}
-  //           // onCancel={cancel}
-  //           okText="确定"
-  //           cancelText="取消"
-  //         >
-  //           <a href="#">删除</a>
-  //         </Popconfirm>
-  //         {/* <a onClick={() =>}></a> */}
-  //       </Space>
-  //     ),
-  //   },
-  // ]);
+
   //导入账单批次信息
   const [tatelColumns, setTatelColumns] = useState([
     {
@@ -163,7 +78,7 @@ const BalancepaymentsImportBill = () => {
             <a href="#">删除</a>
           </Popconfirm>
           {/* 查看批次账单 */}
-          <a onClick={() => showBillDrawer(record)}>查看</a>
+          <a onClick={openBillModal}>查看</a>
         </Space>
       ),
     },
@@ -203,7 +118,7 @@ const BalancepaymentsImportBill = () => {
     setChildrenDrawer(false);
   };
   useEffect(() => {
-    getdisposebillApi({ ...params }).then((res) => {
+    getBillBatchApi({ ...params }).then((res) => {
       console.log(res);
       setPres(res.data);
       setParams({
@@ -243,128 +158,20 @@ const BalancepaymentsImportBill = () => {
       });
     });
   };
-  const exportRecord = () => {
-    let data = {
-      starttime: '2022-01-01',
-      endtime: '2022-12-30',
-    };
-    getImportRecordsApi(data).then((res) => {
-      setRecord(res.data.list);
-    });
-    showDrawer();
-  };
+  // const exportRecord = () => {
+  //   let data = {
+  //     starttime: '2022-01-01',
+  //     endtime: '2022-12-30',
+  //   };
+  //   getImportRecordsApi(data).then((res) => {
+  //     setRecord(res.data.list);
+  //   });
+  //   showDrawer();
+  // };
   const beforeUpload = (file) => {
     onChange(file);
     return false;
   };
-  // const onChange = (evt) => {
-  //   var selectedFile = evt;
-  //   var reader = new FileReader();
-  //   // 字段名映射对象
-  //   const fieldMapping = {
-  //     交易时间: 'tradinghours',
-  //     交易类型: 'tradetype',
-  //     交易对方: 'counterparty',
-  //     商品: 'product',
-  //     '收/支': 'collectorbranch',
-  //     '金额(元)': 'amount',
-  //     支付方式: 'patternpayment',
-  //     当前状态: 'currentstate',
-  //     交易单号: 'trasactionid',
-  //     商户单号: 'merchantstoorder',
-  //     备注: 'remark',
-  //     更新日期: 'updataDate',
-  //   };
-
-  //   var datass = [];
-  //   reader.onload = function (event) {
-  //     // debugger
-  //     var data = event.target.result;
-  //     var workbook = XLSX.read(data, {
-  //       type: 'binary',
-  //     });
-  //     workbook.SheetNames.forEach(function (sheetName) {
-  //       // XLSX.utils.v
-  //       var sheeldata = workbook.Sheets[sheetName];
-  //       // console.log(sheeldata);
-  //       var sheel = XLSX.utils.sheet_to_json(sheeldata, {
-  //         header: 1,
-  //         raw: false,
-  //         blankrows: true,
-  //         defval: ' ',
-  //         rawNumbers: true,
-  //         dateNF: 'YYYY-MM-DD',
-  //         UTC: true,
-  //       });
-  //       console.log(sheel);
-
-  //       // var col_index = XLSX.utils.decode_col("D");
-  //       // console.log(test);
-  //       // setTest(test)
-  //       var tableHead = [];
-  //       sheel[0].forEach((element) => {
-  //         if (
-  //           element === '交易单号' ||
-  //           element === '商户单号' ||
-  //           element === '交易时间'
-  //         ) {
-  //           // debugger
-  //           tableHead.push({
-  //             title: element,
-  //             dataIndex: fieldMapping[element],
-  //             key: fieldMapping[element],
-  //             width: 200,
-  //           });
-  //         } else {
-  //           tableHead.push({
-  //             title: element,
-  //             dataIndex: fieldMapping[element],
-  //             key: fieldMapping[element],
-  //             width: 80,
-  //           });
-  //         }
-  //       });
-  //       console.log(tableHead);
-  //       // {
-  //       //   title: '交易时间',
-  //       //   dataIndex: 'tradinghours',
-  //       //   key: 'tradinghours',
-  //       //   width: 200,
-  //       // },
-  //       setColumns(tableHead);
-  //       sheel.forEach((element, index) => {
-  //         if (index === 0) {
-  //           return;
-  //         }
-  //         try {
-  //           var rowData = {};
-  //           for (let index = 0; index < element.length; index++) {
-  //             rowData[tableHead[index].dataIndex] = element[index];
-  //             rowData['key'] = Math.ceil(Math.random() * 100000);
-  //           }
-  //           datass.push(rowData);
-  //         } catch (error) {
-  //           console.log(error);
-  //         }
-  //       });
-  //       // console.log(datass);
-  //       // var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-  //       // if (XL_row_object.length > 0) {
-  //       // console.log(JSON.parse(JSON.stringify(XL_row_object)));
-  //       // }
-  //     });
-  //     // setPres(datass);
-  //     importingbillsApi(datass).then((res) => {
-  //       getdisposebill();
-  //     });
-  //   };
-
-  //   reader.onerror = function (event) {
-  //     console.error('File could not be read! Code ' + event.target.error.code);
-  //   };
-  //   // 读取上传文件为二进制
-  //   reader.readAsBinaryString(selectedFile);
-  // };
 
   const onFinish = (values) => {
     getdisposebill();
@@ -374,11 +181,12 @@ const BalancepaymentsImportBill = () => {
   };
   return (
     <>
+      {/* 导入账单  */}
       <UploadDialog
         openState={isDialogOpen}
         onClose={closeDialog}
       ></UploadDialog>
-      {/* <div>导入账单</div> */}
+      <BillTabelList isModalOpen={isModalOpen}  closeBillModal={closeBillModal}></BillTabelList>
       <Form
         name="basic"
         form={form}
@@ -496,28 +304,7 @@ const BalancepaymentsImportBill = () => {
         </Col>
       </Row>
       {/* <Button onClick={addField}>Click </Button> */}
-      {/* <Table
-        columns={columns}
-        dataSource={pres}
-        pagination={{
-          // showSizeChanger: true,
-          // showQuickJumper: false,
-          showTotal: () => `共${params.total}条`,
-          pageSize: params.pageSize,
-          current: params.page,
-          total: params.total,
-          onChange: (current, pageSize) => {
-            getdisposebill({
-              ...form,
-              page: current.toString(),
-              pageSize: pageSize.toString(),
-            });
-          },
-        }}
-        scroll={{ y: false }}
-        className="tab-box"
-        rowKey="_id"
-      /> */}
+      
       <Table
         columns={tatelColumns}
         dataSource={pres}
