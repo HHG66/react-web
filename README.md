@@ -8,5 +8,5 @@ react@18.2.0+antd+axios+redux
 ## 启动项目
 下载项目
 在项目路径下执行 npm install 
-启动 npm dev
+启动 npm run dev
 
