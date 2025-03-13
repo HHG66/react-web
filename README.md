@@ -1,8 +1,12 @@
 # React + Vite
+说明：
+这个项目是自己边学习边写的一个个人财务网站，还在实现和完善的过程，整体是完整的项目，后端使用nodejs+nestjs+MongoDB开发
+## 技术栈：
+react@18.2.0+antd+axios+redux
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## 启动项目
+下载项目
+在项目路径下执行 npm install 
+启动 npm dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
